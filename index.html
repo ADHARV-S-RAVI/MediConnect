@@ -11,20 +11,21 @@
         /* --- General & Landing Page Styles --- */
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* Consistent light gray background */
         }
         .hero-gradient {
-            background: linear-gradient(135deg, rgba(240, 249, 255, 0.65) 0%, rgba(243, 232, 255, 0.65) 100%);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.95) 0%, rgba(243, 232, 255, 0.95) 100%);
         }
         .hero-gradient::before {
             content: '';
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: url('https://i.ibb.co/YFBv8wWz/gettyimages-1365582872-612x612.jpg') no-repeat center center;
             background-size: cover;
-            filter: blur(10px);
+            filter: blur(8px) saturate(1.2);
             z-index: -1;
         }
         .modal-scrollbar::-webkit-scrollbar { width: 8px; }
@@ -34,24 +35,40 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- Patient Dashboard Modal Animation --- */
+        /* --- Dashboard Modal Animation --- */
         .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
         .modal-leave { animation: fadeOut 0.3s ease-in forwards; }
-        .modal-content-enter { animation: scaleIn 0.3s ease-out forwards; }
-        .modal-content-leave { animation: scaleOut 0.3s ease-in forwards; }
+        .modal-content-enter { animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .modal-content-leave { animation: scaleOut 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes scaleOut { from { transform: scale(1); opacity: 1; } to { transform: scale(0.95); opacity: 0; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes scaleOut { from { transform: scale(1); opacity: 1; } to { transform: scale(0.9); opacity: 0; } }
 
         /* --- Doctor Dashboard Custom Scrollbar --- */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 3px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* --- AI Chatbot Styles --- */
+        .chatbot-modal-enter { animation: slideInUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .chatbot-modal-leave { animation: slideOutDown 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; }
+        .message-enter { animation: slideIn 0.3s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideOutDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
+        
+        /* Additional Custom Styling for improved UI/UX */
+        .btn-primary { @apply rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl text-white font-semibold; }
+        .btn-secondary { @apply rounded-lg border bg-white/70 backdrop-blur-sm hover:bg-slate-50 transition-all text-slate-700 font-semibold; }
+        .card { @apply bg-white p-6 rounded-2xl shadow-md border border-slate-100; }
+        .input-field { @apply mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500; }
+        .sub-heading { @apply text-md font-semibold text-slate-800 border-b pb-2 mb-4; }
+        .badge { @apply px-2.5 py-1 text-xs font-semibold rounded-full; }
     </style>
 </head>
-<body class="bg-white text-slate-800 antialiased">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
     <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
@@ -63,7 +80,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="loading-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[70] flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm flex flex-col items-center">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
@@ -87,7 +104,7 @@
                         <a href="#about" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">About</a>
                     </nav>
                     <div class="hidden md:flex items-center">
-                        <button id="open-auth-modal-header" class="rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow hover:shadow-lg px-5 py-2.5 text-white font-semibold">
+                        <button id="open-auth-modal-header" class="btn-primary px-5 py-2.5">
                             Sign In / Sign Up
                         </button>
                     </div>
@@ -119,15 +136,16 @@
                         MediConnect unifies your medical records on a secure, decentralized platform. Grant access on your terms and leverage AI for powerful, private health insights.
                     </p>
                     <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <button class="auth-trigger w-full sm:w-auto rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl px-8 py-4 text-lg text-white font-semibold">
+                        <button class="auth-trigger w-full sm:w-auto btn-primary px-8 py-4 text-lg">
                             Get Started
                         </button>
-                        <a href="#features" class="w-full sm:w-auto rounded-lg border bg-white/70 backdrop-blur-sm hover:bg-slate-50 transition-all px-8 py-4 text-lg text-slate-700 font-semibold">
+                        <a href="#features" class="w-full sm:w-auto btn-secondary px-8 py-4 text-lg">
                             Learn More
                         </a>
                     </div>
                 </div>
             </section>
+
             <section id="features" class="py-20 md:py-28 bg-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center">
@@ -168,6 +186,7 @@
                     </div>
                 </div>
             </section>
+
             <section id="how-it-works" class="py-20 md:py-28 bg-slate-50">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center">
@@ -203,6 +222,7 @@
                     </div>
                 </div>
             </section>
+
             <section id="about" class="py-20 md:py-28 bg-white">
                 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="grid md:grid-cols-2 gap-12 items-center">
@@ -218,6 +238,7 @@
                     </div>
                 </div>
             </section>
+
             <section class="bg-blue-600">
                 <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 text-center">
                     <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
@@ -226,7 +247,7 @@
                     <p class="mt-4 text-lg text-blue-100">
                         Join MediConnect today and be part of the future of healthcare.
                     </p>
-                    <button class="auth-trigger mt-8 inline-block w-full sm:w-auto rounded-lg bg-white hover:bg-slate-100 transition-all shadow-lg hover:shadow-xl px-8 py-4 text-lg text-blue-600 font-semibold">
+                    <button class="auth-trigger mt-8 inline-block w-full sm:w-auto btn-secondary bg-white px-8 py-4 text-lg text-blue-600">
                         Get Started for Free
                     </button>
                 </div>
@@ -256,12 +277,11 @@
             </div>
         </footer>
 
-        <!-- Auth Modal -->
         <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-            <div id="auth-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
+            <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
                 <div class="flex items-center justify-between p-4 border-b">
                     <h3 id="modal-title" class="text-lg font-semibold">Welcome to MediConnect</h3>
-                    <button id="close-auth-modal-button" class="text-slate-400 hover:text-slate-600">
+                    <button id="close-modal-button" class="text-slate-400 hover:text-slate-600">
                         <i data-lucide="x" class="h-6 w-6"></i>
                     </button>
                 </div>
@@ -279,13 +299,13 @@
                         <form id="login-form" class="space-y-4">
                             <div>
                                 <label for="email" class="text-sm font-medium text-slate-700">Email</label>
-                                <input type="email" id="email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" required>
+                                <input type="email" id="email" class="input-field" placeholder="you@example.com" required>
                             </div>
                             <div>
                                 <label for="password" class="text-sm font-medium text-slate-700">Password</label>
-                                <input type="password" id="password" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
+                                <input type="password" id="password" class="input-field" required>
                             </div>
-                            <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Sign In</button>
+                            <button type="submit" class="w-full btn-primary py-2.5">Sign In</button>
                         </form>
                         <p class="text-center text-sm">Don't have an account? <button id="go-to-role-select" class="font-medium text-blue-600 hover:underline">Sign Up</button></p>
                     </div>
@@ -307,59 +327,51 @@
                     </div>
                     <div id="patient-form-view" class="hidden p-6 space-y-4">
                         <form id="patient-form">
-                            <div>
-                                <label for="patient-signup-email" class="text-sm font-medium text-slate-700">Email</label>
-                                <input type="email" id="patient-signup-email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" required>
-                            </div>
-                            <div>
-                                <label for="patient-signup-password" class="text-sm font-medium text-slate-700">Password</label>
-                                <input type="password" id="patient-signup-password" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
-                            </div>
-                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 mb-4">Personal Details</h4>
+                            <h4 class="sub-heading">Personal Details</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="patient-name-input" class="text-sm font-medium">Full Name</label>
-                                    <input type="text" id="patient-name-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Full Name</label>
+                                    <input type="text" id="patient-name-input" class="input-field" required>
                                 </div>
                                 <div>
-                                    <label for="patient-dob-input" class="text-sm font-medium">Date of Birth</label>
-                                    <input type="date" id="patient-dob-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Date of Birth</label>
+                                    <input type="date" id="patient-dob-input" class="input-field" required>
                                 </div>
                                 <div>
-                                    <label for="patient-gender-select" class="text-sm font-medium">Gender</label>
-                                    <select id="patient-gender-select" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                    <label class="text-sm font-medium">Gender</label>
+                                    <select id="patient-gender-select" class="input-field">
                                         <option>Select...</option><option>Male</option><option>Female</option><option>Other</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="patient-contact-input" class="text-sm font-medium">Contact Number</label>
-                                    <input type="tel" id="patient-contact-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Contact Number</label>
+                                    <input type="tel" id="patient-contact-input" class="input-field" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label for="patient-emergency-contact-input" class="text-sm font-medium">Emergency Contact</label>
-                                    <input type="tel" id="patient-emergency-contact-input" placeholder="Name & Phone Number" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Emergency Contact</label>
+                                    <input type="tel" id="patient-emergency-contact-input" placeholder="Name & Phone Number" class="input-field" required>
                                 </div>
                             </div>
-                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Medical Details</h4>
+                            <h4 class="sub-heading mt-6">Medical Details</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="patient-blood-group-input" class="text-sm font-medium">Blood Group</label>
-                                    <input type="text" id="patient-blood-group-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                    <label class="text-sm font-medium">Blood Group</label>
+                                    <input type="text" id="patient-blood-group-input" class="input-field">
                                 </div>
                                 <div>
-                                    <label for="patient-allergies-input" class="text-sm font-medium">Allergies</label>
-                                    <input type="text" id="patient-allergies-input" placeholder="e.g., Peanuts, Penicillin" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                    <label class="text-sm font-medium">Allergies</label>
+                                    <input type="text" id="patient-allergies-input" placeholder="e.g., Peanuts, Penicillin" class="input-field">
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label for="patient-medications-textarea" class="text-sm font-medium">Current Medications</label>
-                                    <textarea id="patient-medications-textarea" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
+                                    <label class="text-sm font-medium">Current Medications</label>
+                                    <textarea id="patient-medications-textarea" class="input-field" rows="2"></textarea>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label for="patient-history-textarea" class="text-sm font-medium">Past Medical History</label>
-                                    <textarea id="patient-history-textarea" placeholder="e.g., Asthma, Surgery in 2020" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
+                                    <label class="text-sm font-medium">Past Medical History</label>
+                                    <textarea id="patient-history-textarea" placeholder="e.g., Asthma, Surgery in 2020" class="input-field" rows="2"></textarea>
                                 </div>
                             </div>
-                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Medical Records</h4>
+                            <h4 class="sub-heading mt-6">Medical Records</h4>
                             <div>
                                 <label class="text-sm font-medium">Upload Past Records</label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
@@ -376,7 +388,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Consent Management</h4>
+                            <h4 class="sub-heading mt-6">Consent Management</h4>
                             <div class="space-y-3">
                                 <label class="flex items-start p-3 bg-slate-50 rounded-lg">
                                     <input type="checkbox" id="consent-doctors" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1">
@@ -395,48 +407,40 @@
                             </div>
                             <div class="mt-8 flex justify-between items-center">
                                 <button type="button" class="back-to-roles text-sm text-slate-500 hover:underline">&larr; Back</button>
-                                <button type="submit" class="bg-blue-600 text-white py-2.5 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Create Account</button>
+                                <button type="submit" class="btn-primary py-2.5 px-6">Create Account</button>
                             </div>
                         </form>
                     </div>
                     <div id="doctor-form-view" class="hidden p-6 space-y-4">
                         <form id="doctor-form">
-                            <div>
-                                <label for="doctor-signup-email" class="text-sm font-medium text-slate-700">Email</label>
-                                <input type="email" id="doctor-signup-email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
-                            </div>
-                            <div>
-                                <label for="doctor-signup-password" class="text-sm font-medium text-slate-700">Password</label>
-                                <input type="password" id="doctor-signup-password" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
-                            </div>
-                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 mb-4">Professional Details</h4>
+                            <h4 class="sub-heading">Professional Details</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="doctor-name-input" class="text-sm font-medium">Full Name</label>
-                                    <input type="text" id="doctor-name-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Full Name</label>
+                                    <input type="text" id="doctor-name-input" class="input-field" required>
                                 </div>
                                 <div>
-                                    <label for="doctor-specialization-input" class="text-sm font-medium">Specialization</label>
-                                    <input type="text" id="doctor-specialization-input" placeholder="e.g., Cardiology" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Specialization</label>
+                                    <input type="text" placeholder="e.g., Cardiology" class="input-field" required>
                                 </div>
                                 <div>
-                                    <label for="doctor-experience-input" class="text-sm font-medium">Years of Experience</label>
-                                    <input type="number" id="doctor-experience-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Years of Experience</label>
+                                    <input type="number" id="doctor-experience-input" class="input-field" required>
                                 </div>
                                 <div>
-                                    <label for="doctor-license-input" class="text-sm font-medium">Medical License Number</label>
-                                    <input type="text" id="doctor-license-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Medical License Number</label>
+                                    <input type="text" id="doctor-license-input" class="input-field" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label for="doctor-hospital-input" class="text-sm font-medium">Hospital Affiliation</label>
-                                    <input type="text" id="doctor-hospital-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Hospital Affiliation</label>
+                                    <input type="text" id="doctor-hospital-input" class="input-field" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label for="doctor-contact-email-input" class="text-sm font-medium">Contact Email</label>
-                                    <input type="email" id="doctor-contact-email-input" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label class="text-sm font-medium">Contact Email</label>
+                                    <input type="email" id="doctor-contact-email-input" class="input-field" required>
                                 </div>
                             </div>
-                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Verification</h4>
+                            <h4 class="sub-heading mt-6">Verification</h4>
                             <div>
                                 <label class="text-sm font-medium">Upload License / ID Proof</label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
@@ -464,16 +468,16 @@
                         </div>
                         <h3 class="text-xl font-bold mt-6">Registration Successful!</h3>
                         <p class="text-slate-500 mt-2">Welcome to MediConnect. You can now proceed to your dashboard.</p>
-                        <button id="go-to-dashboard-btn" class="mt-6 w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Go to Dashboard</button>
+                        <button id="go-to-dashboard-btn" class="mt-6 w-full btn-primary py-2.5">Go to Dashboard</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="patient-dashboard-view" class="hidden bg-slate-50">
-        <div id="patient-settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+    <div id="patient-dashboard-view" class="hidden bg-slate-50 min-h-screen">
+        <div id="patient-settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+            <div class="card w-full max-w-lg max-h-[90vh] flex flex-col">
                 <div class="flex items-center justify-between p-4 border-b">
                     <h3 class="text-lg font-semibold">Settings</h3>
                     <button id="close-patient-settings-modal" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
@@ -483,8 +487,8 @@
                 </div>
             </div>
         </div>
-        <div id="profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
-            <div id="profile-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+        <div id="profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+            <div id="profile-modal-content" class="card w-full max-w-lg max-h-[90vh] flex flex-col">
                 <div class="flex items-center justify-between p-4 border-b">
                     <h3 class="text-lg font-semibold">Edit Patient Details</h3>
                     <button id="close-profile-modal" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
@@ -493,25 +497,25 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-sm font-medium text-slate-700">Full Name</label>
-                            <input type="text" id="profile-name" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                            <input type="text" id="profile-name" class="input-field" />
                         </div>
                         <div>
                             <label class="text-sm font-medium text-slate-700">Date of Birth</label>
-                            <input type="date" id="profile-dob" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                            <input type="date" id="profile-dob" class="input-field" />
                         </div>
                         <div>
                             <label class="text-sm font-medium text-slate-700">Gender</label>
-                            <select id="profile-gender" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                            <select id="profile-gender" class="input-field">
                                 <option>Female</option><option>Male</option><option>Other</option>
                             </select>
                         </div>
                         <div>
                             <label class="text-sm font-medium text-slate-700">Contact Number</label>
-                            <input type="tel" id="profile-contact" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                            <input type="tel" id="profile-contact" class="input-field" />
                         </div>
                         <div class="md:col-span-2">
                             <label class="text-sm font-medium text-slate-700">Emergency Contact</label>
-                            <input type="text" id="profile-emergency" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                            <input type="text" id="profile-emergency" class="input-field" />
                         </div>
                     </div>
                 </div>
@@ -521,9 +525,8 @@
                 </div>
             </div>
         </div>
-
         <div id="upload-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
-            <div id="upload-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+            <div id="upload-modal-content" class="card w-full max-w-lg max-h-[90vh] flex flex-col">
                 <div class="flex items-center justify-between p-4 border-b">
                     <h3 class="text-lg font-semibold">Upload New Medical Report</h3>
                     <button id="close-upload-modal" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
@@ -531,15 +534,15 @@
                 <div class="flex-grow overflow-y-auto p-6 space-y-4">
                     <div>
                         <label for="report-title" class="text-sm font-medium text-slate-700">Report Title</label>
-                        <input type="text" id="report-title" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Annual Check-up Results">
+                        <input type="text" id="report-title" class="input-field" placeholder="e.g., Annual Check-up Results">
                     </div>
                     <div>
                         <label for="report-description" class="text-sm font-medium text-slate-700">Description</label>
-                        <textarea id="report-description" rows="3" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="Briefly describe the report, e.g., Blood test from Dr. Smith on 2025-09-10."></textarea>
+                        <textarea id="report-description" rows="3" class="input-field" placeholder="Briefly describe the report, e.g., Blood test from Dr. Smith on 2025-09-10."></textarea>
                     </div>
                     <div>
                         <label for="report-doctor-note" class="text-sm font-medium text-slate-700">Doctor's Note (Optional)</label>
-                        <textarea id="report-doctor-note" rows="2" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Follow up in 3 months. Patient advised to monitor blood pressure."></textarea>
+                        <textarea id="report-doctor-note" rows="2" class="input-field" placeholder="e.g., Follow up in 3 months. Patient advised to monitor blood pressure."></textarea>
                     </div>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
                         <div class="space-y-1 text-center">
@@ -547,7 +550,7 @@
                             <div class="flex text-sm text-slate-600">
                                 <label for="file-upload-patient" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
                                     <span>Upload a file</span>
-                                    <input id="patient-file-upload" name="patient-file-upload" type="file" class="sr-only">
+                                    <input id="file-upload-patient" name="patient-file-upload" type="file" class="sr-only">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
@@ -589,7 +592,7 @@
                 <button id="logout-patient" class="ml-4 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-red-600 border border-red-600 hover:bg-red-50 transition-colors">
                     <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
                 </button>
-                </nav>
+            </nav>
             <button class="md:hidden rounded-lg bg-blue-600 px-4 py-2 text-white">Menu</button>
         </header>
 
@@ -617,7 +620,7 @@
             </section>
             
             <section id="vitals" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">Smart Health Records</h2>
                     <div id="vitals-filter-container" class="flex flex-wrap gap-2 border-b pb-4 mb-6"></div>
                     <div id="vitals-display-container" class="grid md:grid-cols-2 gap-6"></div>
@@ -625,13 +628,13 @@
             </section>
 
             <section id="ai" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="bg-violet-100 p-2 rounded-full"><i data-lucide="brain" class="w-6 h-6 text-violet-500"></i></div>
                         <h3 class="text-xl font-semibold text-slate-800">AI-Powered Population Insights</h3>
                     </div>
                     <p class="text-sm text-slate-500 mb-4">Analyze anonymized data from thousands of patient records to identify trends, predict risks, and improve preventative care strategies. This is a powerful tool for researchers and clinicians.</p>
-                    <button id="run-ai-btn" class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow hover:shadow-lg px-5 py-2.5 text-white font-semibold flex items-center justify-center gap-2"><i data-lucide="trending-up" class="w-5 h-5"></i>Analyze Population Data</button>
+                    <button id="run-ai-btn" class="w-full btn-primary px-5 py-2.5 flex items-center justify-center gap-2"><i data-lucide="trending-up" class="w-5 h-5"></i>Analyze Population Data</button>
                     <div class="mt-4 p-4 bg-slate-50 rounded-lg border">
                         <h4 class="text-sm font-medium mb-2 text-slate-700">AI Report</h4>
                         <pre id="ai-report-content" class="text-xs whitespace-pre-wrap text-slate-700 min-h-[95px] font-mono leading-relaxed">Click button to run analysis.</pre>
@@ -640,7 +643,7 @@
             </section>
 
             <section id="appointments-patient-section" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">Appointments</h2>
                     <div class="space-y-6">
                         <div>
@@ -659,7 +662,7 @@
             </section>
 
             <section id="consent" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <h3 class="text-2xl font-bold mb-3 text-slate-800">Consent Manager</h3>
                     <p class="text-sm text-slate-500 mb-4">Toggle who can access your records. This simulates a dynamic, smart-contract permission flow on a blockchain.</p>
                     <div id="permissions-container" class="grid md:grid-cols-2 gap-4"></div>
@@ -667,7 +670,7 @@
             </section>
 
             <section id="logs" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <h3 class="text-lg font-semibold mb-3 text-slate-800">Access Log (Append-Only)</h3>
                     <p class="text-sm text-slate-500 mb-4">Every permission change or data access attempt is recorded to build trust and transparency.</p>
                     <div id="access-log-container" class="space-y-2 max-h-56 overflow-auto text-xs bg-slate-50 p-3 rounded-lg border"></div>
@@ -675,17 +678,17 @@
             </section>
 
             <section id="messages-patient-section" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-2xl font-bold text-slate-800">Messages</h2>
-                        <button id="compose-message-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">Compose New</button>
+                        <button id="compose-message-btn" class="btn-primary px-4 py-2 text-sm">Compose New</button>
                     </div>
                     <div id="patient-conversations-list" class="space-y-4">
                     </div>
                 </div>
             </section>
             <section id="settings-patient-section" class="patient-main-section hidden mt-8">
-                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                <div class="card">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">Settings</h2>
                     <div id="patient-settings-content" class="text-sm text-slate-500">
                         <p>Manage your account preferences, notifications, and security settings here.</p>
@@ -696,12 +699,11 @@
                 <div class="flex items-center justify-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i> <span>MediConnect prototype — simulated demo only</span></div>
             </footer>
         </main>
-        <button id="open-upload-modal-btn" class="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full p-4 shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+        <button id="open-upload-modal-btn" class="fixed bottom-8 left-8 btn-primary rounded-full p-4 flex items-center gap-2 z-20">
             <i data-lucide="file-plus-2" class="w-6 h-6"></i>
             <span class="hidden md:block">Upload New Report</span>
         </button>
     </div>
-
 
     <div id="doctor-dashboard-view" class="hidden">
         <div id="app" class="flex h-screen bg-slate-100">
@@ -710,7 +712,6 @@
                     <a href="#" class="flex items-center gap-3">
                         <img class="h-12 w-12 object-contain" src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo">
                         <span class="text-xl font-bold text-slate-900">MediConnect</span>
-                        
                     </a>
                 </div>
                 <nav class="flex-1 px-4 py-6 space-y-2">
@@ -729,15 +730,15 @@
                 </nav>
                 <div class="px-4 py-4 border-t border-slate-200">
                     <div class="flex items-center gap-3">
-                        <img id="doctor-avatar" class="h-10 w-10 rounded-full object-cover" src="https://placehold.co/100x100/a7c5fd/333333?text=Dr.A" alt="Doctor Avatar">
+                        <img class="h-10 w-10 rounded-full object-cover" src="https://placehold.co/100x100/a7c5fd/333333?text=Dr.A" alt="Doctor Avatar">
                         <div>
-                            <p id="doctor-sidebar-name" class="text-sm font-semibold text-slate-800">Dr. Alex Turner</p>
-                            <p id="doctor-sidebar-id" class="text-xs text-slate-500">ID: DOC002</p>
+                            <p class="text-sm font-semibold text-slate-800">Dr. Alex Turner</p>
+                            <p class="text-xs text-slate-500">Cardiologist</p>
                         </div>
                         <button id="logout-doctor" class="ml-auto text-slate-500 hover:text-red-500 transition-colors">
                             <i data-lucide="log-out" class="w-5 h-5"></i>
                         </button>
-                        </div>
+                    </div>
                 </div>
             </aside>
 
@@ -787,11 +788,8 @@
                     </div>
                     
                     <div id="messages-doctor-section" class="doctor-main-section hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-2xl font-bold text-slate-800">Messages</h2>
-                        </div>
-                        <div id="doctor-conversations-list" class="space-y-4">
-                        </div>
+                        <h2 class="text-xl font-semibold mb-4 text-slate-700">Messages</h2>
+                        <p class="text-sm text-slate-500">This section is for secure, direct messaging with patients.</p>
                     </div>
 
                     <div id="settings-doctor-section" class="doctor-main-section hidden">
@@ -806,21 +804,21 @@
                                 Back to Search
                             </button>
                             <div class="flex gap-2">
-                                <button class="dashboard-tab-button bg-white text-slate-700 shadow-sm border rounded-lg px-4 py-2 font-semibold text-sm hover:bg-slate-50" data-tab="profile">
+                                <button class="dashboard-tab-button btn-primary shadow-sm px-4 py-2 font-semibold text-sm" data-tab="profile">
                                     <i data-lucide="user-round" class="w-4 h-4 inline-block mr-2"></i>Patient Profile
                                 </button>
-                                <button class="dashboard-tab-button bg-white text-slate-700 shadow-sm border rounded-lg px-4 py-2 font-semibold text-sm hover:bg-slate-50" data-tab="consultation">
+                                <button class="dashboard-tab-button btn-secondary shadow-sm px-4 py-2 font-semibold text-sm" data-tab="consultation">
                                     <i data-lucide="file-plus-2" class="w-4 h-4 inline-block mr-2"></i>Add Consultation
                                 </button>
                                 <button id="message-patient-btn" class="bg-violet-600 text-white shadow-sm rounded-lg px-4 py-2 font-semibold text-sm hover:bg-violet-700">
                                     <i data-lucide="message-square" class="w-4 h-4 inline-block mr-2"></i>Message Patient
                                 </button>
-                                </div>
+                            </div>
                         </div>
 
                         <div id="tab-content-wrapper">
                             <div id="profile-content" class="dashboard-tab-content">
-                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-6">
+                                <div class="card mb-6">
                                     <div class="flex flex-col md:flex-row items-start gap-6">
                                         <img id="patient-avatar" class="h-24 w-24 rounded-full object-cover border-4 border-slate-100" src="" alt="Patient Avatar">
                                         <div class="flex-1">
@@ -851,20 +849,20 @@
                                 </div>
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     <div class="lg:col-span-1 space-y-6">
-                                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
+                                        <div class="card p-5">
                                             <h3 class="font-semibold mb-3">Personal Information</h3>
                                             <div id="personal-info" class="text-sm space-y-2 text-slate-600"></div>
                                         </div>
-                                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
+                                        <div class="card p-5">
                                             <h3 class="font-semibold mb-3">Medical History</h3>
                                             <div id="medical-history" class="text-sm space-y-2 text-slate-600"></div>
                                         </div>
-                                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
+                                        <div class="card p-5">
                                             <h3 class="font-semibold mb-3">Lifestyle</h3>
                                             <div id="lifestyle-info" class="text-sm space-y-2 text-slate-600"></div>
                                         </div>
                                     </div>
-                                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-sm border">
+                                    <div class="lg:col-span-2 card p-5">
                                         <h3 class="font-semibold mb-4">Medical Records Timeline</h3>
                                         <div id="records-timeline" class="relative border-l-2 border-slate-200 pl-6 space-y-8">
                                         </div>
@@ -872,7 +870,7 @@
                                 </div>
                             </div>
                             <div id="consultation-content" class="dashboard-tab-content hidden">
-                                <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-sm border">
+                                <div class="max-w-4xl mx-auto card p-8">
                                     <div class="flex items-center gap-4 mb-6 border-b pb-4">
                                         <img id="consult-patient-avatar" class="h-12 w-12 rounded-full" src="" alt="Patient Avatar">
                                         <div>
@@ -920,7 +918,7 @@
                                             </div>
                                         </div>
                                         <div class="flex justify-end pt-4">
-                                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all shadow hover:shadow-lg flex items-center gap-2">
+                                            <button type="submit" class="btn-primary py-2.5 px-6 flex items-center gap-2">
                                                 <i data-lucide="send" class="w-4 h-4"></i>
                                                 Send to Patient
                                             </button>
@@ -934,7 +932,6 @@
             </main>
         </div>
 
-        <!-- Doctor File Preview Modal -->
         <div id="file-preview-modal-doctor" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
             <div id="modal-content-doctor" class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
                 <div class="flex items-center justify-between p-4 border-b">
@@ -947,7 +944,7 @@
                     <img id="modal-image-doctor" src="" alt="File Preview" class="w-full h-auto rounded-lg">
                 </div>
                 <div class="p-4 bg-slate-50 border-t flex justify-end gap-3">
-                    <button id="modal-download-btn-doctor" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 text-sm flex items-center gap-2">
+                    <button id="modal-download-btn-doctor" class="btn-primary py-2 px-4 text-sm flex items-center gap-2">
                         <i data-lucide="download" class="w-4 h-4"></i> Download
                     </button>
                     <button id="modal-close-btn-footer-doctor" class="bg-slate-200 text-slate-700 py-2 px-4 rounded-lg font-semibold hover:bg-slate-300 text-sm">Close</button>
@@ -956,10 +953,11 @@
         </div>
     </div>
 
-    <!-- Chatbot Button and Modal -->
-    <button id="chatbot-button" class="fixed bottom-6 right-6 z-50 transition-transform duration-300 hover:scale-110 cursor-pointer w-16 h-16 rounded-full bg-blue-600 shadow-xl flex items-center justify-center text-white">
-        <i data-lucide="bot" class="w-8 h-8"></i>
-    </button>
+    <div id="chatbot-button" class="fixed bottom-6 right-6 z-50 transition-transform duration-300 hover:scale-110 cursor-pointer">
+        <div class="w-16 h-16 rounded-full bg-blue-600 shadow-xl flex items-center justify-center text-white">
+            <i data-lucide="bot" class="w-8 h-8"></i>
+        </div>
+    </div>
 
     <div id="chatbot-modal" class="fixed inset-0 bg-black bg-opacity-40 z-[60] flex items-end md:items-center md:justify-end p-4 hidden">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm h-full max-h-[70vh] flex flex-col chatbot-modal-enter">
@@ -996,7 +994,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp, runTransaction, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // --- Firebase Configuration & Initialization ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -1034,37 +1032,29 @@
             appointments: [],
         };
         let doctorState = {
-            activePatientId: null,
+            activePatientUid: null,
             patients: [],
             doctorDetails: {},
         };
-        let chatbotInitialized = false;
 
         const showLoading = (show) => {
-            const loadingModal = document.getElementById('loading-modal');
-            loadingModal.classList.toggle('hidden', !show);
+            document.getElementById('loading-modal').classList.toggle('hidden', !show);
         };
         
         const showMessage = (title, message) => {
             const modal = document.getElementById('confirmation-modal');
-            const titleEl = document.getElementById('confirmation-title');
-            const msgEl = document.getElementById('confirmation-message');
-            const confirmBtn = document.getElementById('confirm-action');
-            const cancelBtn = document.getElementById('cancel-confirmation');
-
-            titleEl.textContent = title;
-            msgEl.textContent = message;
-            confirmBtn.textContent = "OK";
-            cancelBtn.classList.add('hidden');
-            
+            document.getElementById('confirmation-title').textContent = title;
+            document.getElementById('confirmation-message').textContent = message;
+            document.getElementById('confirm-action').textContent = "OK";
+            document.getElementById('cancel-confirmation').classList.add('hidden');
             modal.classList.remove('hidden');
             
             const handleClose = () => {
                 modal.classList.add('hidden');
-                cancelBtn.classList.remove('hidden');
-                confirmBtn.removeEventListener('click', handleClose);
+                document.getElementById('cancel-confirmation').classList.remove('hidden');
+                document.getElementById('confirm-action').removeEventListener('click', handleClose);
             };
-            confirmBtn.addEventListener('click', handleClose);
+            document.getElementById('confirm-action').addEventListener('click', handleClose);
         };
 
         const handleLogout = async () => {
@@ -1107,7 +1097,6 @@
             showLoading(false);
         };
 
-        // --- GLOBAL APPLICATION STATE & VIEW MANAGEMENT ---
         const views = {
             landing: document.getElementById('landing-page-view'),
             patientDashboard: document.getElementById('patient-dashboard-view'),
@@ -1133,8 +1122,8 @@
             menuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
             const authModal = document.getElementById('auth-modal');
-            const modalContent = document.getElementById('auth-modal-content');
-            const closeAuthModalButton = document.getElementById('close-auth-modal-button');
+            const modalContent = document.getElementById('modal-content');
+            const closeModalButton = document.getElementById('close-modal-button');
             const authTriggers = document.querySelectorAll('.auth-trigger, #open-auth-modal-header');
 
             const authViews = {
@@ -1180,7 +1169,7 @@
             };
 
             authTriggers.forEach(trigger => trigger.addEventListener('click', openAuthModal));
-            closeAuthModalButton.addEventListener('click', closeAuthModal);
+            closeModalButton.addEventListener('click', closeAuthModal);
             authModal.addEventListener('click', (e) => {
                 if (e.target === authModal) closeAuthModal();
             });
@@ -1303,8 +1292,7 @@
             showAuthView('initial');
         };
 
-        // --- PATIENT DASHBOARD LOGIC ---
-        let patientDashboardInitialized = false;
+        const patientDashboardInitialized = false;
         
         const initPatientState = async () => {
             const patientRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}`);
@@ -1375,7 +1363,7 @@
                 myAppointmentsList: document.getElementById('my-appointments-list'),
                 composeMessageBtn: document.getElementById('compose-message-btn'),
             };
-
+            
             document.getElementById('logout-patient').addEventListener('click', handleLogout);
 
             const switchSection = (id) => {
@@ -1424,7 +1412,7 @@
                             ${r.doctorsNote ? `<div class="mt-2 text-xs text-indigo-700 bg-indigo-50 p-2 rounded-lg"><span class="font-semibold">Doctor's Note:</span> ${r.doctorsNote}</div>` : ''}
                         </div>
                         <div class="text-right flex-shrink-0 ml-2">
-                            <div class="text-xs text-slate-400 mb-2">${new Date(r.timestamp.toDate()).toLocaleDateString()}</div>
+                            <div class="text-xs text-slate-400 mb-2">${r.timestamp ? new Date(r.timestamp.toDate()).toLocaleDateString() : 'Just now'}</div>
                             <button data-record-id="${r.id}" class="delete-record-btn text-red-500 hover:text-red-700 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </li>`
@@ -1448,7 +1436,7 @@
             const renderVitals = () => {
                 const vital_filters = [{ id: 'bloodPressure', label: 'Blood Pressure', icon: 'heart' }, { id: 'heartRate', label: 'Heart Rate', icon: 'activity' }, { id: 'bloodOxygen', label: 'Blood Oxygen', icon: 'wind' }, { id: 'sugarLevel', label: 'Blood Sugar', icon: 'droplet' }, { id: 'ecg', label: 'ECG', icon: 'activity' }, { id: 'sleep', label: 'Sleep', icon: 'bed-double' }];
                 DOMElements.vitalsFilterContainer.innerHTML = vital_filters.map(filter => `<button data-vital="${filter.id}" class="vital-filter-btn flex items-center gap-2 px-3 py-2 font-semibold text-sm rounded-lg transition-colors ${patientState.activeVital === filter.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"><i data-lucide="${filter.icon}" class="w-4 h-4"></i> <span>${filter.label}</span></button>`).join('');
-                const ecgWaveformHTML = `<svg viewBox="0 0 100 40" class="w-full h-24 text-teal-500"><path d="M 0 20 L 10 20 L 12 15 L 16 25 L 20 20 L 22 22 L 24 18 L 26 20 L 40 20 Q 42 20 43 10 T 46 20 L 55 20 L 57 24 L 59 16 L 61 20 L 80 20 L 82 15 L 86 25 L 90 20 L 100 20" stroke="currentColor" strokeWidth="1" fill="none" /></svg>`;
+                const ecgWaveformHTML = `<svg viewBox="0 0 100 40" class="w-full h-24 text-teal-500"><path d="M 0 20 L 10 20 L 12 15 L 16 25 L 20 20 L 22 22 L 24 18 L 26 20 L 40 20 Q 42 20 43 10 T 46 20 L 55 20 L 57 24 L 59 16 L 61 20 L 80 20 L 82 15 L 86 25 L 90 20 L 100 20" stroke="currentColor" stroke-width="1" fill="none" /></svg>`;
                 const createHealthHistoryGraphHTML = (data, metric, color) => {
                     if (!data || data.length === 0) return `<div class="bg-slate-50 p-4 rounded-lg border flex items-center justify-center h-48"><p class="text-sm text-slate-400">No history data available</p></div>`;
                     const maxVal = Math.max(...data.map(d => d.value)) + 10, minVal = Math.min(...data.map(d => d.value)) - 10;
@@ -1458,12 +1446,12 @@
                     return `<div class="mt-4"><h4 class="text-sm font-semibold text-slate-600 mb-2">${metric} History (Last 6 Months)</h4><div class="bg-slate-50 p-4 rounded-lg border"><svg viewBox="0 0 100 100" class="w-full h-40" preserveAspectRatio="none"><text x="0" y="5" font-size="8" fill="#94a3b8">${maxVal}</text><text x="0" y="98" font-size="8" fill="#94a3b8">${minVal}</text><line x1="5" x2="100" y1="5" y2="5" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><line x1="5" x2="100" y1="50" y2="50" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><line x1="5" x2="100" y1="95" y2="95" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}" />${circles}</svg><div class="flex justify-between text-xs text-slate-400 mt-2">${months}</div></div></div>`;
                 };
                 const vital_components_html = {
-                    bloodPressure: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-red-100 p-2 rounded-full"><i data-lucide="heart" class="w-6 h-6 text-red-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Pressure</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.bloodPressure.systolic}<span class="text-2xl text-slate-500">/${patientState.healthData.bloodPressure.diastolic}</span><span class="text-lg ml-2 text-slate-500">mmHg</span></p> <p class="text-sm text-green-600 font-medium mt-1">Normal</p> ${createHealthHistoryGraphHTML(patientState.healthData.bloodPressure.history, "Systolic BP", "#ef4444")} </div>`,
-                    heartRate: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-rose-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-rose-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Heart Rate</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.heartRate.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.heartRate.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.heartRate.status}</p> ${createHealthHistoryGraphHTML(patientState.healthData.heartRate.history, "Resting Heart Rate", "#f43f5e")} </div>`,
-                    bloodOxygen: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-cyan-100 p-2 rounded-full"><i data-lucide="wind" class="w-6 h-6 text-cyan-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Oxygen (SpO2)</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.bloodOxygen.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.bloodOxygen.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.bloodOxygen.status}</p> ${createHealthHistoryGraphHTML(patientState.healthData.bloodOxygen.history, "SpO2 Level", "#06b6d4")} </div>`,
-                    ecg: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-teal-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-teal-500"></i></div><h3 class="text-xl font-semibold text-slate-800">ECG</h3></div> <div class="mt-4 p-4 bg-slate-50 rounded-lg border">${ecgWaveformHTML}</div> <p class="text-lg font-semibold text-slate-800 mt-4">${patientState.healthData.ecg.status}</p> <p class="text-sm text-slate-500 mt-1">${patientState.healthData.ecg.summary}</p> </div>`,
-                    sleep: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-indigo-100 p-2 rounded-full"><i data-lucide="bed-double" class="w-6 h-6 text-indigo-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Sleep Pattern</h3></div> <div class="grid grid-cols-3 gap-4 text-center mt-4"> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.duration}</p><p class="text-xs text-slate-500">Total Sleep</p></div> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.deepSleep}</p><p class="text-xs text-slate-500">Deep Sleep</p></div> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.quality}</p><p class="text-xs text-slate-500">Quality</p></div> </div> ${createHealthHistoryGraphHTML([], "Sleep Duration", "#6366f1")} </div>`,
-                    sugarLevel: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-sky-100 p-2 rounded-full"><i data-lucide="droplet" class="w-6 h-6 text-sky-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Sugar</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.sugarLevel.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.sugarLevel.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.sugarLevel.status}</p> ${createHealthHistoryGraphHTML([], "History", "#0ea5e9")} </div>`
+                    bloodPressure: `<div class="card p-6"> <div class="flex items-center gap-3 mb-3"><div class="bg-red-100 p-2 rounded-full"><i data-lucide="heart" class="w-6 h-6 text-red-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Pressure</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.bloodPressure.systolic}<span class="text-2xl text-slate-500">/${patientState.healthData.bloodPressure.diastolic}</span><span class="text-lg ml-2 text-slate-500">mmHg</span></p> <p class="text-sm text-green-600 font-medium mt-1">Normal</p> ${createHealthHistoryGraphHTML(patientState.healthData.bloodPressure.history, "Systolic BP", "#ef4444")} </div>`,
+                    heartRate: `<div class="card p-6"> <div class="flex items-center gap-3 mb-3"><div class="bg-rose-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-rose-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Heart Rate</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.heartRate.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.heartRate.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.heartRate.status}</p> ${createHealthHistoryGraphHTML(patientState.healthData.heartRate.history, "Resting Heart Rate", "#f43f5e")} </div>`,
+                    bloodOxygen: `<div class="card p-6"> <div class="flex items-center gap-3 mb-3"><div class="bg-cyan-100 p-2 rounded-full"><i data-lucide="wind" class="w-6 h-6 text-cyan-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Oxygen (SpO2)</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.bloodOxygen.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.bloodOxygen.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.bloodOxygen.status}</p> ${createHealthHistoryGraphHTML(patientState.healthData.bloodOxygen.history, "SpO2 Level", "#06b6d4")} </div>`,
+                    ecg: `<div class="card p-6"> <div class="flex items-center gap-3 mb-3"><div class="bg-teal-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-teal-500"></i></div><h3 class="text-xl font-semibold text-slate-800">ECG</h3></div> <div class="mt-4 p-4 bg-slate-50 rounded-lg border">${ecgWaveformHTML}</div> <p class="text-lg font-semibold text-slate-800 mt-4">${patientState.healthData.ecg.status}</p> <p class="text-sm text-slate-500 mt-1">${patientState.healthData.ecg.summary}</p> </div>`,
+                    sleep: `<div class="card p-6"> <div class="flex items-center gap-3 mb-3"><div class="bg-indigo-100 p-2 rounded-full"><i data-lucide="bed-double" class="w-6 h-6 text-indigo-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Sleep Pattern</h3></div> <div class="grid grid-cols-3 gap-4 text-center mt-4"> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.duration}</p><p class="text-xs text-slate-500">Total Sleep</p></div> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.deepSleep}</p><p class="text-xs text-slate-500">Deep Sleep</p></div> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.quality}</p><p class="text-xs text-slate-500">Quality</p></div> </div> ${createHealthHistoryGraphHTML([], "Sleep Duration", "#6366f1")} </div>`,
+                    sugarLevel: `<div class="card p-6"> <div class="flex items-center gap-3 mb-3"><div class="bg-sky-100 p-2 rounded-full"><i data-lucide="droplet" class="w-6 h-6 text-sky-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Sugar</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.sugarLevel.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.sugarLevel.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.sugarLevel.status}</p> ${createHealthHistoryGraphHTML([], "History", "#0ea5e9")} </div>`
                 };
                 let content = vital_components_html[patientState.activeVital];
                 if (patientState.activeVital === 'bloodPressure') content += vital_components_html['heartRate'];
@@ -1518,7 +1506,7 @@
                                     <p class="text-sm text-slate-500">${doctor.specialization}</p>
                                     <p class="text-xs text-slate-400">ID: ${doctor.doctorId}</p>
                                 </div>
-                                <button class="book-appointment-btn bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700" data-doctor-uid="${doc.id}" data-doctor-name="${doctor.name}">Book</button>
+                                <button class="book-appointment-btn btn-primary px-4 py-2 text-sm" data-doctor-uid="${doc.id}" data-doctor-name="${doctor.name}">Book</button>
                             </div>
                         `;
                     }).join('');
@@ -1539,7 +1527,7 @@
                                 <div class="font-semibold text-slate-800">${app.doctorName}</div>
                                 <div class="text-sm text-slate-500">${app.date} at ${app.time}</div>
                             </div>
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusColor}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
+                            <span class="badge ${statusColor}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
                         </div>
                     `;
                 }).join('');
@@ -1669,11 +1657,12 @@
             });
 
             renderHeader(); renderVitals(); renderPermissions(); renderAccessLog(); renderDoctorList(); lucide.createIcons();
-            patientDashboardInitialized = true;
+            // This flag is no longer strictly necessary with the new flow but can be kept for future reference
+            // patientDashboardInitialized = true;
         };
 
         // --- DOCTOR DASHBOARD LOGIC ---
-        let doctorDashboardInitialized = false;
+        const doctorDashboardInitialized = false;
         
         const fetchDoctorData = () => {
             const userRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}`);
@@ -1738,7 +1727,7 @@
             
             document.getElementById('logout-doctor').addEventListener('click', handleLogout);
             document.getElementById('message-patient-btn').addEventListener('click', () => {
-                const activePatient = doctorState.patients.find(p => p.id === doctorState.activePatientId);
+                const activePatient = doctorState.patients.find(p => p.id === doctorState.activePatientUid);
                 if (activePatient) {
                     openMessageModal(activePatient.id);
                 }
@@ -1749,7 +1738,7 @@
             
             const renderPatientCard = (patient) => {
                 const consentColors = { 'All Records': 'bg-green-100 text-green-800', 'Lab Only': 'bg-amber-100 text-amber-800', 'Prescription Only': 'bg-blue-100 text-blue-800', 'None': 'bg-slate-100 text-slate-800' };
-                return `<div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md hover:border-blue-400 transition-all cursor-pointer" data-patient-uid="${patient.id}"><div class="flex items-center gap-4"><img src="${patient.avatar}" alt="${patient.name}" class="w-16 h-16 rounded-full"><div class="flex-1"><p class="font-bold text-lg text-slate-800">${patient.name}</p><p class="text-sm text-slate-500">ID: ${patient.patientId}</p></div></div><div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center"><p class="text-sm text-slate-600">Consent Level:</p><span class="px-2 py-1 text-xs font-semibold rounded-full ${consentColors[patient.consent] || 'bg-slate-100 text-slate-800'}">${patient.consent}</span></div></div>`;
+                return `<div class="card p-5 cursor-pointer" data-patient-uid="${patient.id}"><div class="flex items-center gap-4"><img src="${patient.avatar}" alt="${patient.name}" class="w-16 h-16 rounded-full"><div class="flex-1"><p class="font-bold text-lg text-slate-800">${patient.name}</p><p class="text-sm text-slate-500">ID: ${patient.patientId}</p></div></div><div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center"><p class="text-sm text-slate-600">Consent Level:</p><span class="badge ${consentColors[patient.consent] || 'bg-slate-100 text-slate-800'}">${patient.consent}</span></div></div>`;
             };
             const displayPatients = (patients) => {
                 if (patients.length === 0) {
@@ -1759,14 +1748,11 @@
                 }
             };
 
-            const populatePatientProfile = async (patientUid) => {
-                doctorState.activePatientId = patientUid;
-                const patientRef = doc(db, `artifacts/${appId}/users/${patientUid}`);
-                const patientSnap = await getDoc(patientRef);
-                if (!patientSnap.exists()) return;
-
-                const patient = patientSnap.data().details;
-
+            const populatePatientProfile = (patientUid) => {
+                doctorState.activePatientUid = patientUid;
+                const patient = doctorState.patients.find(p => p.id === patientUid);
+                if (!patient) return;
+                
                 const avatarText = patient.name.split(' ').map(n=>n[0]).join('');
                 document.querySelector('#doctor-dashboard-view #patient-avatar').src = `https://placehold.co/100x100/cce7f1/444444?text=${avatarText}`;
                 document.querySelector('#doctor-dashboard-view #patient-name').textContent = patient.name;
@@ -1819,11 +1805,11 @@
                 }
             };
 
-            const openModal = (fileUrl, title) => {
+            const openFileModal = (fileUrl, title) => {
                 currentFileUrl = fileUrl; modalTitle.textContent = title; modalImage.src = fileUrl; modal.classList.remove('hidden');
                 setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10);
             };
-            const closeModal = () => {
+            const closeFileModal = () => {
                 modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100', 'opacity-100');
                 setTimeout(() => modal.classList.add('hidden'), 300);
             };
@@ -1927,13 +1913,13 @@
             });
             document.getElementById('patient-profile-view').addEventListener('click', (e) => {
                 const previewButton = e.target.closest('.preview-btn');
-                if (previewButton) { openModal(previewButton.dataset.file, previewButton.dataset.title); }
+                if (previewButton) { openFileModal(previewButton.dataset.file, previewButton.dataset.title); }
             });
             backToSearchBtn.addEventListener('click', () => showDoctorSection('patient-search-view'));
             tabButtons.forEach(button => button.addEventListener('click', () => switchTab(button.dataset.tab)));
-            closeModalButton.addEventListener('click', closeModal);
-            modalCloseFooter.addEventListener('click', closeModal);
-            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            closeModalButton.addEventListener('click', closeFileModal);
+            modalCloseFooter.addEventListener('click', closeFileModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeFileModal(); });
             modalDownloadBtn.addEventListener('click', () => window.open(currentFileUrl, '_blank'));
             navTabs.forEach(tab => tab.addEventListener('click', (e) => { 
                 e.preventDefault(); 
@@ -1946,7 +1932,8 @@
             showDoctorSection('patient-search-view');
             displayPatients(doctorState.patients);
             lucide.createIcons();
-            doctorDashboardInitialized = true;
+            // This flag is no longer strictly necessary with the new flow but can be kept for future reference
+            // doctorDashboardInitialized = true;
         };
 
         const messagesModal = document.getElementById('messages-modal');
@@ -2136,105 +2123,113 @@
             }
         });
 
-        // --- Chatbot Functionality ---
-        const chatbotModal = document.getElementById('chatbot-modal');
         const chatbotButton = document.getElementById('chatbot-button');
-        const closeChatbotBtn = document.getElementById('close-chatbot');
+        const chatbotModal = document.getElementById('chatbot-modal');
+        const closeChatbotButton = document.getElementById('close-chatbot');
+        const chatMessagesContainer = document.getElementById('chat-messages');
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
-        const chatMessagesContainer = document.getElementById('chat-messages');
 
-        const addChatMessage = (text, sender) => {
+        const toggleChatbot = (show) => {
+            if (show) {
+                chatbotModal.classList.remove('hidden');
+                chatbotModal.classList.remove('chatbot-modal-leave');
+                chatbotModal.classList.add('chatbot-modal-enter');
+            } else {
+                chatbotModal.classList.add('chatbot-modal-leave');
+                setTimeout(() => {
+                    chatbotModal.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        const addMessage = (message, sender) => {
             const messageDiv = document.createElement('div');
-            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'message-enter');
-            messageDiv.innerHTML = `
-                <div class="${sender === 'user' ? 'bg-blue-500 text-white rounded-tr-none' : 'bg-slate-100 text-slate-800 rounded-tl-none'} p-3 rounded-2xl max-w-[80%] text-sm shadow-sm">
-                    <p>${text}</p>
-                </div>
-            `;
+            messageDiv.classList.add('flex', 'message-enter');
+            if (sender === 'user') {
+                messageDiv.classList.add('justify-end');
+                messageDiv.innerHTML = `<div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-sm shadow-sm">${message}</div>`;
+            } else {
+                messageDiv.classList.add('justify-start');
+                messageDiv.innerHTML = `<div class="bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm shadow-sm">${message}</div>`;
+            }
             chatMessagesContainer.appendChild(messageDiv);
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         };
-
-        const generateAIResponse = async (userMessage) => {
-             const systemPrompt = "You are a helpful and friendly AI assistant for a health application called MediConnect. Provide concise and informative responses. Do not give medical advice. Do not claim to be a human. Respond only to messages related to health, the MediConnect app, or general questions. If asked for medical advice, kindly decline and suggest consulting a real doctor.";
-            
-            addChatMessage('Typing...', 'ai');
-
-            try {
-                const payload = {
-                    contents: [{ parts: [{ text: userMessage }] }],
-                    tools: [{ "google_search": {} }],
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    },
-                };
-                
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                const aiResponse = result?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that. Please try again.";
-
-                chatMessagesContainer.lastElementChild.remove();
-                addChatMessage(aiResponse, 'ai');
-            } catch (error) {
-                console.error("Gemini API error:", error);
-                chatMessagesContainer.lastElementChild.remove();
-                addChatMessage("I'm having trouble connecting to the service. Please try again later.", 'ai');
+        const getBotResponse = (userInput) => {
+            const lowerCaseInput = userInput.toLowerCase();
+            if (lowerCaseInput.includes('hello') || lowerCaseInput.includes('hi')) {
+                return "Hello there! How can I help you today?";
+            } else if (lowerCaseInput.includes('features') || lowerCaseInput.includes('what can it do')) {
+                return "MediConnect offers secure health records, AI-powered insights, and a consent management system. It's all about giving you control over your health data.";
+            } else if (lowerCaseInput.includes('privacy') || lowerCaseInput.includes('secure')) {
+                return "Your privacy is our top priority. All data is stored on a decentralized, encrypted network. You control who sees your data at all times.";
+            } else if (lowerCaseInput.includes('appointments') || lowerCaseInput.includes('book an appointment')) {
+                return "You can book, view, and manage your appointments with affiliated doctors directly from the dashboard. Simply navigate to the Appointments section.";
+            } else if (lowerCaseInput.includes('login') || lowerCaseInput.includes('sign in')) {
+                return "You can log in by clicking 'Sign In' in the top right corner. If you're a new user, you can also sign up there!";
+            } else if (lowerCaseInput.includes('signup') || lowerCaseInput.includes('register')) {
+                return "To sign up, click 'Sign Up' and choose whether you are a Patient or a Doctor. You'll then be guided through a simple registration form.";
+            } else if (lowerCaseInput.includes('blockchain')) {
+                return "MediConnect uses a blockchain to create an immutable and transparent log of all data access. This means every time a doctor or researcher views your records, it's permanently and securely recorded, ensuring no one can tamper with the history of who accessed your data.";
+            } else if (lowerCaseInput.includes('ai') || lowerCaseInput.includes('insights') || lowerCaseInput.includes('analyze')) {
+                return "Our AI analyzes anonymized health data from a large population to identify health trends and risks. It provides personalized recommendations and can help with early detection of potential health issues, all while keeping your personal identity private.";
+            } else if (lowerCaseInput.includes('data ownership') || lowerCaseInput.includes('control my data')) {
+                return "Data ownership is our core principle. You have complete control over your health records. You can grant or revoke access to any healthcare provider or research institution at any time, giving you unprecedented control over your personal health information.";
+            } else if (lowerCaseInput.includes('real world') || lowerCaseInput.includes('why is this needed')) {
+                return "In the real world, fragmented health records can lead to misdiagnoses and repeated tests. By centralizing your data and giving you control, MediConnect aims to improve care coordination, reduce costs, and empower patients to be active participants in their health journey.";
+            } else if (lowerCaseInput.includes('general health') || lowerCaseInput.includes('medical advice')) {
+                return "While I can provide some general health information, remember that I am an AI assistant and not a medical professional. For any personal health concerns, you should always consult with a qualified doctor or healthcare provider.";
+            } else if (lowerCaseInput.includes('help')) {
+                return "I can help with questions about the platform, features, or general inquiries. What specifically do you need help with?";
+            } else {
+                return "I'm sorry, I don't understand that query. I can answer questions about the platform, its features, and how it works. You can try asking about `features`, `privacy`, `login`, or `appointments`.";
             }
         };
 
+        chatbotButton.addEventListener('click', () => {
+            toggleChatbot(true);
+        });
+
+        closeChatbotButton.addEventListener('click', () => {
+            toggleChatbot(false);
+        });
+
         chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const userMessage = chatInput.value.trim();
-            if (userMessage) {
-                addChatMessage(userMessage, 'user');
-                generateAIResponse(userMessage);
+            const userInput = chatInput.value.trim();
+            if (userInput) {
+                addMessage(userInput, 'user');
                 chatInput.value = '';
+
+                setTimeout(() => {
+                    const botResponse = getBotResponse(userInput);
+                    addMessage(botResponse, 'bot');
+                }, 1000);
             }
         });
 
-        chatbotButton.addEventListener('click', () => {
-            chatbotModal.classList.remove('hidden');
-        });
-        
-        closeChatbotBtn.addEventListener('click', () => {
-            chatbotModal.classList.add('hidden');
-        });
-
-
-        // --- INITIALIZE THE APP ---
         document.addEventListener('DOMContentLoaded', () => {
-            showLoading(true);
-            
+            const firebaseConfig = {
+              apiKey: "AIzaSyCuPAopZ-hTlKXsObB8h-F_x18C-QDPcAo",
+              authDomain: "mediconnect-app-48c6b.firebaseapp.com",
+              projectId: "mediconnect-app-48c6b",
+              storageBucket: "mediconnect-app-48c6b.firebasestorage.app",
+              messagingSenderId: "195674005603",
+              appId: "1:195674005603:web:7e7e06eefb3c4a5f3e1856",
+              measurementId: "G-9E81B8HZXT"
+            };
+
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const db = getFirestore(app);
 
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    currentUser = user;
-                    await fetchAndSetUserData(user.uid);
-                } else {
-                    currentUser = null;
-                    showView('landing');
-                    showLoading(false);
-                }
-            });
-
-            // Demo data seeding logic
-            const seedDemoData = async () => {
+            const checkAndSeedData = async () => {
                 const usersRef = collection(db, `artifacts/${appId}/users`);
-                const userCount = (await getDocs(usersRef)).size;
+                const usersSnap = await getDocs(usersRef);
 
-                if (userCount === 0) {
+                if (usersSnap.empty) {
+                    console.log("Seeding demo data...");
                     const demoPatient = {
                         role: 'patient',
                         details: {
@@ -2266,7 +2261,6 @@
                             doctorId: 'DOC002'
                         }
                     };
-
                     try {
                         const patientCred = await createUserWithEmailAndPassword(auth, demoPatient.details.email, "password123");
                         await setDoc(doc(db, `artifacts/${appId}/users/${patientCred.user.uid}`), demoPatient);
@@ -2281,15 +2275,13 @@
                     }
                 }
             };
-            seedDemoData();
+            checkAndSeedData();
 
             initLandingPage();
             lucide.createIcons();
+            showView('landing');
         });
-
-        window.alert = function(message) {
-            showMessage("Notification", message);
-        };
+        
     </script>
 </body>
 </html>
