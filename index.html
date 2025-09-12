@@ -1420,9 +1420,6 @@
                 profileGenderInput: document.getElementById('profile-gender'),
                 profileContactInput: document.getElementById('profile-contact'),
                 profileEmergencyInput: document.getElementById('profile-emergency'),
-                reportTitleInput: document.getElementById('report-title'),
-                reportDescriptionInput: document.getElementById('report-description'),
-                reportDoctorNoteInput: document.getElementById('report-doctor-note'),
                 doctorListContainer: document.getElementById('doctor-list'),
                 myAppointmentsList: document.getElementById('my-appointments-list'),
                 composeMessageBtn: document.getElementById('compose-message-btn'),
@@ -1969,7 +1966,7 @@
             });
             patientList.addEventListener('click', (e) => {
                 const card = e.target.closest('[data-patient-uid]');
-                if (card) { showDoctorSection('patient-profile-view'); populatePatientProfile(card.dataset.patient-uid); }
+                if (card) { showDoctorSection('patient-profile-view'); populatePatientProfile(card.dataset.patientUid); }
             });
             document.getElementById('patient-profile-view').addEventListener('click', (e) => {
                 const previewButton = e.target.closest('.preview-btn');
@@ -2144,8 +2141,8 @@
                 const patientId = userRole === 'patient' ? currentUser.uid : recipientId;
                 const doctorId = userRole === 'doctor' ? currentUser.uid : recipientId;
                 
-                const patientName = patientId === currentUser.uid ? patientState.patientDetails.name : (await getDoc(doc(db, `artifacts/${appId}/users/${patientId}`))).data()?.details?.name || 'Unknown Patient';
-                const doctorName = doctorId === currentUser.uid ? doctorState.doctorDetails.name : (await getDoc(doc(db, `artifacts/${appId}/users/${doctorId}`))).data()?.details?.name || 'Unknown Doctor';
+                const patientName = userRole === 'patient' ? patientState.patientDetails.name : (await getDoc(doc(db, `artifacts/${appId}/users/${patientId}`))).data()?.details?.name || 'Unknown Patient';
+                const doctorName = userRole === 'doctor' ? doctorState.doctorDetails.name : (await getDoc(doc(db, `artifacts/${appId}/users/${doctorId}`))).data()?.details?.name || 'Unknown Doctor';
 
                 const newConvoData = {
                     participants: [patientId, doctorId],
