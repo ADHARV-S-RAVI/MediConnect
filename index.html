@@ -999,7 +999,6 @@
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp, runTransaction, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // --- Firebase Configuration & Initialization ---
-        // Global variables provided by the canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = {
           apiKey: "AIzaSyCuPAopZ-hTlKXsObB8h-F_x18C-QDPcAo",
@@ -1010,7 +1009,6 @@
           appId: "1:195674005603:web:7e7e06eefb3c4a5f3e1856",
           measurementId: "G-9E81B8HZXT"
         };
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -1018,8 +1016,30 @@
 
         let currentUser;
         let userRole;
-        let unsubscribeAuthState;
-        
+        let patientState = {
+            records: [],
+            healthData: {
+                bloodPressure: { systolic: 120, diastolic: 80, history: [{ month: 'Mar', value: 125 }, { month: 'Apr', value: 122 }, { month: 'May', value: 128 }, { month: 'Jun', value: 124 }, { month: 'Jul', value: 121 }, { month: 'Aug', value: 120 }] },
+                sugarLevel: { value: 95, unit: "mg/dL", status: "Normal" },
+                heartRate: { value: 68, unit: 'bpm', status: 'Resting', history: [{ month: 'Mar', value: 72 }, { month: 'Apr', value: 70 }, { month: 'May', value: 68 }, { month: 'Jun', value: 69 }, { month: 'Jul', value: 67 }, { month: 'Aug', value: 68 }] },
+                bloodOxygen: { value: 98, unit: '%', status: 'Normal', history: [{ month: 'Mar', value: 99 }, { month: 'Apr', value: 98 }, { month: 'May', value: 97 }, { month: 'Jun', value: 98 }, { month: 'Jul', value: 99 }, { month: 'Aug', value: 98 }] },
+                ecg: { status: 'Normal Sinus Rhythm', summary: 'No abnormalities detected.' },
+                sleep: { duration: '7h 45m', quality: 'Good', deepSleep: '2h 30m' }
+            },
+            permissions: [],
+            patientDetails: {},
+            accessLog: [],
+            aiReport: null,
+            activeVital: 'bloodPressure',
+            appointments: [],
+        };
+        let doctorState = {
+            activePatientId: null,
+            patients: [],
+            doctorDetails: {},
+        };
+        let chatbotInitialized = false;
+
         const showLoading = (show) => {
             const loadingModal = document.getElementById('loading-modal');
             loadingModal.classList.toggle('hidden', !show);
@@ -1088,30 +1108,6 @@
         };
 
         // --- GLOBAL APPLICATION STATE & VIEW MANAGEMENT ---
-        let currentView = 'landing';
-        let patientState = {
-            records: [],
-            healthData: {
-                bloodPressure: { systolic: 120, diastolic: 80, history: [{ month: 'Mar', value: 125 }, { month: 'Apr', value: 122 }, { month: 'May', value: 128 }, { month: 'Jun', value: 124 }, { month: 'Jul', value: 121 }, { month: 'Aug', value: 120 }] },
-                sugarLevel: { value: 95, unit: "mg/dL", status: "Normal" },
-                heartRate: { value: 68, unit: 'bpm', status: 'Resting', history: [{ month: 'Mar', value: 72 }, { month: 'Apr', value: 70 }, { month: 'May', value: 68 }, { month: 'Jun', value: 69 }, { month: 'Jul', value: 67 }, { month: 'Aug', value: 68 }] },
-                bloodOxygen: { value: 98, unit: '%', status: 'Normal', history: [{ month: 'Mar', value: 99 }, { month: 'Apr', value: 98 }, { month: 'May', value: 97 }, { month: 'Jun', value: 98 }, { month: 'Jul', value: 99 }, { month: 'Aug', value: 98 }] },
-                ecg: { status: 'Normal Sinus Rhythm', summary: 'No abnormalities detected.' },
-                sleep: { duration: '7h 45m', quality: 'Good', deepSleep: '2h 30m' }
-            },
-            permissions: [],
-            patientDetails: {},
-            accessLog: [],
-            aiReport: null,
-            activeVital: 'bloodPressure',
-            appointments: [],
-        };
-        let doctorState = {
-            activePatientId: null,
-            patients: [],
-            doctorDetails: {},
-        };
-
         const views = {
             landing: document.getElementById('landing-page-view'),
             patientDashboard: document.getElementById('patient-dashboard-view'),
@@ -1122,43 +1118,15 @@
             Object.values(views).forEach(view => view.classList.add('hidden'));
             if (views[viewName]) {
                 views[viewName].classList.remove('hidden');
-                currentView = viewName;
                 if (viewName === 'patientDashboard') {
                     initializePatientDashboard();
-                }
-                if (viewName === 'doctorDashboard') {
+                } else if (viewName === 'doctorDashboard') {
                     initializeDoctorDashboard();
                 }
             }
             lucide.createIcons();
         };
 
-        const confirmationModal = document.getElementById('confirmation-modal');
-        const confirmButton = document.getElementById('confirm-action');
-        const cancelButton = document.getElementById('cancel-confirmation');
-
-        const showConfirmation = (title, message, onConfirm, actionText = 'Confirm') => {
-            document.getElementById('confirmation-title').textContent = title;
-            document.getElementById('confirmation-message').textContent = message;
-            confirmButton.textContent = actionText;
-            confirmationModal.classList.remove('hidden');
-            
-            const handleConfirm = () => {
-                onConfirm();
-                confirmationModal.classList.add('hidden');
-                confirmButton.removeEventListener('click', handleConfirm);
-                cancelButton.removeEventListener('click', handleCancel);
-            };
-            const handleCancel = () => {
-                confirmationModal.classList.add('hidden');
-                confirmButton.removeEventListener('click', handleConfirm);
-                cancelButton.removeEventListener('click', handleCancel);
-            };
-
-            confirmButton.addEventListener('click', handleConfirm);
-            cancelButton.addEventListener('click', handleCancel);
-        };
-        
         const initLandingPage = () => {
             const menuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -1582,7 +1550,7 @@
                 const doctorName = e.target.dataset.doctorName;
                 
                 try {
-                    const appointmentsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/appointments`);
+                    const appointmentsRef = collection(db, `artifacts/${appId}/public/data/appointments`);
                     await addDoc(appointmentsRef, {
                         patientId: currentUser.uid,
                         patientName: patientState.patientDetails.name,
@@ -2168,6 +2136,81 @@
             }
         });
 
+        // --- Chatbot Functionality ---
+        const chatbotModal = document.getElementById('chatbot-modal');
+        const chatbotButton = document.getElementById('chatbot-button');
+        const closeChatbotBtn = document.getElementById('close-chatbot');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessagesContainer = document.getElementById('chat-messages');
+
+        const addChatMessage = (text, sender) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'message-enter');
+            messageDiv.innerHTML = `
+                <div class="${sender === 'user' ? 'bg-blue-500 text-white rounded-tr-none' : 'bg-slate-100 text-slate-800 rounded-tl-none'} p-3 rounded-2xl max-w-[80%] text-sm shadow-sm">
+                    <p>${text}</p>
+                </div>
+            `;
+            chatMessagesContainer.appendChild(messageDiv);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        };
+
+        const generateAIResponse = async (userMessage) => {
+             const systemPrompt = "You are a helpful and friendly AI assistant for a health application called MediConnect. Provide concise and informative responses. Do not give medical advice. Do not claim to be a human. Respond only to messages related to health, the MediConnect app, or general questions. If asked for medical advice, kindly decline and suggest consulting a real doctor.";
+            
+            addChatMessage('Typing...', 'ai');
+
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: userMessage }] }],
+                    tools: [{ "google_search": {} }],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                };
+                
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const aiResponse = result?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that. Please try again.";
+
+                chatMessagesContainer.lastElementChild.remove();
+                addChatMessage(aiResponse, 'ai');
+            } catch (error) {
+                console.error("Gemini API error:", error);
+                chatMessagesContainer.lastElementChild.remove();
+                addChatMessage("I'm having trouble connecting to the service. Please try again later.", 'ai');
+            }
+        };
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                addChatMessage(userMessage, 'user');
+                generateAIResponse(userMessage);
+                chatInput.value = '';
+            }
+        });
+
+        chatbotButton.addEventListener('click', () => {
+            chatbotModal.classList.remove('hidden');
+        });
+        
+        closeChatbotBtn.addEventListener('click', () => {
+            chatbotModal.classList.add('hidden');
+        });
+
+
+        // --- INITIALIZE THE APP ---
         document.addEventListener('DOMContentLoaded', () => {
             showLoading(true);
             
