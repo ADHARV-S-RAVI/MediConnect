@@ -402,7 +402,7 @@
                         <form id="doctor-form">
                             <div>
                                 <label for="doctor-signup-email" class="text-sm font-medium text-slate-700">Email</label>
-                                <input type="email" id="doctor-signup-email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" required>
+                                <input type="email" id="doctor-signup-email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
                             </div>
                             <div>
                                 <label for="doctor-signup-password" class="text-sm font-medium text-slate-700">Password</label>
@@ -1043,16 +1043,10 @@
                     showLoading(false);
                 } else {
                     currentUser = null;
-                    if (initialAuthToken) {
-                        try {
-                            await signInWithCustomToken(auth, initialAuthToken);
-                        } catch (e) {
-                            console.error("Custom token sign-in failed:", e);
-                            await signInAnonymously(auth);
-                        }
-                    } else {
-                        await signInAnonymously(auth);
-                    }
+                    // Removed the problematic custom token and anonymous sign-in calls.
+                    // The app will now wait for the user to sign in through the login form.
+                    showLoading(false);
+                    showView('landing');
                 }
             });
             appInitialized = true;
@@ -1074,9 +1068,12 @@
                     }
                 } else {
                     console.error("User document not found in Firestore.");
+                    // Force logout if user data is missing
+                    await signOut(auth);
                 }
             } catch (e) {
                 console.error("Error fetching user data:", e);
+                await signOut(auth);
             }
         };
 
@@ -1695,7 +1692,7 @@
                 renderAiReport();
             });
             document.getElementById('copy-hash-btn').addEventListener('click', () => navigator.clipboard.writeText(fakeBlockchainHash()).then(() => showMessage("Copied", "Blockchain hash copied to clipboard!")).catch(err => console.error('Failed to copy hash: ', err)));
-            document.getElementById('explore-ai-btn').addEventListener('click', () => document.getElementById('ai')?.scrollIntoView({ behavior: 'smooth' }));
+            document.getElementById('explore-ai-btn').addEventListener('click', () => document.getElementById('ai')?.scroll-into-view({ behavior: 'smooth' }));
             
             document.getElementById('compose-message-btn').addEventListener('click', () => {
                 openMessageModal();
@@ -1791,7 +1788,7 @@
 
                 const patient = patientSnap.data().details;
 
-                document.querySelector('#doctor-dashboard-view #patient-avatar').src = `https://placehold.co/100x100/cce7f1/444444?text=${patient.name.split(' ')[0][0]}${patient.name.split(' ')[1][0]}`;
+                document.querySelector('#doctor-dashboard-view #patient-avatar').src = `https://placehold.co/100x100/cce7f1/444444?text=${patient.name.split(' ').map(n=>n[0]).join('')}`;
                 document.querySelector('#doctor-dashboard-view #patient-name').textContent = patient.name;
                 const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
                 document.querySelector('#doctor-dashboard-view #patient-meta').textContent = `ID: ${patient.patientId} • ${patient.gender}, ${age} years old`;
@@ -1799,7 +1796,7 @@
                 document.querySelector('#doctor-dashboard-view #ai-summary').textContent = patient.ai?.summary || 'No AI summary available.';
                 document.querySelector('#doctor-dashboard-view #red-flags').textContent = patient.ai?.flags || 'No red flags detected.';
                 document.querySelector('#doctor-dashboard-view #personal-info').innerHTML = `<p class="flex justify-between"><span>DOB:</span> <span class="font-medium">${patient.dob}</span></p><p class="flex justify-between"><span>Blood Group:</span> <span class="font-medium">${patient.bloodGroup}</span></p>`;
-                document.querySelector('#doctor-dashboard-view #medical-history').innerHTML = `<p><strong>Allergies:</strong> ${patient.allergies}</p><p><strong>Chronic Conditions:</strong> N/A</p><p><strong>Family History:</strong> N/A</p>`;
+                document.querySelector('#doctor-dashboard-view #medical-history').innerHTML = `<p><strong>Allergies:</strong> ${patient.allergies}</p><p><strong>Chronic Conditions:</strong> N/A</p><p><strong>Past History:</strong> ${patient.history}</p>`;
                 document.querySelector('#doctor-dashboard-view #lifestyle-info').innerHTML = `<p class="flex justify-between"><span>Medications:</span> <span class="font-medium">${patient.medications}</span></p><p class="flex justify-between"><span>Past History:</span> <span class="font-medium">${patient.history}</span></p>`;
                 
                 const timelineContainer = document.querySelector('#doctor-dashboard-view #records-timeline');
@@ -2100,11 +2097,22 @@
 
         const createOrFindConversation = async (recipientId) => {
             const q = query(collection(db, `artifacts/${appId}/public/data/conversations`), 
-                where('participants', 'array-contains-any', [currentUser.uid, recipientId]));
+                where('participants', 'array-contains', currentUser.uid));
             const existingConversations = await getDocs(q);
 
             let conversationId;
-            if (existingConversations.empty) {
+            let existingDoc = null;
+            
+            existingConversations.forEach(doc => {
+                const data = doc.data();
+                if (data.participants.includes(recipientId)) {
+                    existingDoc = doc;
+                }
+            });
+
+            if (existingDoc) {
+                conversationId = existingDoc.id;
+            } else {
                 const newConvoRef = doc(collection(db, `artifacts/${appId}/public/data/conversations`));
                 const patientId = userRole === 'patient' ? currentUser.uid : recipientId;
                 const doctorId = userRole === 'doctor' ? currentUser.uid : recipientId;
@@ -2123,14 +2131,6 @@
                 
                 await setDoc(newConvoRef, newConvoData);
                 conversationId = newConvoRef.id;
-            } else {
-                conversationId = existingConversations.docs.find(doc => {
-                    const data = doc.data();
-                    return data.participants.includes(currentUser.uid) && data.participants.includes(recipientId);
-                })?.id;
-                if (!conversationId) {
-                    conversationId = existingConversations.docs[0].id;
-                }
             }
 
             showConversation(conversationId);
@@ -2160,7 +2160,6 @@
             setupFirebase();
             initLandingPage();
             lucide.createIcons();
-            showView('landing');
         });
 
         window.toggleModal = (modal, content, show) => {
