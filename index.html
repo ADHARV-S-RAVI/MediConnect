@@ -256,18 +256,19 @@
             </div>
         </footer>
 
+        <!-- Auth Modal -->
         <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
-            <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
+            <div id="auth-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
                 <div class="flex items-center justify-between p-4 border-b">
                     <h3 id="modal-title" class="text-lg font-semibold">Welcome to MediConnect</h3>
-                    <button id="close-modal-button" class="text-slate-400 hover:text-slate-600">
+                    <button id="close-auth-modal-button" class="text-slate-400 hover:text-slate-600">
                         <i data-lucide="x" class="h-6 w-6"></i>
                     </button>
                 </div>
                 <div class="flex-grow overflow-y-auto modal-scrollbar">
                     <div id="initial-view" class="p-6 space-y-4">
                         <button id="google-sign-in-btn" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
-                            <svg class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C42.022,35.244,44,30.036,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
+                            <svg class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19-5.238C42.022,35.244,44,30.036,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
                             <span>Sign in with Google</span>
                         </button>
                         <div class="relative flex py-2 items-center">
@@ -709,6 +710,7 @@
                     <a href="#" class="flex items-center gap-3">
                         <img class="h-12 w-12 object-contain" src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo">
                         <span class="text-xl font-bold text-slate-900">MediConnect</span>
+                        
                     </a>
                 </div>
                 <nav class="flex-1 px-4 py-6 space-y-2">
@@ -879,7 +881,7 @@
                                         </div>
                                     </div>
                                     <h2 class="text-2xl font-bold text-slate-800 mb-6">Add New Consultation Note</h2>
-                                    <form class="space-y-6">
+                                    <form id="add-consultation-form" class="space-y-6">
                                         <div>
                                             <label for="symptoms" class="block text-sm font-medium text-slate-700 mb-1">Symptoms</label>
                                             <textarea id="symptoms" rows="3" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
@@ -928,9 +930,11 @@
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
             </main>
         </div>
+
+        <!-- Doctor File Preview Modal -->
         <div id="file-preview-modal-doctor" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
             <div id="modal-content-doctor" class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
                 <div class="flex items-center justify-between p-4 border-b">
@@ -951,63 +955,75 @@
             </div>
         </div>
     </div>
-    
-    <div id="messages-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
-            <div class="flex items-center justify-between p-4 border-b">
+
+    <!-- Chatbot Button and Modal -->
+    <button id="chatbot-button" class="fixed bottom-6 right-6 z-50 transition-transform duration-300 hover:scale-110 cursor-pointer w-16 h-16 rounded-full bg-blue-600 shadow-xl flex items-center justify-center text-white">
+        <i data-lucide="bot" class="w-8 h-8"></i>
+    </button>
+
+    <div id="chatbot-modal" class="fixed inset-0 bg-black bg-opacity-40 z-[60] flex items-end md:items-center md:justify-end p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm h-full max-h-[70vh] flex flex-col chatbot-modal-enter">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200">
                 <div class="flex items-center gap-3">
-                    <button id="back-to-conversations" class="hidden text-slate-400 hover:text-slate-600"><i data-lucide="arrow-left" class="h-6 w-6"></i></button>
-                    <h3 id="messages-modal-title" class="text-lg font-semibold">Messages</h3>
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i data-lucide="bot" class="w-5 h-5"></i></div>
+                    <div>
+                        <h3 class="text-md font-semibold text-slate-800">MediBot</h3>
+                        <p class="text-xs text-green-500">Online</p>
+                    </div>
                 </div>
-                <button id="close-messages-modal" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+                <button id="close-chatbot" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
             </div>
-            <div id="conversation-view" class="flex-grow flex flex-col p-6 space-y-4 hidden">
-                <div id="message-container" class="flex-grow overflow-y-auto modal-scrollbar space-y-4">
+            <div id="chat-messages" class="flex-grow p-4 space-y-4 overflow-y-auto modal-scrollbar">
+                <div class="flex justify-start message-enter">
+                    <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm shadow-sm">
+                        <p>Hello! I'm MediBot, your AI health assistant. I can answer questions about MediConnect or provide general health information. How can I help you today?</p>
+                    </div>
                 </div>
-                <form id="message-form" class="flex gap-2">
-                    <input type="text" id="message-input" placeholder="Type a message..." class="flex-grow px-4 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center gap-2">
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                        <span class="hidden sm:block">Send</span>
+            </div>
+            <form id="chat-form" class="p-4 border-t border-slate-200 bg-white rounded-b-xl">
+                <div class="relative flex items-center">
+                    <input type="text" id="chat-input" placeholder="Type your message..." class="w-full pl-4 pr-12 py-3 border border-slate-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
+                        <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
-                </form>
-            </div>
-            <div id="select-conversation-view" class="flex-grow flex flex-col p-6 space-y-4">
-                <div id="conversations-list" class="flex-grow overflow-y-auto modal-scrollbar space-y-4">
-                    <p class="text-sm text-slate-500 text-center">No active conversations. Start a new one.</p>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp, runTransaction, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // --- GLOBAL APP SETUP & CONFIG ---
+        // --- Firebase Configuration & Initialization ---
+        // Global variables provided by the canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyCuPAopZ-hTlKXsObB8h-F_x18C-QDPcAo",
-            authDomain: "mediconnect-app-48c6b.firebaseapp.com",
-            projectId: "mediconnect-app-48c6b",
-            storageBucket: "mediconnect-app-48c6b.firebasestorage.app",
-            messagingSenderId: "195674005603",
-            appId: "1:195674005603:web:7e7e06eefb3c4a5f3e1856",
-            measurementId: "G-9E81B8HZXT"
+        const firebaseConfig = {
+          apiKey: "AIzaSyCuPAopZ-hTlKXsObB8h-F_x18C-QDPcAo",
+          authDomain: "mediconnect-app-48c6b.firebaseapp.com",
+          projectId: "mediconnect-app-48c6b",
+          storageBucket: "mediconnect-app-48c6b.firebasestorage.app",
+          messagingSenderId: "195674005603",
+          appId: "1:195674005603:web:7e7e06eefb3c4a5f3e1856",
+          measurementId: "G-9E81B8HZXT"
         };
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        let db, auth;
-        let currentUser;
-        let userRole = null;
-        let tempGoogleUser = null;
-        let appInitialized = false;
-        let patientDashboardInitialized = false;
-        let doctorDashboardInitialized = false;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        // --- UI HELPER FUNCTIONS ---
-        const showLoading = (show) => document.getElementById('loading-modal').classList.toggle('hidden', !show);
+        let currentUser;
+        let userRole;
+        let unsubscribeAuthState;
+        
+        const showLoading = (show) => {
+            const loadingModal = document.getElementById('loading-modal');
+            loadingModal.classList.toggle('hidden', !show);
+        };
         
         const showMessage = (title, message) => {
             const modal = document.getElementById('confirmation-modal');
@@ -1027,105 +1043,52 @@
                 modal.classList.add('hidden');
                 cancelBtn.classList.remove('hidden');
                 confirmBtn.removeEventListener('click', handleClose);
-                modal.removeEventListener('click', handleModalClick);
             };
-
-            const handleModalClick = (e) => {
-                if(e.target === modal) handleClose();
-            }
-            
             confirmBtn.addEventListener('click', handleClose);
-            modal.addEventListener('click', handleModalClick);
-        };
-        
-        const showConfirmation = (title, message, onConfirm, actionText = 'Confirm') => {
-            const modal = document.getElementById('confirmation-modal');
-            document.getElementById('confirmation-title').textContent = title;
-            document.getElementById('confirmation-message').textContent = message;
-            const confirmBtn = document.getElementById('confirm-action');
-            const cancelBtn = document.getElementById('cancel-confirmation');
-            
-            confirmBtn.textContent = actionText;
-            confirmBtn.className = actionText === 'Log Out' ? 'px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700' : 'px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700';
-
-            modal.classList.remove('hidden');
-            
-            const handleConfirm = () => {
-                onConfirm();
-                closeConfirmation();
-            };
-
-            const handleCancel = () => {
-                closeConfirmation();
-            };
-            
-            const closeConfirmation = () => {
-                modal.classList.add('hidden');
-                confirmBtn.removeEventListener('click', handleConfirm);
-                cancelBtn.removeEventListener('click', handleCancel);
-            };
-            
-            confirmBtn.addEventListener('click', handleConfirm);
-            cancelBtn.addEventListener('click', handleCancel);
         };
 
-        window.alert = function(message) {
-            showMessage("Notification", message);
+        const handleLogout = async () => {
+            showConfirmation(
+                'Confirm Logout',
+                'Are you sure you want to log out?',
+                async () => {
+                    await signOut(auth);
+                    userRole = null;
+                    showView('landing');
+                },
+                'Log Out'
+            );
         };
 
-        // --- FIREBASE & AUTHENTICATION ---
-        const setupFirebase = () => {
-            if (appInitialized) return;
+        const fetchAndSetUserData = async (uid) => {
             try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                onAuthStateChanged(auth, async (user) => {
-                    showLoading(true);
-                    if (user) {
-                        currentUser = user;
-                        const userRef = doc(db, `artifacts/${appId}/users/${user.uid}`);
-                        const userSnap = await getDoc(userRef);
-                        if (userSnap.exists()) {
-                            loadUserDashboard(userSnap.data());
-                        } else {
-                            // This is a new user (likely via Google Sign-In) who needs to complete registration.
-                            tempGoogleUser = user;
-                            showLoading(false);
-                            openAuthModal();
-                            showAuthView('roleSelect');
-                        }
-                    } else {
-                        currentUser = null;
-                        userRole = null;
-                        showView('landing');
-                        showLoading(false);
+                const userRef = doc(db, `artifacts/${appId}/users/${uid}`);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    userRole = userData.role;
+                    if (userRole === 'patient') {
+                        patientState.patientDetails = userData.details;
+                        showView('patientDashboard');
+                    } else if (userRole === 'doctor') {
+                        doctorState.doctorDetails = userData.details;
+                        showView('doctorDashboard');
                     }
-                });
-
-                appInitialized = true;
-            } catch (error) {
-                console.error("Firebase initialization failed:", error);
-                showLoading(false);
-            }
-        };
-
-        const loadUserDashboard = (userData) => {
-            userRole = userData.role;
-            if (userRole === 'patient') {
-                patientState.patientDetails = userData.details;
-                showView('patientDashboard');
-            } else if (userRole === 'doctor') {
-                doctorState.doctorDetails = userData.details;
-                showView('doctorDashboard');
-            } else {
-                 showView('landing');
+                } else {
+                    console.log("New user signing up:", uid);
+                    showView('landing');
+                    showAuthView('roleSelect');
+                }
+            } catch (e) {
+                console.error("Error fetching user data:", e);
+                await signOut(auth);
+                showView('landing');
             }
             showLoading(false);
         };
 
         // --- GLOBAL APPLICATION STATE & VIEW MANAGEMENT ---
+        let currentView = 'landing';
         let patientState = {
             records: [],
             healthData: {
@@ -1159,49 +1122,97 @@
             Object.values(views).forEach(view => view.classList.add('hidden'));
             if (views[viewName]) {
                 views[viewName].classList.remove('hidden');
-                if (viewName === 'patientDashboard' && !patientDashboardInitialized) {
+                currentView = viewName;
+                if (viewName === 'patientDashboard') {
                     initializePatientDashboard();
                 }
-                if (viewName === 'doctorDashboard' && !doctorDashboardInitialized) {
+                if (viewName === 'doctorDashboard') {
                     initializeDoctorDashboard();
                 }
             }
             lucide.createIcons();
         };
 
-        const handleLogout = () => {
-            showConfirmation(
-                'Confirm Logout',
-                'Are you sure you want to log out?',
-                async () => {
-                    await signOut(auth);
-                    // onAuthStateChanged will handle the view change
-                },
-                'Log Out'
-            );
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const confirmButton = document.getElementById('confirm-action');
+        const cancelButton = document.getElementById('cancel-confirmation');
+
+        const showConfirmation = (title, message, onConfirm, actionText = 'Confirm') => {
+            document.getElementById('confirmation-title').textContent = title;
+            document.getElementById('confirmation-message').textContent = message;
+            confirmButton.textContent = actionText;
+            confirmationModal.classList.remove('hidden');
+            
+            const handleConfirm = () => {
+                onConfirm();
+                confirmationModal.classList.add('hidden');
+                confirmButton.removeEventListener('click', handleConfirm);
+                cancelButton.removeEventListener('click', handleCancel);
+            };
+            const handleCancel = () => {
+                confirmationModal.classList.add('hidden');
+                confirmButton.removeEventListener('click', handleConfirm);
+                cancelButton.removeEventListener('click', handleCancel);
+            };
+
+            confirmButton.addEventListener('click', handleConfirm);
+            cancelButton.addEventListener('click', handleCancel);
         };
         
-        let authModal, modalContent, closeModalButton, authTriggers, authViews, modalTitle;
-
         const initLandingPage = () => {
-            document.getElementById('mobile-menu-button').addEventListener('click', () => document.getElementById('mobile-menu').classList.toggle('hidden'));
-            
-            authModal = document.getElementById('auth-modal');
-            modalContent = document.getElementById('modal-content');
-            closeModalButton = document.getElementById('close-modal-button');
-            authTriggers = document.querySelectorAll('.auth-trigger, #open-auth-modal-header');
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
-            authViews = {
+            const authModal = document.getElementById('auth-modal');
+            const modalContent = document.getElementById('auth-modal-content');
+            const closeAuthModalButton = document.getElementById('close-auth-modal-button');
+            const authTriggers = document.querySelectorAll('.auth-trigger, #open-auth-modal-header');
+
+            const authViews = {
                 initial: document.getElementById('initial-view'),
                 roleSelect: document.getElementById('role-select-view'),
                 patientForm: document.getElementById('patient-form-view'),
                 doctorForm: document.getElementById('doctor-form-view'),
                 success: document.getElementById('success-view'),
             };
-            modalTitle = document.getElementById('modal-title');
+            const modalTitle = document.getElementById('modal-title');
+
+            const showAuthView = (viewName) => {
+                Object.values(authViews).forEach(view => view.classList.add('hidden'));
+                if (authViews[viewName]) {
+                    authViews[viewName].classList.remove('hidden');
+                }
+                const titles = {
+                    initial: 'Welcome to MediConnect',
+                    roleSelect: 'Create Your Account',
+                    patientForm: 'Patient Registration',
+                    doctorForm: 'Doctor Registration',
+                    success: 'Success!'
+                };
+                modalTitle.textContent = titles[viewName] || 'Welcome';
+                lucide.createIcons();
+            };
+
+            const openAuthModal = () => {
+                authModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            };
+
+            const closeAuthModal = () => {
+                modalContent.classList.add('scale-95', 'opacity-0');
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    authModal.classList.add('hidden');
+                    showAuthView('initial');
+                }, 300);
+            };
 
             authTriggers.forEach(trigger => trigger.addEventListener('click', openAuthModal));
-            closeModalButton.addEventListener('click', closeAuthModal);
+            closeAuthModalButton.addEventListener('click', closeAuthModal);
             authModal.addEventListener('click', (e) => {
                 if (e.target === authModal) closeAuthModal();
             });
@@ -1210,36 +1221,32 @@
             document.querySelectorAll('.back-to-login').forEach(btn => btn.addEventListener('click', () => showAuthView('initial')));
             document.querySelectorAll('.back-to-roles').forEach(btn => btn.addEventListener('click', () => showAuthView('roleSelect')));
 
+            const googleSignInBtn = document.getElementById('google-sign-in-btn');
+            googleSignInBtn.addEventListener('click', async () => {
+                showLoading(true);
+                const provider = new GoogleAuthProvider();
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    const userRef = doc(db, `artifacts/${appId}/users/${user.uid}`);
+                    const userSnap = await getDoc(userRef);
+                    if (!userSnap.exists()) {
+                        showAuthView('roleSelect');
+                    }
+                } catch (error) {
+                    console.error("Google Sign-In failed:", error);
+                    showMessage("Sign-in Failed", `Google Sign-in failed: ${error.message}`);
+                }
+                showLoading(false);
+            });
+
             document.getElementById('select-patient-role').addEventListener('click', () => {
                 userRole = 'patient';
                 showAuthView('patientForm');
-                if (tempGoogleUser) {
-                    document.getElementById('patient-signup-email').value = tempGoogleUser.email;
-                    document.getElementById('patient-name-input').value = tempGoogleUser.displayName;
-                    document.getElementById('patient-signup-password').style.display = 'none';
-                    document.querySelector('label[for="patient-signup-password"]').style.display = 'none';
-                }
             });
             document.getElementById('select-doctor-role').addEventListener('click', () => {
                 userRole = 'doctor';
                 showAuthView('doctorForm');
-                if (tempGoogleUser) {
-                    document.getElementById('doctor-signup-email').value = tempGoogleUser.email;
-                    document.getElementById('doctor-name-input').value = tempGoogleUser.displayName;
-                    document.getElementById('doctor-signup-password').style.display = 'none';
-                    document.querySelector('label[for="doctor-signup-password"]').style.display = 'none';
-                }
-            });
-            
-            document.getElementById('google-sign-in-btn').addEventListener('click', async () => {
-                const provider = new GoogleAuthProvider();
-                try {
-                    await signInWithPopup(auth, provider);
-                    // onAuthStateChanged will handle the rest
-                } catch (error) {
-                    console.error("Google Sign-In Error", error);
-                    showMessage("Error", `Could not sign in with Google: ${error.message}`);
-                }
             });
 
             document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -1249,25 +1256,26 @@
                 showLoading(true);
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
-                    closeAuthModal();
                 } catch (e) {
-                    showMessage("Login Failed", `Login failed: ${e.message}`);
-                } finally {
                     showLoading(false);
+                    console.error("Login failed:", e);
+                    showMessage("Login Failed", `Login failed: ${e.message}`);
                 }
             });
 
             document.getElementById('patient-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const email = document.getElementById('patient-signup-email').value;
+                const password = document.getElementById('patient-signup-password').value;
                 showLoading(true);
-                const uid = tempGoogleUser ? tempGoogleUser.uid : (await createUserWithEmailAndPassword(auth, document.getElementById('patient-signup-email').value, document.getElementById('patient-signup-password').value)).user.uid;
-                
                 try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const uid = userCredential.user.uid;
                     const userData = {
                         role: 'patient',
                         details: {
                             name: document.getElementById('patient-name-input').value,
-                            email: document.getElementById('patient-signup-email').value,
+                            email,
                             dob: document.getElementById('patient-dob-input').value,
                             gender: document.getElementById('patient-gender-select').value,
                             contact: document.getElementById('patient-contact-input').value,
@@ -1276,82 +1284,969 @@
                             allergies: document.getElementById('patient-allergies-input').value,
                             medications: document.getElementById('patient-medications-textarea').value,
                             history: document.getElementById('patient-history-textarea').value,
-                            consent_doctors: document.getElementById('consent-doctors').checked,
-                            consent_research: document.getElementById('consent-research').checked,
-                            patientId: `PID${Math.floor(100000 + Math.random() * 900000)}`
+                            patientId: `PID${Math.floor(Math.random() * 100000)}`
                         }
                     };
                     await setDoc(doc(db, `artifacts/${appId}/users/${uid}`), userData);
-                    tempGoogleUser = null;
+                    showLoading(false);
                     showAuthView('success');
                 } catch (e) {
-                    showMessage("Signup Failed", `Signup failed: ${e.message}`);
-                } finally {
                     showLoading(false);
+                    console.error("Patient signup failed:", e);
+                    showMessage("Signup Failed", `Signup failed: ${e.message}`);
                 }
             });
 
             document.getElementById('doctor-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const email = document.getElementById('doctor-signup-email').value;
+                const password = document.getElementById('doctor-signup-password').value;
                 showLoading(true);
-                const uid = tempGoogleUser ? tempGoogleUser.uid : (await createUserWithEmailAndPassword(auth, document.getElementById('doctor-signup-email').value, document.getElementById('doctor-signup-password').value)).user.uid;
-
                 try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const uid = userCredential.user.uid;
                     const userData = {
                         role: 'doctor',
                         details: {
                             name: document.getElementById('doctor-name-input').value,
-                            email: document.getElementById('doctor-signup-email').value,
+                            email,
                             specialization: document.getElementById('doctor-specialization-input').value,
                             experience: document.getElementById('doctor-experience-input').value,
                             license: document.getElementById('doctor-license-input').value,
                             hospital: document.getElementById('doctor-hospital-input').value,
                             contactEmail: document.getElementById('doctor-contact-email-input').value,
-                            doctorId: `DOC${Math.floor(100000 + Math.random() * 900000)}`
+                            doctorId: `DOC${Math.floor(Math.random() * 100000)}`
                         }
                     };
                     await setDoc(doc(db, `artifacts/${appId}/users/${uid}`), userData);
-                    tempGoogleUser = null;
+                    showLoading(false);
                     showAuthView('success');
                 } catch (e) {
-                    showMessage("Signup Failed", `Signup failed: ${e.message}`);
-                } finally {
                     showLoading(false);
+                    console.error("Doctor signup failed:", e);
+                    showMessage("Signup Failed", `Signup failed: ${e.message}`);
                 }
             });
             
-            document.getElementById('go-to-dashboard-btn').addEventListener('click', closeAuthModal);
+            document.getElementById('go-to-dashboard-btn').addEventListener('click', () => {
+                closeAuthModal();
+            });
+
             showAuthView('initial');
         };
 
-        const openAuthModal = () => {
-            authModal.classList.remove('hidden');
-            setTimeout(() => modalContent.classList.remove('scale-95', 'opacity-0'), 10);
-        };
-        const closeAuthModal = () => {
-            modalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => { authModal.classList.add('hidden'); showAuthView('initial'); }, 300);
-        };
-        const showAuthView = (viewName) => {
-            Object.values(authViews).forEach(view => view.classList.add('hidden'));
-            authViews[viewName].classList.remove('hidden');
-            modalTitle.textContent = { initial: 'Welcome', roleSelect: 'Create Account', patientForm: 'Patient Registration', doctorForm: 'Doctor Registration', success: 'Success!' }[viewName];
+        // --- PATIENT DASHBOARD LOGIC ---
+        let patientDashboardInitialized = false;
+        
+        const initPatientState = async () => {
+            const patientRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}`);
+            const patientSnap = await getDoc(patientRef);
+            if (patientSnap.exists()) {
+                patientState.patientDetails = patientSnap.data().details;
+            }
+
+            onSnapshot(collection(db, `artifacts/${appId}/users/${currentUser.uid}/records`), (snapshot) => {
+                patientState.records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderHealthSnapshot();
+            });
+
+            onSnapshot(collection(db, `artifacts/${appId}/users/${currentUser.uid}/appointments`), (snapshot) => {
+                patientState.appointments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderMyAppointments();
+            });
+            
+            onSnapshot(collection(db, `artifacts/${appId}/users/${currentUser.uid}/logs`), (snapshot) => {
+                patientState.accessLog = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAccessLog();
+            });
+            
+            onSnapshot(collection(db, `artifacts/${appId}/users/${currentUser.uid}/permissions`), (snapshot) => {
+                patientState.permissions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderPermissions();
+            });
         };
 
-        // --- PATIENT DASHBOARD LOGIC ---
-        // ... (The rest of the JS logic from the original file, unchanged for brevity, but would be included here)
-        // This includes initializePatientDashboard, initializeDoctorDashboard, and all their helper functions.
-        // It's crucial that the event listeners inside these functions are now only set up ONCE.
+        const initializePatientDashboard = async () => {
+            if (patientDashboardInitialized) return;
+            
+            await initPatientState();
+            
+            const DOMElements = {
+                patientMainSections: document.querySelectorAll('.patient-main-section'),
+                patientNavLinks: document.querySelectorAll('.patient-nav-link'),
+                profileModal: document.getElementById('profile-modal'),
+                profileModalContent: document.getElementById('profile-modal-content'),
+                uploadModal: document.getElementById('upload-modal'),
+                uploadModalContent: document.getElementById('upload-modal-content'),
+                headerPatientName: document.getElementById('header-patient-name'),
+                headerPatientId: document.getElementById('header-patient-id'),
+                healthSnapshotList: document.getElementById('health-snapshot-list'),
+                blockchainAnchor: document.getElementById('blockchain-anchor'),
+                vitalsFilterContainer: document.getElementById('vitals-filter-container'),
+                vitalsDisplayContainer: document.getElementById('vitals-display-container'),
+                aiReportContent: document.getElementById('ai-report-content'),
+                permissionsContainer: document.getElementById('permissions-container'),
+                accessLogContainer: document.getElementById('access-log-container'),
+                profileButton: document.getElementById('profile-button'),
+                closeProfileModalBtn: document.getElementById('close-profile-modal'),
+                cancelProfileSaveBtn: document.getElementById('cancel-profile-save'),
+                saveProfileBtn: document.getElementById('save-profile'),
+                openUploadModalBtn: document.getElementById('open-upload-modal-btn'),
+                closeUploadModalBtn: document.getElementById('close-upload-modal'),
+                cancelUploadBtn: document.getElementById('cancel-upload'),
+                uploadReportBtn: document.getElementById('upload-report-btn'),
+                exploreAiBtn: document.getElementById('explore-ai-btn'),
+                copyHashBtn: document.getElementById('copy-hash-btn'),
+                runAiBtn: document.getElementById('run-ai-btn'),
+                profileNameInput: document.getElementById('profile-name'),
+                profileDobInput: document.getElementById('profile-dob'),
+                profileGenderInput: document.getElementById('profile-gender'),
+                profileContactInput: document.getElementById('profile-contact'),
+                profileEmergencyInput: document.getElementById('profile-emergency'),
+                doctorListContainer: document.getElementById('doctor-list'),
+                myAppointmentsList: document.getElementById('my-appointments-list'),
+                composeMessageBtn: document.getElementById('compose-message-btn'),
+            };
+
+            document.getElementById('logout-patient').addEventListener('click', handleLogout);
+
+            const switchSection = (id) => {
+                DOMElements.patientMainSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                const targetSection = document.getElementById(id);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+            };
+
+            DOMElements.patientNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = e.target.dataset.section;
+                    if (id) {
+                        if (id === 'messages-patient-section') {
+                            openMessageModal();
+                            return;
+                        }
+                        switchSection(id);
+                    }
+                });
+            });
+
+            const renderHeader = () => {
+                DOMElements.headerPatientName.textContent = patientState.patientDetails.name;
+                DOMElements.headerPatientId.textContent = `Patient ID: ${patientState.patientDetails.patientId}`;
+            };
+
+            const callBlockchainAPI = (action, data) => {
+                const crypto = window.crypto || window.msCrypto;
+                const text = `${action}:${JSON.stringify(data)}:${new Date().toISOString()}`;
+                const hash = `0x${text.length}${crypto?.getRandomValues(new Uint32Array(1))[0].toString(16)}`.slice(0, 20);
+                console.log(`[BLOCKCHAIN API] Action: ${action}, Hash: ${hash}`);
+                return hash;
+            };
+
+            const renderHealthSnapshot = () => {
+                DOMElements.healthSnapshotList.innerHTML = patientState.records.map(r => 
+                    `<li class="flex justify-between items-start bg-white p-3 rounded-lg shadow-sm">
+                        <div class="flex-grow">
+                            <div class="font-medium text-slate-800">${r.type} <span class="text-xs text-slate-400">(${r.source})</span></div>
+                            <div class="text-slate-500">${r.summary || 'No summary provided.'}</div>
+                            ${r.doctorsNote ? `<div class="mt-2 text-xs text-indigo-700 bg-indigo-50 p-2 rounded-lg"><span class="font-semibold">Doctor's Note:</span> ${r.doctorsNote}</div>` : ''}
+                        </div>
+                        <div class="text-right flex-shrink-0 ml-2">
+                            <div class="text-xs text-slate-400 mb-2">${new Date(r.timestamp.toDate()).toLocaleDateString()}</div>
+                            <button data-record-id="${r.id}" class="delete-record-btn text-red-500 hover:text-red-700 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </li>`
+                ).join('');
+                DOMElements.blockchainAnchor.innerHTML = `Blockchain anchor: <span class="font-mono">${callBlockchainAPI('get_latest_block', patientState.records).slice(0, 20)}...</span>`;
+                lucide.createIcons();
+            };
+
+            const handleDeleteRecord = async (recordId) => {
+                showConfirmation(
+                    'Delete Record',
+                    'This action cannot be undone. The record will be permanently deleted.',
+                    async () => {
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${currentUser.uid}/records`, recordId));
+                        logAction(`Record deleted: ID ${recordId}`);
+                    },
+                    'Delete'
+                );
+            };
+
+            const renderVitals = () => {
+                const vital_filters = [{ id: 'bloodPressure', label: 'Blood Pressure', icon: 'heart' }, { id: 'heartRate', label: 'Heart Rate', icon: 'activity' }, { id: 'bloodOxygen', label: 'Blood Oxygen', icon: 'wind' }, { id: 'sugarLevel', label: 'Blood Sugar', icon: 'droplet' }, { id: 'ecg', label: 'ECG', icon: 'activity' }, { id: 'sleep', label: 'Sleep', icon: 'bed-double' }];
+                DOMElements.vitalsFilterContainer.innerHTML = vital_filters.map(filter => `<button data-vital="${filter.id}" class="vital-filter-btn flex items-center gap-2 px-3 py-2 font-semibold text-sm rounded-lg transition-colors ${patientState.activeVital === filter.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"><i data-lucide="${filter.icon}" class="w-4 h-4"></i> <span>${filter.label}</span></button>`).join('');
+                const ecgWaveformHTML = `<svg viewBox="0 0 100 40" class="w-full h-24 text-teal-500"><path d="M 0 20 L 10 20 L 12 15 L 16 25 L 20 20 L 22 22 L 24 18 L 26 20 L 40 20 Q 42 20 43 10 T 46 20 L 55 20 L 57 24 L 59 16 L 61 20 L 80 20 L 82 15 L 86 25 L 90 20 L 100 20" stroke="currentColor" strokeWidth="1" fill="none" /></svg>`;
+                const createHealthHistoryGraphHTML = (data, metric, color) => {
+                    if (!data || data.length === 0) return `<div class="bg-slate-50 p-4 rounded-lg border flex items-center justify-center h-48"><p class="text-sm text-slate-400">No history data available</p></div>`;
+                    const maxVal = Math.max(...data.map(d => d.value)) + 10, minVal = Math.min(...data.map(d => d.value)) - 10;
+                    const points = data.map((d, i) => `${(i / (data.length - 1)) * 100},${100 - ((d.value - minVal) / (maxVal - minVal)) * 100}`).join(' ');
+                    const circles = data.map((d, i) => `<circle key="${i}" cx="${(i / (data.length - 1)) * 100}" cy="${100 - ((d.value - minVal) / (maxVal - minVal)) * 100}" r="1.5" fill="${color}" />`).join('');
+                    const months = data.map(d => `<span>${d.month}</span>`).join('');
+                    return `<div class="mt-4"><h4 class="text-sm font-semibold text-slate-600 mb-2">${metric} History (Last 6 Months)</h4><div class="bg-slate-50 p-4 rounded-lg border"><svg viewBox="0 0 100 100" class="w-full h-40" preserveAspectRatio="none"><text x="0" y="5" font-size="8" fill="#94a3b8">${maxVal}</text><text x="0" y="98" font-size="8" fill="#94a3b8">${minVal}</text><line x1="5" x2="100" y1="5" y2="5" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><line x1="5" x2="100" y1="50" y2="50" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><line x1="5" x2="100" y1="95" y2="95" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}" />${circles}</svg><div class="flex justify-between text-xs text-slate-400 mt-2">${months}</div></div></div>`;
+                };
+                const vital_components_html = {
+                    bloodPressure: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-red-100 p-2 rounded-full"><i data-lucide="heart" class="w-6 h-6 text-red-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Pressure</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.bloodPressure.systolic}<span class="text-2xl text-slate-500">/${patientState.healthData.bloodPressure.diastolic}</span><span class="text-lg ml-2 text-slate-500">mmHg</span></p> <p class="text-sm text-green-600 font-medium mt-1">Normal</p> ${createHealthHistoryGraphHTML(patientState.healthData.bloodPressure.history, "Systolic BP", "#ef4444")} </div>`,
+                    heartRate: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-rose-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-rose-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Heart Rate</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.heartRate.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.heartRate.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.heartRate.status}</p> ${createHealthHistoryGraphHTML(patientState.healthData.heartRate.history, "Resting Heart Rate", "#f43f5e")} </div>`,
+                    bloodOxygen: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-cyan-100 p-2 rounded-full"><i data-lucide="wind" class="w-6 h-6 text-cyan-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Oxygen (SpO2)</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.bloodOxygen.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.bloodOxygen.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.bloodOxygen.status}</p> ${createHealthHistoryGraphHTML(patientState.healthData.bloodOxygen.history, "SpO2 Level", "#06b6d4")} </div>`,
+                    ecg: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-teal-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-teal-500"></i></div><h3 class="text-xl font-semibold text-slate-800">ECG</h3></div> <div class="mt-4 p-4 bg-slate-50 rounded-lg border">${ecgWaveformHTML}</div> <p class="text-lg font-semibold text-slate-800 mt-4">${patientState.healthData.ecg.status}</p> <p class="text-sm text-slate-500 mt-1">${patientState.healthData.ecg.summary}</p> </div>`,
+                    sleep: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-indigo-100 p-2 rounded-full"><i data-lucide="bed-double" class="w-6 h-6 text-indigo-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Sleep Pattern</h3></div> <div class="grid grid-cols-3 gap-4 text-center mt-4"> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.duration}</p><p class="text-xs text-slate-500">Total Sleep</p></div> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.deepSleep}</p><p class="text-xs text-slate-500">Deep Sleep</p></div> <div><p class="text-2xl font-bold">${patientState.healthData.sleep.quality}</p><p class="text-xs text-slate-500">Quality</p></div> </div> ${createHealthHistoryGraphHTML([], "Sleep Duration", "#6366f1")} </div>`,
+                    sugarLevel: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-sky-100 p-2 rounded-full"><i data-lucide="droplet" class="w-6 h-6 text-sky-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Sugar</h3></div> <p class="text-4xl font-bold text-slate-800">${patientState.healthData.sugarLevel.value}<span class="text-lg ml-2 text-slate-500">${patientState.healthData.sugarLevel.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${patientState.healthData.sugarLevel.status}</p> ${createHealthHistoryGraphHTML([], "History", "#0ea5e9")} </div>`
+                };
+                let content = vital_components_html[patientState.activeVital];
+                if (patientState.activeVital === 'bloodPressure') content += vital_components_html['heartRate'];
+                if (patientState.activeVital === 'heartRate') content += vital_components_html['bloodPressure'];
+                if (patientState.activeVital === 'bloodOxygen') content += vital_components_html['sugarLevel'];
+                if (patientState.activeVital === 'sugarLevel') content += vital_components_html['bloodOxygen'];
+                if (patientState.activeVital === 'ecg') content += vital_components_html['sleep'];
+                if (patientState.activeVital === 'sleep') content += vital_components_html['ecg'];
+                DOMElements.vitalsDisplayContainer.innerHTML = content;
+                lucide.createIcons();
+            };
+            const renderPermissions = () => {
+                DOMElements.permissionsContainer.innerHTML = patientState.permissions.map(p => `<div class="flex items-center justify-between gap-4 border rounded-lg p-3 hover:bg-slate-50 transition-colors"><div><div class="font-medium text-slate-700">${p.name}</div><div class="text-xs text-slate-400">Cardiology Research</div></div><div class="flex gap-2 items-center"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" data-id="${p.id}" ${p.access ? 'checked' : ''} class="sr-only peer permission-toggle"><div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div><span class="ml-3 text-sm font-medium text-gray-900">${p.access ? "Allowed" : "Denied"}</span></label><button data-id="${p.id}" class="simulate-request-btn text-xs rounded px-3 py-1 border bg-white hover:bg-slate-100 transition-colors">Simulate</button></div></div>`).join('');
+            };
+            const logAction = async (action) => {
+                const logsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/logs`);
+                await addDoc(logsRef, { action, timestamp: serverTimestamp() });
+                renderAccessLog();
+            };
+            const renderAccessLog = () => {
+                const logsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/logs`);
+                const q = query(logsRef, orderBy('timestamp', 'desc'));
+                onSnapshot(q, (snapshot) => {
+                    if (snapshot.empty) {
+                        DOMElements.accessLogContainer.innerHTML = `<div class="text-slate-400 p-2">No activity yet.</div>`;
+                        return;
+                    }
+                    DOMElements.accessLogContainer.innerHTML = snapshot.docs.map(doc => {
+                        const l = doc.data();
+                        return `<div class="flex justify-between items-start border-b border-slate-200 pb-2 mb-2 last:border-b-0 last:mb-0"><div class="text-slate-700 font-mono pr-4">${l.action}</div><div class="text-slate-400 text-xs flex-shrink-0">${l.timestamp ? new Date(l.timestamp.toDate()).toLocaleString() : 'Just now'}</div></div>`;
+                    }).join('');
+                });
+            };
+            const renderAiReport = () => DOMElements.aiReportContent.textContent = patientState.aiReport ?? "Click button to run analysis.";
+
+            const renderDoctorList = () => {
+                const doctorsRef = collection(db, `artifacts/${appId}/users`);
+                const q = query(doctorsRef, where('role', '==', 'doctor'));
+                onSnapshot(q, (snapshot) => {
+                    if (snapshot.empty) {
+                        DOMElements.doctorListContainer.innerHTML = `<p class="text-sm text-slate-500 text-center">No doctors found.</p>`;
+                        return;
+                    }
+                    DOMElements.doctorListContainer.innerHTML = snapshot.docs.map(doc => {
+                        const doctor = doc.data().details;
+                        const avatarText = doctor.name.split(' ').map(n => n[0]).join('');
+                        return `
+                            <div class="bg-slate-50 p-4 rounded-lg border flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full bg-slate-200 text-slate-800 flex items-center justify-center font-bold text-lg">${avatarText}</div>
+                                <div class="flex-grow">
+                                    <h4 class="font-semibold text-slate-800">${doctor.name}</h4>
+                                    <p class="text-sm text-slate-500">${doctor.specialization}</p>
+                                    <p class="text-xs text-slate-400">ID: ${doctor.doctorId}</p>
+                                </div>
+                                <button class="book-appointment-btn bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700" data-doctor-uid="${doc.id}" data-doctor-name="${doctor.name}">Book</button>
+                            </div>
+                        `;
+                    }).join('');
+                    lucide.createIcons();
+                });
+            };
+
+            const renderMyAppointments = () => {
+                if (patientState.appointments.length === 0) {
+                    DOMElements.myAppointmentsList.innerHTML = `<p class="text-sm text-slate-500">You have no upcoming appointments.</p>`;
+                    return;
+                }
+                DOMElements.myAppointmentsList.innerHTML = patientState.appointments.map(app => {
+                    const statusColor = app.status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+                    return `
+                        <div class="bg-slate-50 p-4 rounded-lg border flex items-center justify-between gap-4">
+                            <div>
+                                <div class="font-semibold text-slate-800">${app.doctorName}</div>
+                                <div class="text-sm text-slate-500">${app.date} at ${app.time}</div>
+                            </div>
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusColor}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            const handleBookAppointment = async (e) => {
+                const doctorUid = e.target.dataset.doctorUid;
+                const doctorName = e.target.dataset.doctorName;
+                
+                try {
+                    const appointmentsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/appointments`);
+                    await addDoc(appointmentsRef, {
+                        patientId: currentUser.uid,
+                        patientName: patientState.patientDetails.name,
+                        doctorId: doctorUid,
+                        doctorName: doctorName,
+                        date: '2025-09-25',
+                        time: '11:00 AM',
+                        status: 'pending',
+                        createdAt: serverTimestamp()
+                    });
+                    
+                    logAction(`Booked appointment with ${doctorName}`);
+                    showMessage("Success", `Your appointment request with ${doctorName} has been sent!`);
+                } catch (e) {
+                    console.error("Error booking appointment:", e);
+                }
+            };
+
+            const toggleModal = (modal, content, show) => {
+                if (show) {
+                    modal.classList.remove('hidden'); modal.classList.add('flex'); modal.classList.remove('modal-leave'); if (content) content.classList.remove('modal-content-leave'); modal.classList.add('modal-enter'); if (content) content.classList.add('modal-content-enter');
+                } else {
+                    modal.classList.add('modal-leave'); if (content) content.classList.add('modal-content-leave'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+                }
+            };
+
+            const handleAddRecord = async () => {
+                const title = document.getElementById('report-title').value, description = document.getElementById('report-description').value, doctorsNote = document.getElementById('report-doctor-note').value;
+                if (!title) { showMessage("Error", "Please provide a title for the report."); return; }
+                const recordsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/records`);
+                await addDoc(recordsRef, {
+                    source: "Manual Upload",
+                    date: new Date().toISOString().split('T')[0],
+                    type: title,
+                    summary: description,
+                    doctorsNote: doctorsNote,
+                    timestamp: serverTimestamp()
+                });
+                logAction(`New record added: "${title}"`);
+                document.getElementById('report-title').value = ''; document.getElementById('report-description').value = ''; document.getElementById('report-doctor-note').value = '';
+                toggleModal(document.getElementById('upload-modal'), document.getElementById('upload-modal-content'), false);
+            };
+
+            const handleSaveProfile = async () => {
+                const patientRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}`);
+                const updatedDetails = {
+                    ...patientState.patientDetails,
+                    name: document.getElementById('profile-name').value,
+                    dob: document.getElementById('profile-dob').value,
+                    gender: document.getElementById('profile-gender').value,
+                    contact: document.getElementById('profile-contact').value,
+                    emergencyContact: document.getElementById('profile-emergency').value
+                };
+                try {
+                    await updateDoc(patientRef, { details: updatedDetails });
+                    patientState.patientDetails = updatedDetails;
+                    renderHeader();
+                    toggleModal(document.getElementById('profile-modal'), document.getElementById('profile-modal-content'), false);
+                } catch (e) {
+                    console.error("Error updating profile:", e);
+                }
+            };
+
+            document.getElementById('profile-button').addEventListener('click', () => {
+                document.getElementById('profile-name').value = patientState.patientDetails.name; document.getElementById('profile-dob').value = patientState.patientDetails.dob; document.getElementById('profile-gender').value = patientState.patientDetails.gender; document.getElementById('profile-contact').value = patientState.patientDetails.contact; document.getElementById('profile-emergency').value = patientState.patientDetails.emergencyContact;
+                toggleModal(document.getElementById('profile-modal'), document.getElementById('profile-modal-content'), true);
+            });
+            document.getElementById('close-profile-modal').addEventListener('click', () => toggleModal(document.getElementById('profile-modal'), document.getElementById('profile-modal-content'), false));
+            document.getElementById('cancel-profile-save').addEventListener('click', () => toggleModal(document.getElementById('profile-modal'), document.getElementById('profile-modal-content'), false));
+            document.getElementById('save-profile').addEventListener('click', handleSaveProfile);
+            document.getElementById('open-upload-modal-btn').addEventListener('click', () => toggleModal(document.getElementById('upload-modal'), document.getElementById('upload-modal-content'), true));
+            document.getElementById('close-upload-modal').addEventListener('click', () => toggleModal(document.getElementById('upload-modal'), document.getElementById('upload-modal-content'), false));
+            document.getElementById('cancel-upload').addEventListener('click', () => toggleModal(document.getElementById('upload-modal'), document.getElementById('upload-modal-content'), false));
+            document.getElementById('upload-report-btn').addEventListener('click', handleAddRecord);
+
+            document.getElementById('doctor-list').addEventListener('click', e => {
+                const bookBtn = e.target.closest('.book-appointment-btn');
+                if (bookBtn) {
+                    handleBookAppointment(e);
+                }
+            });
+
+            document.getElementById('health-snapshot-list').addEventListener('click', e => {
+                const deleteButton = e.target.closest('.delete-record-btn');
+                if(deleteButton) {
+                    const recordId = deleteButton.dataset.recordId;
+                    handleDeleteRecord(recordId);
+                }
+            });
+
+            document.getElementById('vitals-filter-container').addEventListener('click', e => {
+                const button = e.target.closest('.vital-filter-btn');
+                if (button) { patientState.activeVital = button.dataset.vital; renderVitals(); }
+            });
+            document.getElementById('permissions-container').addEventListener('click', e => {
+                const toggle = e.target.closest('.permission-toggle'), button = e.target.closest('.simulate-request-btn');
+                if (toggle) {
+                    const id = toggle.dataset.id, permission = patientState.permissions.find(p => p.id === id);
+                    if (permission) { permission.access = !permission.access; logAction(`${permission.name} permission ${permission.access ? "granted" : "revoked"}`); renderPermissions(); }
+                }
+                if (button) {
+                    const id = button.dataset.id, p = patientState.permissions.find(x => x.id === id);
+                    if (p) { logAction(`${p.name} requested data: ${p.access ? "GRANTED" : "DENIED"}`); }
+                }
+            });
+            document.getElementById('run-ai-btn').addEventListener('click', () => {
+                patientState.aiReport = ["1. Population data suggests a slight increase in hypertension risk for this demographic.", "2. Analysis of similar patient profiles indicates a high success rate with preventative lifestyle changes.", "3. Recommend flagging patients with consistent BP readings above 130/85 for proactive outreach."].join("\n");
+                logAction(`AI population analysis executed`);
+                renderAiReport();
+            });
+            document.getElementById('copy-hash-btn').addEventListener('click', () => navigator.clipboard.writeText(callBlockchainAPI('get_latest_block', patientState.records)).then(() => showMessage("Copied", "Blockchain hash copied to clipboard!")).catch(err => console.error('Failed to copy hash: ', err)));
+            document.getElementById('explore-ai-btn').addEventListener('click', () => document.getElementById('ai')?.scroll-into-view({ behavior: 'smooth' }));
+            
+            document.getElementById('compose-message-btn').addEventListener('click', () => {
+                openMessageModal();
+            });
+
+            renderHeader(); renderVitals(); renderPermissions(); renderAccessLog(); renderDoctorList(); lucide.createIcons();
+            patientDashboardInitialized = true;
+        };
+
+        // --- DOCTOR DASHBOARD LOGIC ---
+        let doctorDashboardInitialized = false;
         
-        // --- INITIALIZE THE APP ---
-        document.addEventListener('DOMContentLoaded', () => {
-            setupFirebase();
-            initLandingPage();
+        const fetchDoctorData = () => {
+            const userRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}`);
+            const usersRef = collection(db, `artifacts/${appId}/users`);
+            const q = query(usersRef, where('role', '==', 'patient'));
+
+            onSnapshot(userRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    doctorState.doctorDetails = docSnap.data().details;
+                    document.getElementById('doctor-sidebar-name').textContent = doctorState.doctorDetails.name;
+                    document.getElementById('doctor-sidebar-id').textContent = `ID: ${doctorState.doctorDetails.doctorId}`;
+                    const avatarText = doctorState.doctorDetails.name.split(' ').map(n=>n[0]).join('');
+                    document.getElementById('doctor-avatar').src = `https://placehold.co/100x100/a7c5fd/333333?text=${avatarText}`;
+                    lucide.createIcons();
+                }
+            });
+
+            onSnapshot(q, (snapshot) => {
+                doctorState.patients = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const nameParts = data.details.name.split(' ');
+                    const initials = nameParts.length > 1 ? `${nameParts[0][0]}${nameParts[1][0]}` : nameParts[0][0];
+                    return {
+                        id: doc.id,
+                        name: data.details.name,
+                        avatar: `https://placehold.co/100x100/cce7f1/444444?text=${initials}`,
+                        ...data.details
+                    };
+                });
+                displayPatients(doctorState.patients);
+            });
+        };
+
+        const initializeDoctorDashboard = () => {
+            if (doctorDashboardInitialized) return;
+            
+            fetchDoctorData();
+            
+            const searchInput = document.querySelector('#doctor-dashboard-view #patient-search-input');
+            const patientList = document.querySelector('#doctor-dashboard-view #patient-list');
+            const noResults = document.querySelector('#doctor-dashboard-view #no-results');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const dashboardSections = {
+                'patient-search-view': document.getElementById('patient-search-view'),
+                'appointments-doctor-section': document.getElementById('appointments-doctor-section'),
+                'messages-doctor-section': document.getElementById('messages-doctor-section'),
+                'settings-doctor-section': document.getElementById('settings-doctor-section'),
+                'patient-profile-view': document.getElementById('patient-profile-view'),
+            };
+            const tabButtons = document.querySelectorAll('#doctor-dashboard-view .dashboard-tab-button');
+            const tabContents = document.querySelectorAll('#doctor-dashboard-view .dashboard-tab-content');
+            const backToSearchBtn = document.getElementById('back-to-search');
+            
+            const modal = document.getElementById('file-preview-modal-doctor');
+            const modalContent = document.getElementById('modal-content-doctor');
+            const closeModalButton = document.getElementById('close-modal-button-doctor');
+            const modalCloseFooter = document.getElementById('modal-close-btn-footer-doctor');
+            const modalTitle = document.getElementById('modal-title-doctor');
+            const modalImage = document.getElementById('modal-image-doctor');
+            const modalDownloadBtn = document.getElementById('modal-download-btn-doctor');
+            let currentFileUrl = '';
+            
+            document.getElementById('logout-doctor').addEventListener('click', handleLogout);
+            document.getElementById('message-patient-btn').addEventListener('click', () => {
+                const activePatient = doctorState.patients.find(p => p.id === doctorState.activePatientId);
+                if (activePatient) {
+                    openMessageModal(activePatient.id);
+                }
+            });
+            
+            const pendingApptsList = document.getElementById('pending-appointments-list');
+            const acceptedApptsList = document.getElementById('accepted-appointments-list');
+            
+            const renderPatientCard = (patient) => {
+                const consentColors = { 'All Records': 'bg-green-100 text-green-800', 'Lab Only': 'bg-amber-100 text-amber-800', 'Prescription Only': 'bg-blue-100 text-blue-800', 'None': 'bg-slate-100 text-slate-800' };
+                return `<div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md hover:border-blue-400 transition-all cursor-pointer" data-patient-uid="${patient.id}"><div class="flex items-center gap-4"><img src="${patient.avatar}" alt="${patient.name}" class="w-16 h-16 rounded-full"><div class="flex-1"><p class="font-bold text-lg text-slate-800">${patient.name}</p><p class="text-sm text-slate-500">ID: ${patient.patientId}</p></div></div><div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center"><p class="text-sm text-slate-600">Consent Level:</p><span class="px-2 py-1 text-xs font-semibold rounded-full ${consentColors[patient.consent] || 'bg-slate-100 text-slate-800'}">${patient.consent}</span></div></div>`;
+            };
+            const displayPatients = (patients) => {
+                if (patients.length === 0) {
+                    patientList.innerHTML = ''; noResults.classList.remove('hidden'); noResults.querySelector('p').textContent = 'No patients found matching your search.';
+                } else {
+                    patientList.innerHTML = patients.map(renderPatientCard).join(''); noResults.classList.add('hidden');
+                }
+            };
+
+            const populatePatientProfile = async (patientUid) => {
+                doctorState.activePatientId = patientUid;
+                const patientRef = doc(db, `artifacts/${appId}/users/${patientUid}`);
+                const patientSnap = await getDoc(patientRef);
+                if (!patientSnap.exists()) return;
+
+                const patient = patientSnap.data().details;
+
+                const avatarText = patient.name.split(' ').map(n=>n[0]).join('');
+                document.querySelector('#doctor-dashboard-view #patient-avatar').src = `https://placehold.co/100x100/cce7f1/444444?text=${avatarText}`;
+                document.querySelector('#doctor-dashboard-view #patient-name').textContent = patient.name;
+                const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+                document.querySelector('#doctor-dashboard-view #patient-meta').textContent = `ID: ${patient.patientId} • ${patient.gender}, ${age} years old`;
+                document.querySelector('#doctor-dashboard-view #patient-contact-info').innerHTML = `<p><i data-lucide="phone" class="w-4 h-4 inline-block mr-2 text-slate-400"></i> ${patient.contact}</p><p><i data-lucide="mail" class="w-4 h-4 inline-block mr-2 text-slate-400"></i> ${patient.email}</p><p><i data-lucide="contact" class="w-4 h-4 inline-block mr-2 text-slate-400"></i> ${patient.emergencyContact}</p>`;
+                document.querySelector('#doctor-dashboard-view #ai-summary').textContent = patient.ai?.summary || 'No AI summary available.';
+                document.querySelector('#doctor-dashboard-view #red-flags').textContent = patient.ai?.flags || 'No red flags detected.';
+                document.querySelector('#doctor-dashboard-view #personal-info').innerHTML = `<p class="flex justify-between"><span>DOB:</span> <span class="font-medium">${patient.dob}</span></p><p class="flex justify-between"><span>Blood Group:</span> <span class="font-medium">${patient.bloodGroup}</span></p>`;
+                document.querySelector('#doctor-dashboard-view #medical-history').innerHTML = `<p><strong>Allergies:</strong> ${patient.allergies}</p><p><strong>Chronic Conditions:</strong> N/A</p><p><strong>Past History:</strong> ${patient.history}</p>`;
+                document.querySelector('#doctor-dashboard-view #lifestyle-info').innerHTML = `<p class="flex justify-between"><span>Medications:</span> <span class="font-medium">${patient.medications}</span></p><p class="flex justify-between"><span>Past History:</span> <span class="font-medium">${patient.history}</span></p>`;
+                
+                const timelineContainer = document.querySelector('#doctor-dashboard-view #records-timeline');
+                const recordsRef = collection(db, `artifacts/${appId}/users/${patientUid}/records`);
+                const q = query(recordsRef, orderBy('timestamp', 'desc'));
+                onSnapshot(q, (snapshot) => {
+                    const records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    const iconMap = { 'Consultation': '<i data-lucide="clipboard-pen" class="w-5 h-5"></i>', 'Lab Report': '<i data-lucide="beaker" class="w-5 h-5"></i>', 'X-Ray': '<i data-lucide="bone" class="w-5 h-5"></i>', 'Prescription': '<i data-lucide="pilcrow" class="w-5 h-5"></i>' };
+                    timelineContainer.innerHTML = records.map(record => `<div class="relative"><div class="absolute -left-[37px] top-1 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">${iconMap[record.type] || '<i data-lucide="file-text" class="w-5 h-5"></i>'}</div><div class="ml-4"><p class="text-xs text-slate-500">${new Date(record.timestamp.toDate()).toLocaleDateString()}</p><h4 class="font-semibold">${record.title}</h4><p class="text-sm text-slate-600">${record.summary}</p>${record.doctorsNote ? `<p class="text-sm text-slate-600 mt-1"><strong>Doctor's Note:</strong> ${record.doctorsNote}</p>` : ''}</div></div>`).join('');
+                });
+                
+                document.getElementById('consult-patient-avatar').src = `https://placehold.co/100x100/cce7f1/444444?text=${avatarText}`;
+                document.getElementById('consult-patient-name').textContent = patient.name;
+                document.getElementById('consult-patient-id').textContent = `ID: ${patient.patientId}`;
+                
+                lucide.createIcons();
+            };
+
+            const showDoctorSection = (sectionId) => {
+                document.querySelectorAll('.doctor-main-section').forEach(section => section.classList.add('hidden'));
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+
+                navTabs.forEach(tab => {
+                    const isCurrent = tab.dataset.target === sectionId;
+                    tab.classList.toggle('bg-blue-50', isCurrent);
+                    tab.classList.toggle('text-blue-700', isCurrent);
+                    tab.classList.toggle('bg-white', !isCurrent);
+                    tab.classList.toggle('text-slate-600', !isCurrent);
+                });
+
+                if (sectionId === 'patient-search-view') {
+                    displayPatients(doctorState.patients);
+                } else if (sectionId === 'appointments-doctor-section') {
+                    renderDoctorAppointments();
+                } else if (sectionId === 'messages-doctor-section') {
+                    openMessageModal();
+                }
+            };
+
+            const openModal = (fileUrl, title) => {
+                currentFileUrl = fileUrl; modalTitle.textContent = title; modalImage.src = fileUrl; modal.classList.remove('hidden');
+                setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10);
+            };
+            const closeModal = () => {
+                modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            };
+
+            const switchTab = (tabId) => {
+                tabContents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(`${tabId}-content`).classList.remove('hidden');
+                tabButtons.forEach(button => {
+                    button.classList.toggle('bg-blue-600', button.dataset.tab === tabId);
+                    button.classList.toggle('text-white', button.dataset.tab === tabId);
+                    button.classList.toggle('bg-white', button.dataset.tab !== tabId);
+                    button.classList.toggle('text-slate-700', button.dataset.tab !== tabId);
+                });
+            };
+            
+            const renderDoctorAppointments = () => {
+                const pendingApptsList = document.getElementById('pending-appointments-list');
+                const acceptedApptsList = document.getElementById('accepted-appointments-list');
+                
+                const allAppointmentsRef = collection(db, `artifacts/${appId}/public/data/appointments`);
+                const q = query(allAppointmentsRef, where('doctorId', '==', currentUser.uid));
+
+                onSnapshot(q, (snapshot) => {
+                    const pendingAppts = [];
+                    const acceptedAppts = [];
+                    snapshot.forEach(doc => {
+                        const appt = { id: doc.id, ...doc.data() };
+                        if (appt.status === 'pending') {
+                            pendingAppts.push(appt);
+                        } else if (appt.status === 'accepted') {
+                            acceptedAppts.push(appt);
+                        }
+                    });
+
+                    if (pendingAppts.length > 0) {
+                        pendingApptsList.innerHTML = pendingAppts.map(appt => `
+                            <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="flex-grow">
+                                    <div class="font-semibold text-slate-800">New Request from ${appt.patientName}</div>
+                                    <div class="text-sm text-slate-600">On ${appt.date} at ${appt.time}</div>
+                                </div>
+                                <div class="flex gap-2 flex-shrink-0">
+                                    <button class="accept-btn bg-green-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-600" data-appt-id="${appt.id}" data-patient-uid="${appt.patientId}">Accept</button>
+                                    <button class="decline-btn bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600" data-appt-id="${appt.id}" data-patient-uid="${appt.patientId}">Decline</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        pendingApptsList.innerHTML = `<p class="text-sm text-slate-500">No new requests.</p>`;
+                    }
+
+                    if (acceptedAppts.length > 0) {
+                        acceptedApptsList.innerHTML = acceptedAppts.map(appt => `
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200 flex items-center justify-between gap-4">
+                                <div>
+                                    <div class="font-semibold text-slate-800">Appointment with ${appt.patientName}</div>
+                                    <div class="text-sm text-slate-600">On ${appt.date} at ${appt.time}</div>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        acceptedApptsList.innerHTML = `<p class="text-sm text-slate-500">No upcoming appointments.</p>`;
+                    }
+                });
+            };
+            
+            pendingApptsList.addEventListener('click', async (e) => {
+                const acceptBtn = e.target.closest('.accept-btn');
+                const declineBtn = e.target.closest('.decline-btn');
+                if (acceptBtn) {
+                    const apptId = acceptBtn.dataset.apptId;
+                    const patientUid = acceptBtn.dataset.patientUid;
+                    
+                    try {
+                        const apptRef = doc(db, `artifacts/${appId}/public/data/appointments`, apptId);
+                        await updateDoc(apptRef, { status: 'accepted' });
+                        showMessage("Success", `Appointment accepted.`);
+                    } catch (e) {
+                        console.error("Error accepting appointment:", e);
+                    }
+                } else if (declineBtn) {
+                    const apptId = declineBtn.dataset.apptId;
+                    const patientUid = declineBtn.dataset.patientUid;
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/public/data/appointments`, apptId));
+                        showMessage("Declined", `Appointment declined.`);
+                    } catch (e) {
+                        console.error("Error declining appointment:", e);
+                    }
+                }
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredPatients = doctorState.patients.filter(p => p.name.toLowerCase().includes(searchTerm) || p.patientId.toLowerCase().includes(searchTerm));
+                displayPatients(filteredPatients);
+            });
+            patientList.addEventListener('click', (e) => {
+                const card = e.target.closest('[data-patient-uid]');
+                if (card) { showDoctorSection('patient-profile-view'); populatePatientProfile(card.dataset.patientUid); }
+            });
+            document.getElementById('patient-profile-view').addEventListener('click', (e) => {
+                const previewButton = e.target.closest('.preview-btn');
+                if (previewButton) { openModal(previewButton.dataset.file, previewButton.dataset.title); }
+            });
+            backToSearchBtn.addEventListener('click', () => showDoctorSection('patient-search-view'));
+            tabButtons.forEach(button => button.addEventListener('click', () => switchTab(button.dataset.tab)));
+            closeModalButton.addEventListener('click', closeModal);
+            modalCloseFooter.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            modalDownloadBtn.addEventListener('click', () => window.open(currentFileUrl, '_blank'));
+            navTabs.forEach(tab => tab.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                showDoctorSection(tab.dataset.target); 
+            }));
+            
+            document.getElementById('doctor-sidebar-name').textContent = doctorState.doctorDetails.name;
+            document.getElementById('doctor-sidebar-id').textContent = `ID: ${doctorState.doctorDetails.doctorId}`;
+
+            showDoctorSection('patient-search-view');
+            displayPatients(doctorState.patients);
             lucide.createIcons();
-            showView('landing');
+            doctorDashboardInitialized = true;
+        };
+
+        const messagesModal = document.getElementById('messages-modal');
+        const messagesModalTitle = document.getElementById('messages-modal-title');
+        const closeMessagesModalBtn = document.getElementById('close-messages-modal');
+        const conversationsList = document.getElementById('conversations-list');
+        const conversationView = document.getElementById('conversation-view');
+        const selectConversationView = document.getElementById('select-conversation-view');
+        const backToConversationsBtn = document.getElementById('back-to-conversations');
+        const messageContainer = document.getElementById('message-container');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const composeMessageBtn = document.getElementById('compose-message-btn');
+
+        let activeConversationId = null;
+        let unsubscribeMessages = null;
+        
+        const openMessageModal = async (recipientId = null) => {
+            const messagesModal = document.getElementById('messages-modal');
+            const messagesModalContent = messagesModal.querySelector('div.flex.flex-col');
+            toggleModal(messagesModal, messagesModalContent, true);
+            if (recipientId) {
+                await createOrFindConversation(recipientId);
+            } else {
+                showConversationList();
+            }
+        };
+
+        const showConversationList = () => {
+            selectConversationView.classList.remove('hidden');
+            conversationView.classList.add('hidden');
+            backToConversationsBtn.classList.add('hidden');
+            messagesModalTitle.textContent = "Messages";
+            
+            conversationsList.innerHTML = `<p class="text-sm text-slate-500 text-center">Loading conversations...</p>`;
+            
+            const q = query(collection(db, `artifacts/${appId}/public/data/conversations`), 
+                where('participants', 'array-contains', currentUser.uid));
+            
+            onSnapshot(q, (snapshot) => {
+                const conversations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (conversations.length > 0) {
+                    conversationsList.innerHTML = conversations.map(c => {
+                        const otherParticipantId = c.participants.find(p => p !== currentUser.uid);
+                        const otherParticipant = c.patient?.userId === otherParticipantId ? c.patient : c.doctor;
+                        if (!otherParticipant) return '';
+
+                        const avatarText = otherParticipant.name.split(' ').map(n => n[0]).join('');
+                        const name = userRole === 'patient' ? 'Dr. ' + otherParticipant.name : otherParticipant.name;
+
+                        return `<button data-conversation-id="${c.id}" class="conversation-item w-full flex items-center gap-4 p-3 rounded-lg border hover:bg-slate-50 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold">${avatarText}</div>
+                            <div class="flex-grow text-left">
+                                <div class="font-semibold text-slate-800">${name}</div>
+                                <div class="text-sm text-slate-500 truncate">${c.lastMessageText || 'Start a conversation...'}</div>
+                            </div>
+                            <div class="text-xs text-slate-400">${c.lastMessageTime ? new Date(c.lastMessageTime.toDate()).toLocaleString() : ''}</div>
+                        </button>`;
+                    }).join('');
+                } else {
+                    conversationsList.innerHTML = `<p class="text-sm text-slate-500 text-center">No active conversations. Start a new one.</p>`;
+                }
+            });
+        };
+
+        const showConversation = async (conversationId) => {
+            selectConversationView.classList.add('hidden');
+            conversationView.classList.remove('hidden');
+            backToConversationsBtn.classList.remove('hidden');
+            activeConversationId = conversationId;
+            messageContainer.innerHTML = `<p class="text-center text-slate-400">Loading messages...</p>`;
+
+            if (unsubscribeMessages) {
+                unsubscribeMessages();
+            }
+
+            const convoRef = doc(db, `artifacts/${appId}/public/data/conversations`, conversationId);
+            const convoSnap = await getDoc(convoRef);
+            const convoData = convoSnap.data();
+            
+            const otherParticipantId = convoData.participants.find(p => p !== currentUser.uid);
+            const otherParticipant = convoData.patient?.userId === otherParticipantId ? convoData.patient : convoData.doctor;
+            messagesModalTitle.textContent = otherParticipant.name;
+
+            const messagesQuery = query(collection(db, `artifacts/${appId}/public/data/conversations/${conversationId}/messages`), orderBy('timestamp'));
+            
+            unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
+                messageContainer.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    const isSender = msg.senderId === currentUser.uid;
+                    const messageClass = isSender ? 'self-end bg-blue-500 text-white rounded-tr-none' : 'self-start bg-slate-200 text-slate-800 rounded-tl-none';
+                    const messageHtml = `<div class="flex flex-col max-w-[80%] p-3 rounded-xl shadow-sm ${messageClass}">
+                        <p class="text-sm">${msg.text}</p>
+                        <span class="text-xs opacity-75 mt-1">${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString() : 'Just now'}</span>
+                    </div>`;
+                    messageContainer.innerHTML += messageHtml;
+                });
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            });
+        };
+
+        const sendMessage = async (e) => {
+            e.preventDefault();
+            const text = messageInput.value.trim();
+            if (text === '') return;
+            
+            const messagesRef = collection(db, `artifacts/${appId}/public/data/conversations/${activeConversationId}/messages`);
+            const convoRef = doc(db, `artifacts/${appId}/public/data/conversations`, activeConversationId);
+
+            try {
+                await addDoc(messagesRef, {
+                    senderId: currentUser.uid,
+                    text: text,
+                    timestamp: serverTimestamp()
+                });
+
+                await updateDoc(convoRef, {
+                    lastMessageText: text,
+                    lastMessageTime: serverTimestamp()
+                });
+
+                messageInput.value = '';
+            } catch (e) {
+                console.error("Error sending message:", e);
+            }
+        };
+
+        const createOrFindConversation = async (recipientId) => {
+            const q = query(collection(db, `artifacts/${appId}/public/data/conversations`), 
+                where('participants', 'array-contains', currentUser.uid));
+            const existingConversations = await getDocs(q);
+
+            let conversationId;
+            let existingDoc = null;
+            
+            existingConversations.forEach(doc => {
+                const data = doc.data();
+                if (data.participants.includes(recipientId)) {
+                    existingDoc = doc;
+                }
+            });
+
+            if (existingDoc) {
+                conversationId = existingDoc.id;
+            } else {
+                const newConvoRef = doc(collection(db, `artifacts/${appId}/public/data/conversations`));
+                const patientId = userRole === 'patient' ? currentUser.uid : recipientId;
+                const doctorId = userRole === 'doctor' ? currentUser.uid : recipientId;
+                
+                const patientData = userRole === 'patient' ? patientState.patientDetails : (await getDoc(doc(db, `artifacts/${appId}/users/${patientId}`))).data()?.details;
+                const doctorData = userRole === 'doctor' ? doctorState.doctorDetails : (await getDoc(doc(db, `artifacts/${appId}/users/${doctorId}`))).data()?.details;
+
+                const newConvoData = {
+                    participants: [patientId, doctorId],
+                    patient: { userId: patientId, name: patientData.name },
+                    doctor: { userId: doctorId, name: doctorData.name },
+                    createdAt: serverTimestamp(),
+                    lastMessageTime: serverTimestamp(),
+                    lastMessageText: ""
+                };
+                
+                await setDoc(newConvoRef, newConvoData);
+                conversationId = newConvoRef.id;
+            }
+
+            showConversation(conversationId);
+        };
+
+        closeMessagesModalBtn.addEventListener('click', () => {
+            const messagesModal = document.getElementById('messages-modal');
+            const messagesModalContent = messagesModal.querySelector('div.flex.flex-col');
+            toggleModal(messagesModal, messagesModalContent, false);
+            if (unsubscribeMessages) {
+                unsubscribeMessages();
+                unsubscribeMessages = null;
+            }
+        });
+        backToConversationsBtn.addEventListener('click', showConversationList);
+        messageForm.addEventListener('submit', sendMessage);
+        conversationsList.addEventListener('click', (e) => {
+            const convoBtn = e.target.closest('.conversation-item');
+            if (convoBtn) {
+                const convoId = convoBtn.dataset.conversationId;
+                showConversation(convoId);
+            }
         });
 
+        document.addEventListener('DOMContentLoaded', () => {
+            showLoading(true);
+            
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await fetchAndSetUserData(user.uid);
+                } else {
+                    currentUser = null;
+                    showView('landing');
+                    showLoading(false);
+                }
+            });
+
+            // Demo data seeding logic
+            const seedDemoData = async () => {
+                const usersRef = collection(db, `artifacts/${appId}/users`);
+                const userCount = (await getDocs(usersRef)).size;
+
+                if (userCount === 0) {
+                    const demoPatient = {
+                        role: 'patient',
+                        details: {
+                            name: 'Jane Doe',
+                            email: 'patient@example.com',
+                            dob: '1985-05-22',
+                            gender: 'Female',
+                            contact: '+1 (555) 123-4567',
+                            emergencyContact: 'John Doe, +1 (555) 987-6543',
+                            bloodGroup: 'O+',
+                            allergies: 'Penicillin, Peanuts',
+                            medications: 'N/A',
+                            history: 'Asthma (Mild)',
+                            consent_doctors: true,
+                            consent_research: false,
+                            patientId: 'PID73921'
+                        }
+                    };
+                    const demoDoctor = {
+                        role: 'doctor',
+                        details: {
+                            name: 'Dr. Alex Turner',
+                            email: 'doctor@example.com',
+                            specialization: 'Cardiology',
+                            experience: '15',
+                            license: 'MD12345678',
+                            hospital: 'Central Hospital',
+                            contactEmail: 'alex.turner.md@mediconnect.com',
+                            doctorId: 'DOC002'
+                        }
+                    };
+
+                    try {
+                        const patientCred = await createUserWithEmailAndPassword(auth, demoPatient.details.email, "password123");
+                        await setDoc(doc(db, `artifacts/${appId}/users/${patientCred.user.uid}`), demoPatient);
+                        await signOut(auth);
+
+                        const doctorCred = await createUserWithEmailAndPassword(auth, demoDoctor.details.email, "password123");
+                        await setDoc(doc(db, `artifacts/${appId}/users/${doctorCred.user.uid}`), demoDoctor);
+                        await signOut(auth);
+                        console.log("Demo data seeded successfully.");
+                    } catch (e) {
+                        console.error("Error seeding demo data:", e);
+                    }
+                }
+            };
+            seedDemoData();
+
+            initLandingPage();
+            lucide.createIcons();
+        });
+
+        window.alert = function(message) {
+            showMessage("Notification", message);
+        };
     </script>
 </body>
 </html>
-
