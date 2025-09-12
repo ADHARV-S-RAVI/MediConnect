@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediConnect - Your Health, Your Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- General & Landing Page Styles --- */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.65) 0%, rgba(243, 232, 255, 0.65) 100%);
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: url('https://i.ibb.co/YFBv8wWz/gettyimages-1365582872-612x612.jpg') no-repeat center center;
+            background-size: cover;
+            filter: blur(10px);
+            z-index: -1;
+        }
+        .modal-scrollbar::-webkit-scrollbar { width: 8px; }
+        .modal-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .modal-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .modal-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- Patient Dashboard Modal Animation --- */
+        .modal-enter { animation: fadeIn 0.3s ease-out forwards; }
+        .modal-leave { animation: fadeOut 0.3s ease-in forwards; }
+        .modal-content-enter { animation: scaleIn 0.3s ease-out forwards; }
+        .modal-content-leave { animation: scaleOut 0.3s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes scaleOut { from { transform: scale(1); opacity: 1; } to { transform: scale(0.95); opacity: 0; } }
+
+        /* --- Doctor Dashboard Custom Scrollbar --- */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+
+    <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 id="confirmation-title" class="text-lg font-semibold mb-2">Are you sure?</h3>
+            <p id="confirmation-message" class="text-sm text-slate-600 mb-6">Do you really want to log out? Any unsaved changes will be lost.</p>
+            <div class="flex justify-end gap-3">
+                <button id="cancel-confirmation" class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border rounded-lg hover:bg-slate-100">Cancel</button>
+                <button id="confirm-action" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="landing-page-view">
+        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <div class="flex-shrink-0">
+                        <a href="#" class="flex items-center gap-3">
+                            <img class="h-12 w-12 object-contain" src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo">
+                            <span class="text-2xl font-bold text-slate-900">MediConnect</span>
+                        </a>
+                    </div>
+                    <nav class="hidden md:flex md:items-center md:space-x-8">
+                        <a href="#features" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Features</a>
+                        <a href="#how-it-works" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">How It Works</a>
+                        <a href="#about" class="font-medium text-slate-600 hover:text-blue-600 transition-colors">About</a>
+                    </nav>
+                    <div class="hidden md:flex items-center">
+                        <button id="open-auth-modal-header" class="rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow hover:shadow-lg px-5 py-2.5 text-white font-semibold">
+                            Sign In / Sign Up
+                        </button>
+                    </div>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                            <span class="sr-only">Open main menu</span>
+                            <i data-lucide="menu"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600">Features</a>
+                    <a href="#how-it-works" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600">How It Works</a>
+                    <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600">About</a>
+                    <button class="auth-trigger block w-full text-left mt-2 px-4 py-3 rounded-lg bg-blue-600 text-white font-semibold">Sign In / Sign Up</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="relative hero-gradient py-20 md:py-32 overflow-hidden">
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight">
+                        Your Health. Your Control. <span class="text-blue-600">Your Future.</span>
+                    </h1>
+                    <p class="mt-6 max-w-2xl mx-auto text-lg text-slate-700 font-medium">
+                        MediConnect unifies your medical records on a secure, decentralized platform. Grant access on your terms and leverage AI for powerful, private health insights.
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <button class="auth-trigger w-full sm:w-auto rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl px-8 py-4 text-lg text-white font-semibold">
+                            Get Started
+                        </button>
+                        <a href="#features" class="w-full sm:w-auto rounded-lg border bg-white/70 backdrop-blur-sm hover:bg-slate-50 transition-all px-8 py-4 text-lg text-slate-700 font-semibold">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </section>
+            <section id="features" class="py-20 md:py-28 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">A New Era of Healthcare Management</h2>
+                        <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+                            Our platform is built on cutting-edge technology to ensure your data is secure, accessible, and insightful.
+                        </p>
+                    </div>
+                    <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <div class="bg-blue-100 text-blue-600 rounded-full h-12 w-12 flex items-center justify-center">
+                                <i data-lucide="user-check" class="h-6 w-6"></i>
+                            </div>
+                            <h3 class="mt-6 text-xl font-bold text-slate-900">Total Data Ownership</h3>
+                            <p class="mt-2 text-slate-600">You are the sole controller of your health records. Grant and revoke access to doctors, hospitals, and researchers anytime.</p>
+                        </div>
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <div class="bg-violet-100 text-violet-600 rounded-full h-12 w-12 flex items-center justify-center">
+                                <i data-lucide="shield-check" class="h-6 w-6"></i>
+                            </div>
+                            <h3 class="mt-6 text-xl font-bold text-slate-900">Blockchain Security</h3>
+                            <p class="mt-2 text-slate-600">Leveraging blockchain for an immutable, transparent, and tamper-proof log of all data access and activity.</p>
+                        </div>
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <div class="bg-emerald-100 text-emerald-600 rounded-full h-12 w-12 flex items-center justify-center">
+                                <i data-lucide="brain-circuit" class="h-6 w-6"></i>
+                            </div>
+                            <h3 class="mt-6 text-xl font-bold text-slate-900">AI-Powered Insights</h3>
+                            <p class="mt-2 text-slate-600">Our explainable AI analyzes your anonymized data to provide early detection and personalized health recommendations.</p>
+                        </div>
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200/80">
+                            <div class="bg-rose-100 text-rose-600 rounded-full h-12 w-12 flex items-center justify-center">
+                                <i data-lucide="link" class="h-6 w-6"></i>
+                            </div>
+                            <h3 class="mt-6 text-xl font-bold text-slate-900">Seamless Interoperability</h3>
+                            <p class="mt-2 text-slate-600">Connect records from diverse healthcare systems and formats into one unified, comprehensive health profile.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="how-it-works" class="py-20 md:py-28 bg-slate-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Simple Steps to Empower Your Health</h2>
+                        <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+                            Getting started with MediConnect is easy and intuitive.
+                        </p>
+                    </div>
+                    <div class="mt-16 relative">
+                        <div class="relative grid gap-12 lg:grid-cols-3">
+                            <div class="text-center">
+                                <div class="relative flex items-center justify-center">
+                                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-white border-2 border-slate-300 text-blue-600 text-2xl font-bold z-10">1</div>
+                                </div>
+                                <h3 class="mt-6 text-xl font-bold text-slate-900">Aggregate Your Data</h3>
+                                <p class="mt-2 text-slate-600">Securely link all your medical records from different providers into a single, unified view.</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="relative flex items-center justify-center">
+                                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-white border-2 border-slate-300 text-blue-600 text-2xl font-bold z-10">2</div>
+                                </div>
+                                <h3 class="mt-6 text-xl font-bold text-slate-900">Manage Consent</h3>
+                                <p class="mt-2 text-slate-600">Use our intuitive dashboard to grant or revoke data access to healthcare professionals and researchers with a single click.</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="relative flex items-center justify-center">
+                                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-white border-2 border-slate-300 text-blue-600 text-2xl font-bold z-10">3</div>
+                                </div>
+                                <h3 class="mt-6 text-xl font-bold text-slate-900">Unlock Insights</h3>
+                                <p class="mt-2 text-slate-600">Leverage AI analysis to understand your health better, identify potential risks, and receive personalized recommendations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="about" class="py-20 md:py-28 bg-white">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div class="flex justify-center items-center">
+                            <img class="bg-slate-50 p-8 rounded-2xl shadow-xl object-contain w-1/2" src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo">
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Our Mission</h2>
+                            <p class="mt-4 text-slate-600">
+                                We believe that healthcare data should be secure, transparent, and controlled by the patient. Our mission is to break down data silos and empower individuals with the tools and insights they need to manage their health proactively. By integrating blockchain and AI, we are building a more trustworthy and efficient healthcare ecosystem for everyone.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-blue-600">
+                <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                        Ready to Take Control of Your Health Data?
+                    </h2>
+                    <p class="mt-4 text-lg text-blue-100">
+                        Join MediConnect today and be part of the future of healthcare.
+                    </p>
+                    <button class="auth-trigger mt-8 inline-block w-full sm:w-auto rounded-lg bg-white hover:bg-slate-100 transition-all shadow-lg hover:shadow-xl px-8 py-4 text-lg text-blue-600 font-semibold">
+                        Get Started for Free
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-slate-900 text-slate-400">
+            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                <div class="md:flex md:items-center md:justify-between">
+                    <div class="flex justify-center md:order-1">
+                        <a href="#" class="flex items-center gap-3">
+                            <img class="h-10 w-10 object-contain" src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo">
+                            <span class="text-xl font-bold text-white">MediConnect</span>
+                        </a>
+                    </div>
+                    <div class="mt-8 md:mt-0 md:order-2 flex justify-center space-x-6">
+                        <a href="https://x.com/Medi__connect" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">Twitter</span><i data-lucide="twitter"></i></a>
+                        <a href="http://www.linkedin.com/in/medi-connect-239067384" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">LinkedIn</span><i data-lucide="linkedin"></i></a>
+                        <a href="https://github.com/ADHARV-S-RAVI" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">GitHub</span><i data-lucide="github"></i></a>
+                    </div>
+                    <div class="mt-8 md:mt-0 md:order-1">
+                        <p class="text-center text-base">
+                            &copy; 2025 MediConnect. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+            <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 id="modal-title" class="text-lg font-semibold">Welcome to MediConnect</h3>
+                    <button id="close-modal-button" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="h-6 w-6"></i>
+                    </button>
+                </div>
+                <div class="flex-grow overflow-y-auto modal-scrollbar">
+                    <div id="initial-view" class="p-6 space-y-4">
+                        <button class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                            <svg class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C42.022,35.244,44,30.036,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
+                            <span>Sign in with Google</span>
+                        </button>
+                        <div class="relative flex py-2 items-center">
+                            <div class="flex-grow border-t border-slate-200"></div>
+                            <span class="flex-shrink mx-4 text-slate-400 text-sm">OR</span>
+                            <div class="flex-grow border-t border-slate-200"></div>
+                        </div>
+                        <form id="login-form" class="space-y-4">
+                            <div>
+                                <label for="email" class="text-sm font-medium text-slate-700">Email</label>
+                                <input type="email" id="email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" required>
+                            </div>
+                            <div>
+                                <label for="password" class="text-sm font-medium text-slate-700">Password</label>
+                                <input type="password" id="password" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Sign In</button>
+                        </form>
+                        <p class="text-center text-sm">Don't have an account? <button id="go-to-role-select" class="font-medium text-blue-600 hover:underline">Sign Up</button></p>
+                    </div>
+                    <div id="role-select-view" class="hidden p-6 text-center">
+                        <p class="mb-6">First, let's get to know you. Are you a...</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button id="select-patient-role" class="flex flex-col items-center justify-center p-6 border-2 border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all">
+                                <i data-lucide="user" class="h-10 w-10 text-blue-600 mb-2"></i>
+                                <span class="font-semibold">Patient</span>
+                                <span class="text-xs text-slate-500 mt-1">I want to manage my health records.</span>
+                            </button>
+                            <button id="select-doctor-role" class="flex flex-col items-center justify-center p-6 border-2 border-slate-200 rounded-lg hover:border-violet-500 hover:bg-violet-50 transition-all">
+                                <i data-lucide="stethoscope" class="h-10 w-10 text-violet-600 mb-2"></i>
+                                <span class="font-semibold">Doctor</span>
+                                <span class="text-xs text-slate-500 mt-1">I am a healthcare professional.</span>
+                            </button>
+                        </div>
+                        <button class="back-to-login text-sm text-slate-500 hover:underline mt-6"> &larr; Back to login</button>
+                    </div>
+                    <div id="patient-form-view" class="hidden p-6 space-y-4">
+                        <form id="patient-form">
+                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 mb-4">Personal Details</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium">Full Name</label>
+                                    <input type="text" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Date of Birth</label>
+                                    <input type="date" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Gender</label>
+                                    <select class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                        <option>Select...</option><option>Male</option><option>Female</option><option>Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Contact Number</label>
+                                    <input type="tel" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-sm font-medium">Emergency Contact</label>
+                                    <input type="tel" placeholder="Name & Phone Number" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                            </div>
+                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Medical Details</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium">Blood Group</label>
+                                    <input type="text" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Allergies</label>
+                                    <input type="text" placeholder="e.g., Peanuts, Penicillin" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-sm font-medium">Current Medications</label>
+                                    <textarea class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-sm font-medium">Past Medical History</label>
+                                    <textarea placeholder="e.g., Asthma, Surgery in 2020" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Medical Records</h4>
+                            <div>
+                                <label class="text-sm font-medium">Upload Past Records</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
+                                    <div class="space-y-1 text-center">
+                                        <i data-lucide="upload-cloud" class="mx-auto h-12 w-12 text-slate-400"></i>
+                                        <div class="flex text-sm text-slate-600">
+                                            <label for="patient-file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                                                <span>Upload a file</span>
+                                                <input id="patient-file-upload" name="patient-file-upload" type="file" class="sr-only">
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-slate-500">PDF, PNG, JPG up to 10MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Consent Management</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-start p-3 bg-slate-50 rounded-lg">
+                                    <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1">
+                                    <span class="ml-3 text-sm">
+                                        <span class="font-medium text-slate-800">Allow affiliated doctors to view my records</span>
+                                        <p class="text-slate-500">This enables faster diagnosis and consultation within the MediConnect network.</p>
+                                    </span>
+                                </label>
+                                <label class="flex items-start p-3 bg-slate-50 rounded-lg">
+                                    <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1">
+                                    <span class="ml-3 text-sm">
+                                        <span class="font-medium text-slate-800">Contribute my anonymized data for research</span>
+                                        <p class="text-slate-500">Help advance medical science. Your identity will always remain private.</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="mt-8 flex justify-between items-center">
+                                <button type="button" class="back-to-roles text-sm text-slate-500 hover:underline">&larr; Back</button>
+                                <button type="submit" class="bg-blue-600 text-white py-2.5 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Create Account</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="doctor-form-view" class="hidden p-6 space-y-4">
+                        <form id="doctor-form">
+                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 mb-4">Professional Details</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm font-medium">Full Name</label>
+                                    <input type="text" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Specialization</label>
+                                    <input type="text" placeholder="e.g., Cardiology" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Years of Experience</label>
+                                    <input type="number" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium">Medical License Number</label>
+                                    <input type="text" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-sm font-medium">Hospital Affiliation</label>
+                                    <input type="text" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-sm font-medium">Contact Email</label>
+                                    <input type="email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                            </div>
+                            <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Verification</h4>
+                            <div>
+                                <label class="text-sm font-medium">Upload License / ID Proof</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
+                                    <div class="space-y-1 text-center">
+                                        <i data-lucide="file-check-2" class="mx-auto h-12 w-12 text-slate-400"></i>
+                                        <div class="flex text-sm text-slate-600">
+                                            <label for="doctor-file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                                                <span>Upload document</span>
+                                                <input id="doctor-file-upload" name="doctor-file-upload" type="file" class="sr-only">
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-slate-500">PDF, PNG, JPG up to 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 flex justify-between items-center">
+                                <button type="button" class="back-to-roles text-sm text-slate-500 hover:underline">&larr; Back</button>
+                                <button type="submit" class="bg-violet-600 text-white py-2.5 px-6 rounded-lg font-semibold hover:bg-violet-700 transition-colors">Submit for Verification</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="success-view" class="hidden p-10 text-center flex flex-col items-center justify-center">
+                        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+                            <i data-lucide="check" class="w-12 h-12"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mt-6">Registration Successful!</h3>
+                        <p class="text-slate-500 mt-2">Welcome to MediConnect. You can now proceed to your dashboard.</p>
+                        <button id="go-to-dashboard-btn" class="mt-6 w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Go to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="patient-dashboard-view" class="hidden bg-slate-50">
+        <div id="profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
+            <div id="profile-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 class="text-lg font-semibold">Edit Patient Details</h3>
+                    <button id="close-profile-modal" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+                </div>
+                <div class="flex-grow overflow-y-auto p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-slate-700">Full Name</label>
+                            <input type="text" id="profile-name" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-700">Date of Birth</label>
+                            <input type="date" id="profile-dob" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-700">Gender</label>
+                            <select id="profile-gender" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                <option>Female</option><option>Male</option><option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-700">Contact Number</label>
+                            <input type="tel" id="profile-contact" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="text-sm font-medium text-slate-700">Emergency Contact</label>
+                            <input type="text" id="profile-emergency" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" />
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end p-4 border-t bg-slate-50 rounded-b-2xl">
+                    <button id="cancel-profile-save" class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border rounded-md hover:bg-slate-100 mr-2">Cancel</button>
+                    <button id="save-profile" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="upload-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
+            <div id="upload-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 class="text-lg font-semibold">Upload New Medical Report</h3>
+                    <button id="close-upload-modal" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+                </div>
+                <div class="flex-grow overflow-y-auto p-6 space-y-4">
+                    <div>
+                        <label for="report-title" class="text-sm font-medium text-slate-700">Report Title</label>
+                        <input type="text" id="report-title" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Annual Check-up Results">
+                    </div>
+                    <div>
+                        <label for="report-description" class="text-sm font-medium text-slate-700">Description</label>
+                        <textarea id="report-description" rows="3" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="Briefly describe the report, e.g., Blood test from Dr. Smith on 2025-09-10."></textarea>
+                    </div>
+                    <div>
+                        <label for="report-doctor-note" class="text-sm font-medium text-slate-700">Doctor's Note (Optional)</label>
+                        <textarea id="report-doctor-note" rows="2" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Follow up in 3 months. Patient advised to monitor blood pressure."></textarea>
+                    </div>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <i data-lucide="upload-cloud" class="mx-auto h-12 w-12 text-slate-400"></i>
+                            <div class="flex text-sm text-slate-600">
+                                <label for="file-upload-patient" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                                    <span>Upload a file</span>
+                                    <input id="file-upload-patient" name="file-upload" type="file" class="sr-only">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-slate-500">PDF, PNG, JPG up to 10MB</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end p-4 border-t bg-slate-50 rounded-b-2xl">
+                    <button id="cancel-upload" class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border rounded-md hover:bg-slate-100 mr-2">Cancel</button>
+                    <button id="upload-report-btn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Upload Report</button>
+                </div>
+            </div>
+        </div>
+
+        <header class="flex items-center justify-between p-4 md:p-6 bg-white shadow-sm sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <img src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo" class="w-12 h-12 rounded-full object-cover">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">MediConnect</h1>
+                    <p class="text-sm text-slate-500 hidden md:block">Patient-controlled health data with explainable AI.</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex gap-6 items-center text-sm">
+                <a href="#records" class="hover:text-blue-600 transition-colors">Records</a>
+                <a href="#vitals" class="hover:text-blue-600 transition-colors">Smart Records</a>
+                <a href="#ai" class="hover:text-blue-600 transition-colors">AI Analysis</a>
+                <a href="#consent" class="hover:text-blue-600 transition-colors">Consent</a>
+                <a href="#logs" class="hover:text-blue-600 transition-colors">Access Log</a>
+                <button id="profile-button" class="ml-4 flex items-center gap-3 border-l pl-4 cursor-pointer hover:bg-slate-50 p-2 rounded-lg">
+                    <div class="rounded-full w-10 h-10 bg-slate-200 flex items-center justify-center"><i data-lucide="user" class="text-slate-500 w-6 h-6"></i></div>
+                    <div>
+                        <div id="header-patient-name" class="font-semibold text-sm text-slate-700"></div>
+                        <div id="header-patient-id" class="text-xs text-slate-500"></div>
+                    </div>
+                </button>
+                <button id="logout-patient" class="ml-4 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-red-600 border border-red-600 hover:bg-red-50 transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+                </button>
+                </nav>
+            <button class="md:hidden rounded-lg bg-blue-600 px-4 py-2 text-white">Menu</button>
+        </header>
+
+        <main class="p-4 md:p-6 max-w-6xl mx-auto">
+            <section id="records" class="rounded-2xl overflow-hidden grid md:grid-cols-2 gap-6 bg-gradient-to-br from-blue-50 to-violet-100 p-8 items-center border border-slate-200">
+                <div>
+                    <h2 class="text-4xl font-bold text-slate-800 mb-4 leading-tight">Your Health. Your Control. Your Future.</h2>
+                    <p class="text-slate-600 mb-6">Unify your medical records securely. Grant access on your terms and leverage AI for powerful, private health insights.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button id="explore-ai-btn" class="rounded-lg bg-violet-600 hover:bg-violet-700 transition-all shadow hover:shadow-lg px-5 py-2.5 text-white font-semibold">Explore AI Insights</button>
+                        <button id="copy-hash-btn" class="rounded-lg border bg-white hover:bg-slate-50 transition-all px-5 py-2.5 text-slate-700">Copy Block Hash</button>
+                    </div>
+                    <div class="mt-8 text-sm text-slate-500 space-y-2">
+                        <div class="flex items-center gap-2"><i data-lucide="database" class="w-4 h-4 text-violet-500"></i> Simulated storage: <span class="ml-1 font-medium text-slate-700">Federated + patient-owned</span></div>
+                        <div class="flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4 text-violet-500"></i> Privacy: <span class="ml-1 font-medium text-slate-700">Encryption & consent-first design</span></div>
+                    </div>
+                </div>
+                <div class="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-inner border border-slate-200/50">
+                    <h3 class="text-lg font-semibold mb-3 text-slate-700">Health Snapshot</h3>
+                    <ul id="health-snapshot-list" class="space-y-3 text-sm"></ul>
+                    <div id="blockchain-anchor" class="mt-4 text-xs text-slate-500 truncate"></div>
+                </div>
+            </section>
+            <section id="vitals" class="mt-8">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">Smart Health Records</h2>
+                    <div id="vitals-filter-container" class="flex flex-wrap gap-2 border-b pb-4 mb-6"></div>
+                    <div id="vitals-display-container" class="grid md:grid-cols-2 gap-6"></div>
+                </div>
+            </section>
+            <section id="ai" class="mt-8">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-violet-100 p-2 rounded-full"><i data-lucide="brain" class="w-6 h-6 text-violet-500"></i></div>
+                        <h3 class="text-xl font-semibold text-slate-800">AI-Powered Population Insights</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Analyze anonymized data from thousands of patient records to identify trends, predict risks, and improve preventative care strategies. This is a powerful tool for researchers and clinicians.</p>
+                    <button id="run-ai-btn" class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 transition-all shadow hover:shadow-lg px-5 py-2.5 text-white font-semibold flex items-center justify-center gap-2"><i data-lucide="trending-up" class="w-5 h-5"></i>Analyze Population Data</button>
+                    <div class="mt-4 p-4 bg-slate-50 rounded-lg border">
+                        <h4 class="text-sm font-medium mb-2 text-slate-700">AI Report</h4>
+                        <pre id="ai-report-content" class="text-xs whitespace-pre-wrap text-slate-700 min-h-[95px] font-mono leading-relaxed">Click button to run analysis.</pre>
+                    </div>
+                </div>
+            </section>
+            <section id="consent" class="mt-8">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-2xl font-bold mb-3 text-slate-800">Consent Manager</h3>
+                    <p class="text-sm text-slate-500 mb-4">Toggle who can access your records. This simulates a dynamic, smart-contract permission flow on a blockchain.</p>
+                    <div id="permissions-container" class="grid md:grid-cols-2 gap-4"></div>
+                </div>
+            </section>
+            <section id="logs" class="mt-8">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-lg font-semibold mb-3 text-slate-800">Access Log (Append-Only)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Every permission change or data access attempt is recorded to build trust and transparency.</p>
+                    <div id="access-log-container" class="space-y-2 max-h-56 overflow-auto text-xs bg-slate-50 p-3 rounded-lg border"></div>
+                </div>
+            </section>
+            <footer class="mt-12 text-center text-xs text-slate-500 py-6 border-t">
+                <div class="flex items-center justify-center gap-2"><i data-lucide="clock" class="w-4 h-4"></i> <span>MediConnect prototype — simulated demo only</span></div>
+            </footer>
+        </main>
+        <button id="open-upload-modal-btn" class="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full p-4 shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+            <i data-lucide="file-plus-2" class="w-6 h-6"></i>
+            <span class="hidden md:block">Upload New Report</span>
+        </button>
+    </div>
+
+
+    <div id="doctor-dashboard-view" class="hidden">
+        <div id="app" class="flex h-screen bg-slate-100">
+            <aside class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
+                <div class="flex items-center justify-center h-20 border-b border-slate-200">
+                    <a href="#" class="flex items-center gap-3">
+                        <img class="h-12 w-12 object-contain" src="https://i.ibb.co/Q7RdwY9H/Picsart-25-09-11-20-47-42-475.png" alt="MediConnect Logo">
+                        <span class="text-xl font-bold text-slate-900">MediConnect</span>
+                    </a>
+                </div>
+                <nav class="flex-1 px-4 py-6 space-y-2">
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold bg-blue-50 text-blue-700 rounded-lg">
+                        <i data-lucide="layout-dashboard"></i> Dashboard
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="calendar-days"></i> Appointments
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="message-square"></i> Messages
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="settings"></i> Settings
+                    </a>
+                </nav>
+                <div class="px-4 py-4 border-t border-slate-200">
+                    <div class="flex items-center gap-3">
+                        <img class="h-10 w-10 rounded-full object-cover" src="https://placehold.co/100x100/a7c5fd/333333?text=Dr.A" alt="Doctor Avatar">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800">Dr. Alex Turner</p>
+                            <p class="text-xs text-slate-500">Cardiologist</p>
+                        </div>
+                        <button id="logout-doctor" class="ml-auto text-slate-500 hover:text-red-500 transition-colors">
+                            <i data-lucide="log-out" class="w-5 h-5"></i>
+                        </button>
+                        </div>
+                </div>
+            </aside>
+
+            <main class="flex-1 flex flex-col h-screen overflow-y-auto custom-scrollbar">
+                <header class="bg-white/80 backdrop-blur-md sticky top-0 z-30 h-20 flex items-center justify-between px-8 border-b border-slate-200">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900">Doctor Dashboard</h1>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-72">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                            <input type="text" id="patient-search-input" placeholder="Search Patient by ID or Name..." class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <button class="flex items-center justify-center w-10 h-10 bg-slate-100 rounded-lg text-slate-600 hover:bg-slate-200">
+                            <i data-lucide="bell"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <div id="dashboard-content" class="p-8">
+                    <div id="patient-search-view">
+                        <h2 class="text-xl font-semibold mb-4 text-slate-700">Patient Search Results</h2>
+                        <div id="patient-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        </div>
+                        <div id="no-results" class="hidden text-center py-16">
+                            <i data-lucide="user-search" class="mx-auto h-16 w-16 text-slate-400"></i>
+                            <p class="mt-4 text-slate-500">Search for a patient to begin.</p>
+                        </div>
+                    </div>
+
+                    <div id="patient-profile-view" class="hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <button id="back-to-search" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600">
+                                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                                Back to Search
+                            </button>
+                            <div class="flex gap-2">
+                                <button class="dashboard-tab-button bg-white text-slate-700 shadow-sm border rounded-lg px-4 py-2 font-semibold text-sm hover:bg-slate-50" data-tab="profile">
+                                    <i data-lucide="user-round" class="w-4 h-4 inline-block mr-2"></i>Patient Profile
+                                </button>
+                                <button class="dashboard-tab-button bg-white text-slate-700 shadow-sm border rounded-lg px-4 py-2 font-semibold text-sm hover:bg-slate-50" data-tab="consultation">
+                                    <i data-lucide="file-plus-2" class="w-4 h-4 inline-block mr-2"></i>Add Consultation
+                                </button>
+                                <button id="message-patient-btn" class="bg-violet-600 text-white shadow-sm rounded-lg px-4 py-2 font-semibold text-sm hover:bg-violet-700">
+                                    <i data-lucide="message-square" class="w-4 h-4 inline-block mr-2"></i>Message Patient
+                                </button>
+                                </div>
+                        </div>
+
+                        <div id="tab-content-wrapper">
+                            <div id="profile-content" class="dashboard-tab-content">
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-6">
+                                    <div class="flex flex-col md:flex-row items-start gap-6">
+                                        <img id="patient-avatar" class="h-24 w-24 rounded-full object-cover border-4 border-slate-100" src="" alt="Patient Avatar">
+                                        <div class="flex-1">
+                                            <h2 id="patient-name" class="text-3xl font-bold text-slate-900"></h2>
+                                            <p id="patient-meta" class="text-slate-500 mt-1"></p>
+                                        </div>
+                                        <div id="patient-contact-info" class="text-sm text-slate-600 space-y-1"></div>
+                                    </div>
+                                    <div class="mt-6 border-t pt-4">
+                                        <h4 class="text-xs font-semibold uppercase text-slate-500 mb-3">AI Assistance</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-200">
+                                                <div class="flex items-center gap-2 text-blue-700 mb-1">
+                                                    <i data-lucide="scan-text" class="w-5 h-5"></i>
+                                                    <h5 class="font-semibold">Auto Summary</h5>
+                                                </div>
+                                                <p id="ai-summary" class="text-sm text-blue-900"></p>
+                                            </div>
+                                            <div class="bg-red-50/50 p-4 rounded-lg border border-red-200">
+                                                <div class="flex items-center gap-2 text-red-700 mb-1">
+                                                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                                                    <h5 class="font-semibold">Red Flag Alerts</h5>
+                                                </div>
+                                                <p id="red-flags" class="text-sm text-red-900"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    <div class="lg:col-span-1 space-y-6">
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
+                                            <h3 class="font-semibold mb-3">Personal Information</h3>
+                                            <div id="personal-info" class="text-sm space-y-2 text-slate-600"></div>
+                                        </div>
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
+                                            <h3 class="font-semibold mb-3">Medical History</h3>
+                                            <div id="medical-history" class="text-sm space-y-2 text-slate-600"></div>
+                                        </div>
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border">
+                                            <h3 class="font-semibold mb-3">Lifestyle</h3>
+                                            <div id="lifestyle-info" class="text-sm space-y-2 text-slate-600"></div>
+                                        </div>
+                                    </div>
+                                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-sm border">
+                                        <h3 class="font-semibold mb-4">Medical Records Timeline</h3>
+                                        <div id="records-timeline" class="relative border-l-2 border-slate-200 pl-6 space-y-8">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="consultation-content" class="dashboard-tab-content hidden">
+                                <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-sm border">
+                                    <div class="flex items-center gap-4 mb-6 border-b pb-4">
+                                        <img id="consult-patient-avatar" class="h-12 w-12 rounded-full" src="" alt="Patient Avatar">
+                                        <div>
+                                            <h2 id="consult-patient-name" class="text-xl font-bold text-slate-800"></h2>
+                                            <p id="consult-patient-id" class="text-sm text-slate-500"></p>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Add New Consultation Note</h2>
+                                    <form class="space-y-6">
+                                        <div>
+                                            <label for="symptoms" class="block text-sm font-medium text-slate-700 mb-1">Symptoms</label>
+                                            <textarea id="symptoms" rows="3" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                        </div>
+                                        <div>
+                                            <label for="diagnosis" class="block text-sm font-medium text-slate-700 mb-1">Diagnosis</label>
+                                            <textarea id="diagnosis" rows="3" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                        </div>
+                                        <div>
+                                            <label for="prescription" class="block text-sm font-medium text-slate-700 mb-1">Prescription</label>
+                                            <textarea id="prescription" rows="4" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Paracetamol 500mg - 1 tablet, 3 times a day for 3 days"></textarea>
+                                        </div>
+                                        <div>
+                                            <label for="notes" class="block text-sm font-medium text-slate-700 mb-1">Additional Notes</label>
+                                            <textarea id="notes" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label for="follow-up" class="block text-sm font-medium text-slate-700 mb-1">Follow-up Date</label>
+                                                <input type="date" id="follow-up" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">Upload Documents</label>
+                                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md">
+                                                    <div class="space-y-1 text-center">
+                                                        <i data-lucide="upload-cloud" class="mx-auto h-10 w-10 text-slate-400"></i>
+                                                        <div class="flex text-sm text-slate-600">
+                                                            <label for="file-upload-doctor" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
+                                                                <span>Upload a file</span>
+                                                                <input id="file-upload-doctor" type="file" class="sr-only">
+                                                            </label>
+                                                        </div>
+                                                        <p class="text-xs text-slate-500">PDF, PNG, JPG, DICOM up to 10MB</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end pt-4">
+                                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all shadow hover:shadow-lg flex items-center gap-2">
+                                                <i data-lucide="send" class="w-4 h-4"></i>
+                                                Send to Patient
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="file-preview-modal-doctor" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
+            <div id="modal-content-doctor" class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col transition-all duration-300 transform scale-95 opacity-0">
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 id="modal-title-doctor" class="text-lg font-semibold">File Preview</h3>
+                    <button id="close-modal-button-doctor" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="h-6 w-6"></i>
+                    </button>
+                </div>
+                <div id="modal-body-doctor" class="flex-grow p-4 overflow-auto custom-scrollbar">
+                    <img id="modal-image-doctor" src="" alt="File Preview" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="p-4 bg-slate-50 border-t flex justify-end gap-3">
+                    <button id="modal-download-btn-doctor" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 text-sm flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Download
+                    </button>
+                    <button id="modal-close-btn-footer-doctor" class="bg-slate-200 text-slate-700 py-2 px-4 rounded-lg font-semibold hover:bg-slate-300 text-sm">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- GLOBAL APPLICATION STATE & VIEW MANAGEMENT ---
+            let currentView = 'landing';
+            let userRole = null; // 'patient' or 'doctor'
+
+            const views = {
+                landing: document.getElementById('landing-page-view'),
+                patientDashboard: document.getElementById('patient-dashboard-view'),
+                doctorDashboard: document.getElementById('doctor-dashboard-view'),
+            };
+
+            const showView = (viewName) => {
+                Object.values(views).forEach(view => view.classList.add('hidden'));
+                if (views[viewName]) {
+                    views[viewName].classList.remove('hidden');
+                    currentView = viewName;
+                    // Initialize the dashboard if it's being shown for the first time
+                    if (viewName === 'patientDashboard' && typeof initializePatientDashboard === 'function') {
+                        initializePatientDashboard();
+                    }
+                    if (viewName === 'doctorDashboard' && typeof initializeDoctorDashboard === 'function') {
+                        initializeDoctorDashboard();
+                    }
+                }
+                lucide.createIcons(); // Re-render icons on view change
+            };
+
+            // --- USER-FRIENDLY ADDITION: Confirmation Modal Logic ---
+            const confirmationModal = document.getElementById('confirmation-modal');
+            const confirmButton = document.getElementById('confirm-action');
+            const cancelButton = document.getElementById('cancel-confirmation');
+
+            const showConfirmation = (title, message, onConfirm, actionText = 'Confirm') => {
+                document.getElementById('confirmation-title').textContent = title;
+                document.getElementById('confirmation-message').textContent = message;
+                confirmButton.textContent = actionText;
+                confirmationModal.classList.remove('hidden');
+                
+                // Use a one-time event listener to handle the action
+                const handleConfirm = () => {
+                    onConfirm();
+                    confirmationModal.classList.add('hidden');
+                    confirmButton.removeEventListener('click', handleConfirm);
+                    cancelButton.removeEventListener('click', handleCancel);
+                };
+                const handleCancel = () => {
+                    confirmationModal.classList.add('hidden');
+                    confirmButton.removeEventListener('click', handleConfirm);
+                    cancelButton.removeEventListener('click', handleCancel);
+                };
+
+                confirmButton.addEventListener('click', handleConfirm);
+                cancelButton.addEventListener('click', handleCancel);
+            };
+
+            // --- LOGOUT LOGIC ---
+            const handleLogout = () => {
+                showConfirmation(
+                    'Confirm Logout',
+                    'Are you sure you want to log out?',
+                    () => {
+                        userRole = null;
+                        showView('landing');
+                        // Clear any session/local storage data here in a real app
+                    },
+                    'Log Out'
+                );
+            };
+            
+            // --- LANDING PAGE & AUTH MODAL LOGIC ---
+            const initLandingPage = () => {
+                const menuButton = document.getElementById('mobile-menu-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                menuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+                const authModal = document.getElementById('auth-modal');
+                const modalContent = document.getElementById('modal-content');
+                const closeModalButton = document.getElementById('close-modal-button');
+                const authTriggers = document.querySelectorAll('.auth-trigger, #open-auth-modal-header');
+
+                const authViews = {
+                    initial: document.getElementById('initial-view'),
+                    roleSelect: document.getElementById('role-select-view'),
+                    patientForm: document.getElementById('patient-form-view'),
+                    doctorForm: document.getElementById('doctor-form-view'),
+                    success: document.getElementById('success-view'),
+                };
+                const modalTitle = document.getElementById('modal-title');
+
+                const openAuthModal = () => {
+                    authModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                };
+
+                const closeAuthModal = () => {
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    setTimeout(() => {
+                        authModal.classList.add('hidden');
+                        showAuthView('initial');
+                    }, 300);
+                };
+
+                const showAuthView = (viewName) => {
+                    Object.values(authViews).forEach(view => view.classList.add('hidden'));
+                    if (authViews[viewName]) {
+                        authViews[viewName].classList.remove('hidden');
+                    }
+                    const titles = {
+                        initial: 'Welcome to MediConnect',
+                        roleSelect: 'Create Your Account',
+                        patientForm: 'Patient Registration',
+                        doctorForm: 'Doctor Registration',
+                        success: 'Success!'
+                    };
+                    modalTitle.textContent = titles[viewName] || 'Welcome';
+                };
+
+                authTriggers.forEach(trigger => trigger.addEventListener('click', openAuthModal));
+                closeModalButton.addEventListener('click', closeAuthModal);
+                authModal.addEventListener('click', (e) => {
+                    if (e.target === authModal) closeAuthModal();
+                });
+
+                document.getElementById('go-to-role-select').addEventListener('click', () => showAuthView('roleSelect'));
+                document.querySelectorAll('.back-to-login').forEach(btn => btn.addEventListener('click', () => showAuthView('initial')));
+                document.querySelectorAll('.back-to-roles').forEach(btn => btn.addEventListener('click', () => showAuthView('roleSelect')));
+
+                document.getElementById('select-patient-role').addEventListener('click', () => {
+                    userRole = 'patient';
+                    showAuthView('patientForm');
+                });
+                document.getElementById('select-doctor-role').addEventListener('click', () => {
+                    userRole = 'doctor';
+                    showAuthView('doctorForm');
+                });
+
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Simple logic: if email contains 'doc', go to doctor dashboard, else patient.
+                    const email = document.getElementById('email').value;
+                    if (email.includes('doc')) {
+                        userRole = 'doctor';
+                        showView('doctorDashboard');
+                    } else {
+                        userRole = 'patient';
+                        showView('patientDashboard');
+                    }
+                });
+
+                document.getElementById('patient-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    userRole = 'patient';
+                    showAuthView('success');
+                });
+                document.getElementById('doctor-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    userRole = 'doctor';
+                    showAuthView('success');
+                });
+                
+                document.getElementById('go-to-dashboard-btn').addEventListener('click', () => {
+                    closeAuthModal();
+                    if (userRole === 'patient') {
+                        showView('patientDashboard');
+                    } else if (userRole === 'doctor') {
+                        showView('doctorDashboard');
+                    }
+                });
+
+                showAuthView('initial');
+            };
+
+            // --- PATIENT DASHBOARD LOGIC ---
+            let patientDashboardInitialized = false;
+            const initializePatientDashboard = () => {
+                if (patientDashboardInitialized) return;
+                
+                let state = {
+                    records: [{ id: 1, source: "Hospital A (FHIR)", date: "2024-12-10", type: "Lab Report", summary: "CBC: Normal", doctorsNote: "" }, { id: 2, source: "Clinic B (PDF)", date: "2025-01-04", type: "X-Ray", summary: "No fracture detected", doctorsNote: "Advised patient to rest for 2 weeks." }, { id: 3, source: "Wearable (CSV)", date: "2025-03-02", type: "Vitals", summary: "Resting HR 68 bpm", doctorsNote: "" }],
+                    healthData: {
+                        bloodPressure: { systolic: 120, diastolic: 80, history: [{ month: 'Mar', value: 125 }, { month: 'Apr', value: 122 }, { month: 'May', value: 128 }, { month: 'Jun', value: 124 }, { month: 'Jul', value: 121 }, { month: 'Aug', value: 120 }] },
+                        sugarLevel: { value: 95, unit: "mg/dL", status: "Normal" },
+                        heartRate: { value: 68, unit: 'bpm', status: 'Resting', history: [{ month: 'Mar', value: 72 }, { month: 'Apr', value: 70 }, { month: 'May', value: 68 }, { month: 'Jun', value: 69 }, { month: 'Jul', value: 67 }, { month: 'Aug', value: 68 }] },
+                        bloodOxygen: { value: 98, unit: '%', status: 'Normal', history: [{ month: 'Mar', value: 99 }, { month: 'Apr', value: 98 }, { month: 'May', value: 97 }, { month: 'Jun', value: 98 }, { month: 'Jul', value: 99 }, { month: 'Aug', value: 98 }] },
+                        ecg: { status: 'Normal Sinus Rhythm', summary: 'No abnormalities detected.' },
+                        sleep: { duration: '7h 45m', quality: 'Good', deepSleep: '2h 30m' }
+                    },
+                    permissions: [{ id: "doc_1", name: "Dr. Priya (Cardiology)", access: false }, { id: "researcher_1", name: "Research Lab X", access: false }],
+                    patientDetails: { name: 'Jane Doe', patientId: '73921', dob: '1985-05-22', gender: 'Female', contact: '+1 (555) 123-4567', emergencyContact: 'John Doe, +1 (555) 987-6543' },
+                    accessLog: [],
+                    aiReport: null,
+                    activeVital: 'bloodPressure'
+                };
+                
+                const DOMElements = {
+                    profileModal: document.getElementById('profile-modal'),
+                    profileModalContent: document.getElementById('profile-modal-content'),
+                    uploadModal: document.getElementById('upload-modal'),
+                    uploadModalContent: document.getElementById('upload-modal-content'),
+                    headerPatientName: document.getElementById('header-patient-name'),
+                    headerPatientId: document.getElementById('header-patient-id'),
+                    healthSnapshotList: document.getElementById('health-snapshot-list'),
+                    blockchainAnchor: document.getElementById('blockchain-anchor'),
+                    vitalsFilterContainer: document.getElementById('vitals-filter-container'),
+                    vitalsDisplayContainer: document.getElementById('vitals-display-container'),
+                    aiReportContent: document.getElementById('ai-report-content'),
+                    permissionsContainer: document.getElementById('permissions-container'),
+                    accessLogContainer: document.getElementById('access-log-container'),
+                    profileButton: document.getElementById('profile-button'),
+                    closeProfileModalBtn: document.getElementById('close-profile-modal'),
+                    cancelProfileSaveBtn: document.getElementById('cancel-profile-save'),
+                    saveProfileBtn: document.getElementById('save-profile'),
+                    openUploadModalBtn: document.getElementById('open-upload-modal-btn'),
+                    closeUploadModalBtn: document.getElementById('close-upload-modal'),
+                    cancelUploadBtn: document.getElementById('cancel-upload'),
+                    uploadReportBtn: document.getElementById('upload-report-btn'),
+                    exploreAiBtn: document.getElementById('explore-ai-btn'),
+                    copyHashBtn: document.getElementById('copy-hash-btn'),
+                    runAiBtn: document.getElementById('run-ai-btn'),
+                    profileNameInput: document.getElementById('profile-name'),
+                    profileDobInput: document.getElementById('profile-dob'),
+                    profileGenderInput: document.getElementById('profile-gender'),
+                    profileContactInput: document.getElementById('profile-contact'),
+                    profileEmergencyInput: document.getElementById('profile-emergency'),
+                    reportTitleInput: document.getElementById('report-title'),
+                    reportDescriptionInput: document.getElementById('report-description'),
+                    reportDoctorNoteInput: document.getElementById('report-doctor-note')
+                };
+
+                // START: Event listener for logout button
+                document.getElementById('logout-patient').addEventListener('click', handleLogout);
+                // END: Event listener for logout button
+
+                const renderHeader = () => {
+                    DOMElements.headerPatientName.textContent = state.patientDetails.name;
+                    DOMElements.headerPatientId.textContent = `Patient ID: ${state.patientDetails.patientId}`;
+                };
+                const fakeBlockchainHash = () => {
+                    const base = `records:${state.records.length}:${new Date().toISOString()}`;
+                    let h = 0;
+                    for (let i = 0; i < base.length; i++) h = (h << 5) - h + base.charCodeAt(i);
+                    return `0x${(h >>> 0).toString(16).padStart(8, "0")}`;
+                };
+                const renderBlockchainAnchor = () => DOMElements.blockchainAnchor.innerHTML = `Blockchain anchor: <span class="font-mono">${fakeBlockchainHash()}</span>`;
+
+                // START: Modified render function to add delete button
+                const renderHealthSnapshot = () => {
+                    DOMElements.healthSnapshotList.innerHTML = state.records.map(r => 
+                        `<li class="flex justify-between items-start bg-white p-3 rounded-lg shadow-sm">
+                            <div class="flex-grow">
+                                <div class="font-medium text-slate-800">${r.type} <span class="text-xs text-slate-400">(${r.source})</span></div>
+                                <div class="text-slate-500">${r.summary || 'No summary provided.'}</div>
+                                ${r.doctorsNote ? `<div class="mt-2 text-xs text-indigo-700 bg-indigo-50 p-2 rounded-lg"><span class="font-semibold">Doctor's Note:</span> ${r.doctorsNote}</div>` : ''}
+                            </div>
+                            <div class="text-right flex-shrink-0 ml-2">
+                                <div class="text-xs text-slate-400 mb-2">${r.date}</div>
+                                <button data-record-id="${r.id}" class="delete-record-btn text-red-500 hover:text-red-700 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </li>`
+                    ).join('');
+                    renderBlockchainAnchor();
+                    lucide.createIcons(); // Re-render icons after adding new HTML
+                };
+
+                const handleDeleteRecord = (recordId) => {
+                    showConfirmation(
+                        'Delete Record',
+                        'This action cannot be undone. The record will be permanently deleted.',
+                        () => {
+                            state.records = state.records.filter(r => r.id !== recordId);
+                            logAction(`Record deleted: ID ${recordId}`);
+                            renderHealthSnapshot();
+                        },
+                        'Delete'
+                    );
+                };
+                // END: Modified render function to add delete button
+
+                const renderVitals = () => {
+                    const vital_filters = [{ id: 'bloodPressure', label: 'Blood Pressure', icon: 'heart' }, { id: 'heartRate', label: 'Heart Rate', icon: 'activity' }, { id: 'bloodOxygen', label: 'Blood Oxygen', icon: 'wind' }, { id: 'sugarLevel', label: 'Blood Sugar', icon: 'droplet' }, { id: 'ecg', label: 'ECG', icon: 'activity' }, { id: 'sleep', label: 'Sleep', icon: 'bed-double' }];
+                    DOMElements.vitalsFilterContainer.innerHTML = vital_filters.map(filter => `<button data-vital="${filter.id}" class="vital-filter-btn flex items-center gap-2 px-3 py-2 font-semibold text-sm rounded-lg transition-colors ${state.activeVital === filter.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"><i data-lucide="${filter.icon}" class="w-4 h-4"></i> <span>${filter.label}</span></button>`).join('');
+                    const ecgWaveformHTML = `<svg viewBox="0 0 100 40" class="w-full h-24 text-teal-500"><path d="M 0 20 L 10 20 L 12 15 L 16 25 L 20 20 L 22 22 L 24 18 L 26 20 L 40 20 Q 42 20 43 10 T 46 20 L 55 20 L 57 24 L 59 16 L 61 20 L 80 20 L 82 15 L 86 25 L 90 20 L 100 20" stroke="currentColor" strokeWidth="1" fill="none" /></svg>`;
+                    const createHealthHistoryGraphHTML = (data, metric, color) => {
+                        if (!data || data.length === 0) return `<div class="bg-slate-50 p-4 rounded-lg border flex items-center justify-center h-48"><p class="text-sm text-slate-400">No history data available</p></div>`;
+                        const maxVal = Math.max(...data.map(d => d.value)) + 10, minVal = Math.min(...data.map(d => d.value)) - 10;
+                        const points = data.map((d, i) => `${(i / (data.length - 1)) * 100},${100 - ((d.value - minVal) / (maxVal - minVal)) * 100}`).join(' ');
+                        const circles = data.map((d, i) => `<circle key="${i}" cx="${(i / (data.length - 1)) * 100}" cy="${100 - ((d.value - minVal) / (maxVal - minVal)) * 100}" r="1.5" fill="${color}" />`).join('');
+                        const months = data.map(d => `<span>${d.month}</span>`).join('');
+                        return `<div class="mt-4"><h4 class="text-sm font-semibold text-slate-600 mb-2">${metric} History (Last 6 Months)</h4><div class="bg-slate-50 p-4 rounded-lg border"><svg viewBox="0 0 100 100" class="w-full h-40" preserveAspectRatio="none"><text x="0" y="5" font-size="8" fill="#94a3b8">${maxVal}</text><text x="0" y="98" font-size="8" fill="#94a3b8">${minVal}</text><line x1="5" x2="100" y1="5" y2="5" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><line x1="5" x2="100" y1="50" y2="50" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><line x1="5" x2="100" y1="95" y2="95" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2"/><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points}" />${circles}</svg><div class="flex justify-between text-xs text-slate-400 mt-2">${months}</div></div></div>`;
+                    };
+                    const vital_components_html = {
+                        bloodPressure: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-red-100 p-2 rounded-full"><i data-lucide="heart" class="w-6 h-6 text-red-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Pressure</h3></div> <p class="text-4xl font-bold text-slate-800">${state.healthData.bloodPressure.systolic}<span class="text-2xl text-slate-500">/${state.healthData.bloodPressure.diastolic}</span><span class="text-lg ml-2 text-slate-500">mmHg</span></p> <p class="text-sm text-green-600 font-medium mt-1">Normal</p> ${createHealthHistoryGraphHTML(state.healthData.bloodPressure.history, "Systolic BP", "#ef4444")} </div>`,
+                        heartRate: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-rose-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-rose-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Heart Rate</h3></div> <p class="text-4xl font-bold text-slate-800">${state.healthData.heartRate.value}<span class="text-lg ml-2 text-slate-500">${state.healthData.heartRate.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${state.healthData.heartRate.status}</p> ${createHealthHistoryGraphHTML(state.healthData.heartRate.history, "Resting Heart Rate", "#f43f5e")} </div>`,
+                        bloodOxygen: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-cyan-100 p-2 rounded-full"><i data-lucide="wind" class="w-6 h-6 text-cyan-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Oxygen (SpO2)</h3></div> <p class="text-4xl font-bold text-slate-800">${state.healthData.bloodOxygen.value}<span class="text-lg ml-2 text-slate-500">${state.healthData.bloodOxygen.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${state.healthData.bloodOxygen.status}</p> ${createHealthHistoryGraphHTML(state.healthData.bloodOxygen.history, "SpO2 Level", "#06b6d4")} </div>`,
+                        ecg: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-teal-100 p-2 rounded-full"><i data-lucide="activity" class="w-6 h-6 text-teal-500"></i></div><h3 class="text-xl font-semibold text-slate-800">ECG</h3></div> <div class="mt-4 p-4 bg-slate-50 rounded-lg border">${ecgWaveformHTML}</div> <p class="text-lg font-semibold text-slate-800 mt-4">${state.healthData.ecg.status}</p> <p class="text-sm text-slate-500 mt-1">${state.healthData.ecg.summary}</p> </div>`,
+                        sleep: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-indigo-100 p-2 rounded-full"><i data-lucide="bed-double" class="w-6 h-6 text-indigo-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Sleep Pattern</h3></div> <div class="grid grid-cols-3 gap-4 text-center mt-4"> <div><p class="text-2xl font-bold">${state.healthData.sleep.duration}</p><p class="text-xs text-slate-500">Total Sleep</p></div> <div><p class="text-2xl font-bold">${state.healthData.sleep.deepSleep}</p><p class="text-xs text-slate-500">Deep Sleep</p></div> <div><p class="text-2xl font-bold">${state.healthData.sleep.quality}</p><p class="text-xs text-slate-500">Quality</p></div> </div> ${createHealthHistoryGraphHTML([], "Sleep Duration", "#6366f1")} </div>`,
+                        sugarLevel: `<div class="bg-white rounded-2xl p-6 border"> <div class="flex items-center gap-3 mb-3"><div class="bg-sky-100 p-2 rounded-full"><i data-lucide="droplet" class="w-6 h-6 text-sky-500"></i></div><h3 class="text-xl font-semibold text-slate-800">Blood Sugar</h3></div> <p class="text-4xl font-bold text-slate-800">${state.healthData.sugarLevel.value}<span class="text-lg ml-2 text-slate-500">${state.healthData.sugarLevel.unit}</span></p> <p class="text-sm text-green-600 font-medium mt-1">${state.healthData.sugarLevel.status}</p> ${createHealthHistoryGraphHTML([], "History", "#0ea5e9")} </div>`
+                    };
+                    let content = vital_components_html[state.activeVital];
+                    if (state.activeVital === 'bloodPressure') content += vital_components_html['heartRate'];
+                    if (state.activeVital === 'heartRate') content += vital_components_html['bloodPressure'];
+                    if (state.activeVital === 'bloodOxygen') content += vital_components_html['sugarLevel'];
+                    if (state.activeVital === 'sugarLevel') content += vital_components_html['bloodOxygen'];
+                    if (state.activeVital === 'ecg') content += vital_components_html['sleep'];
+                    if (state.activeVital === 'sleep') content += vital_components_html['ecg'];
+                    DOMElements.vitalsDisplayContainer.innerHTML = content;
+                    lucide.createIcons();
+                };
+                const renderPermissions = () => {
+                    DOMElements.permissionsContainer.innerHTML = state.permissions.map(p => `<div class="flex items-center justify-between gap-4 border rounded-lg p-3 hover:bg-slate-50 transition-colors"><div><div class="font-medium text-slate-700">${p.name}</div><div class="text-xs text-slate-400">Cardiology Research</div></div><div class="flex gap-2 items-center"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" data-id="${p.id}" ${p.access ? 'checked' : ''} class="sr-only peer permission-toggle"><div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div><span class="ml-3 text-sm font-medium text-gray-900">${p.access ? "Allowed" : "Denied"}</span></label><button data-id="${p.id}" class="simulate-request-btn text-xs rounded px-3 py-1 border bg-white hover:bg-slate-100 transition-colors">Simulate</button></div></div>`).join('');
+                };
+                const logAction = (action) => {
+                    state.accessLog = [{ ts: new Date().toISOString(), action }, ...state.accessLog];
+                    renderAccessLog();
+                };
+                const renderAccessLog = () => {
+                    if (state.accessLog.length === 0) {
+                        DOMElements.accessLogContainer.innerHTML = `<div class="text-slate-400 p-2">No activity yet. Grant permissions or simulate a request.</div>`;
+                        return;
+                    }
+                    DOMElements.accessLogContainer.innerHTML = state.accessLog.map(l => `<div class="flex justify-between items-start border-b border-slate-200 pb-2 mb-2 last:border-b-0 last:mb-0"><div class="text-slate-700 font-mono pr-4">${l.action}</div><div class="text-slate-400 text-xs flex-shrink-0">${new Date(l.ts).toLocaleString()}</div></div>`).join('');
+                };
+                const renderAiReport = () => DOMElements.aiReportContent.textContent = state.aiReport ?? "Click button to run analysis.";
+
+                const toggleModal = (modal, content, show) => {
+                    if (show) {
+                        modal.classList.remove('hidden'); modal.classList.add('flex'); modal.classList.remove('modal-leave'); content.classList.remove('modal-content-leave'); modal.classList.add('modal-enter'); content.classList.add('modal-content-enter');
+                    } else {
+                        modal.classList.add('modal-leave'); content.classList.add('modal-content-leave'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+                    }
+                };
+
+                const handleAddRecord = () => {
+                    const title = DOMElements.reportTitleInput.value, description = DOMElements.reportDescriptionInput.value, doctorsNote = DOMElements.reportDoctorNoteInput.value;
+                    if (!title) { alert("Please provide a title for the report."); return; }
+                    const newRecord = { id: Date.now(), source: "Manual Upload", date: new Date().toISOString().split('T')[0], type: title, summary: description, doctorsNote: doctorsNote };
+                    state.records = [newRecord, ...state.records];
+                    logAction(`New record added: "${newRecord.type}"`);
+                    renderHealthSnapshot();
+                    DOMElements.reportTitleInput.value = ''; DOMElements.reportDescriptionInput.value = ''; DOMElements.reportDoctorNoteInput.value = '';
+                    toggleModal(DOMElements.uploadModal, DOMElements.uploadModalContent, false);
+                };
+
+                const handleSaveProfile = () => {
+                    state.patientDetails.name = DOMElements.profileNameInput.value; state.patientDetails.dob = DOMElements.profileDobInput.value; state.patientDetails.gender = DOMElements.profileGenderInput.value; state.patientDetails.contact = DOMElements.profileContactInput.value; state.patientDetails.emergencyContact = DOMElements.profileEmergencyInput.value;
+                    renderHeader();
+                    toggleModal(DOMElements.profileModal, DOMElements.profileModalContent, false);
+                };
+
+                DOMElements.profileButton.addEventListener('click', () => {
+                    DOMElements.profileNameInput.value = state.patientDetails.name; DOMElements.profileDobInput.value = state.patientDetails.dob; DOMElements.profileGenderInput.value = state.patientDetails.gender; DOMElements.profileContactInput.value = state.patientDetails.contact; DOMElements.profileEmergencyInput.value = state.patientDetails.emergencyContact;
+                    toggleModal(DOMElements.profileModal, DOMElements.profileModalContent, true);
+                });
+                DOMElements.closeProfileModalBtn.addEventListener('click', () => toggleModal(DOMElements.profileModal, DOMElements.profileModalContent, false));
+                DOMElements.cancelProfileSaveBtn.addEventListener('click', () => toggleModal(DOMElements.profileModal, DOMElements.profileModalContent, false));
+                DOMElements.saveProfileBtn.addEventListener('click', handleSaveProfile);
+                DOMElements.openUploadModalBtn.addEventListener('click', () => toggleModal(DOMElements.uploadModal, DOMElements.uploadModalContent, true));
+                DOMElements.closeUploadModalBtn.addEventListener('click', () => toggleModal(DOMElements.uploadModal, DOMElements.uploadModalContent, false));
+                DOMElements.cancelUploadBtn.addEventListener('click', () => toggleModal(DOMElements.uploadModal, DOMElements.uploadModalContent, false));
+                DOMElements.uploadReportBtn.addEventListener('click', handleAddRecord);
+
+                // START: Event listener for deleting a record
+                DOMElements.healthSnapshotList.addEventListener('click', e => {
+                    const deleteButton = e.target.closest('.delete-record-btn');
+                    if(deleteButton) {
+                        const recordId = parseInt(deleteButton.dataset.recordId);
+                        handleDeleteRecord(recordId);
+                    }
+                });
+                // END: Event listener for deleting a record
+
+                DOMElements.vitalsFilterContainer.addEventListener('click', e => {
+                    const button = e.target.closest('.vital-filter-btn');
+                    if (button) { state.activeVital = button.dataset.vital; renderVitals(); }
+                });
+                DOMElements.permissionsContainer.addEventListener('click', e => {
+                    const toggle = e.target.closest('.permission-toggle'), button = e.target.closest('.simulate-request-btn');
+                    if (toggle) {
+                        const id = toggle.dataset.id, permission = state.permissions.find(p => p.id === id);
+                        if (permission) { permission.access = !permission.access; logAction(`${permission.name} permission ${permission.access ? "granted" : "revoked"}`); renderPermissions(); }
+                    }
+                    if (button) {
+                        const id = button.dataset.id, p = state.permissions.find(x => x.id === id);
+                        if (p) { logAction(`${p.name} requested data: ${p.access ? "GRANTED" : "DENIED"}`); }
+                    }
+                });
+                DOMElements.runAiBtn.addEventListener('click', () => {
+                    state.aiReport = ["1. Population data suggests a slight increase in hypertension risk for this demographic.", "2. Analysis of similar patient profiles indicates a high success rate with preventative lifestyle changes.", "3. Recommend flagging patients with consistent BP readings above 130/85 for proactive outreach."].join("\n");
+                    logAction(`AI population analysis executed`);
+                    renderAiReport();
+                });
+                DOMElements.copyHashBtn.addEventListener('click', () => navigator.clipboard.writeText(fakeBlockchainHash()).then(() => alert('Blockchain hash copied to clipboard!')).catch(err => console.error('Failed to copy hash: ', err)));
+                DOMElements.exploreAiBtn.addEventListener('click', () => document.getElementById('ai')?.scrollIntoView({ behavior: 'smooth' }));
+
+                renderHeader(); renderHealthSnapshot(); renderVitals(); renderPermissions(); renderAccessLog(); lucide.createIcons();
+                patientDashboardInitialized = true;
+            };
+
+            // --- DOCTOR DASHBOARD LOGIC ---
+            let doctorDashboardInitialized = false;
+            const initializeDoctorDashboard = () => {
+                if (doctorDashboardInitialized) return;
+                
+                const mockPatients = [
+                    { id: 'PID73921', name: 'Jane Doe', dob: '1985-05-22', gender: 'Female', avatar: 'https://placehold.co/100x100/fecdd3/444444?text=JD', contact: { phone: '+1 (555) 123-4567', email: 'jane.doe@email.com', emergency: 'John Doe, +1 (555) 987-6543' }, consent: 'All Records', bloodGroup: 'O+', history: { allergies: 'Penicillin, Peanuts', chronic: 'Asthma (Mild)', family: 'Hypertension (Father)' }, lifestyle: { smoking: 'Non-smoker', alcohol: 'Socially', exercise: '3 times a week' }, ai: { summary: '38 y/o female with mild asthma. Generally stable health. Monitor for potential hypertension due to family history.', flags: 'Allergy to Penicillin.' }, records: [{ date: '2025-08-15', type: 'Consultation', title: 'Annual Check-up', doctor: 'Dr. Emily Carter', details: 'Routine physical exam. All vitals normal. Discussed maintaining healthy lifestyle.' }, { date: '2025-06-20', type: 'Lab Report', title: 'Complete Blood Count', file: 'https://placehold.co/800x1100/f3f4f6/333333?text=Lab+Report+PDF', details: 'All parameters within normal range.' }, { date: '2024-11-02', type: 'X-Ray', title: 'Chest X-Ray', file: 'https://placehold.co/800x600/333333/ffffff?text=X-Ray+Image', details: 'Clear lungs, no abnormalities detected.' }, { date: '2023-01-30', type: 'Prescription', title: 'Asthma Inhaler Refill', doctor: 'Dr. Emily Carter', details: 'Albuterol Inhaler, as needed.' }] },
+                    { id: 'PID84219', name: 'Robert Smith', dob: '1968-11-12', gender: 'Male', avatar: 'https://placehold.co/100x100/cce7f1/444444?text=RS', contact: { phone: '+1 (555) 234-5678', email: 'robert.s@email.com', emergency: 'Susan Smith, +1 (555) 876-5432' }, consent: 'Lab Only', bloodGroup: 'A+', history: { allergies: 'None', chronic: 'Type 2 Diabetes, Hypertension', family: 'Coronary Artery Disease (Mother)' }, lifestyle: { smoking: 'Former smoker (quit 2015)', alcohol: 'Rarely', exercise: 'Walking daily' }, ai: { summary: '56 y/o male managing T2 Diabetes and hypertension. Key is regular monitoring of blood glucose and BP.', flags: 'Hypertension, T2 Diabetes. High risk for cardiac events.' }, records: [{ date: '2025-09-01', type: 'Lab Report', title: 'HbA1c Test', file: 'https://placehold.co/800x1100/f3f4f6/333333?text=Lab+Report+PDF', details: 'Result: 6.8%. Improved from last quarter.' }, { date: '2025-08-20', type: 'Consultation', title: 'Diabetes Follow-up', doctor: 'Dr. Ben Geller', details: 'Discussed diet and medication adherence. BP reading: 135/85 mmHg.' }, { date: '2025-05-15', type: 'Prescription', title: 'Medication Update', doctor: 'Dr. Ben Geller', details: 'Metformin 1000mg, Lisinopril 10mg daily.' }] }
+                ];
+                let activePatient = null;
+
+                const searchInput = document.querySelector('#doctor-dashboard-view #patient-search-input');
+                const patientList = document.querySelector('#doctor-dashboard-view #patient-list');
+                const noResults = document.querySelector('#doctor-dashboard-view #no-results');
+                const searchView = document.querySelector('#doctor-dashboard-view #patient-search-view');
+                const profileView = document.querySelector('#doctor-dashboard-view #patient-profile-view');
+                const backToSearchBtn = document.querySelector('#doctor-dashboard-view #back-to-search');
+                const messagePatientBtn = document.getElementById('message-patient-btn');
+
+                const modal = document.getElementById('file-preview-modal-doctor');
+                const modalContent = document.getElementById('modal-content-doctor');
+                const closeModalButton = document.getElementById('close-modal-button-doctor');
+                const modalCloseFooter = document.getElementById('modal-close-btn-footer-doctor');
+                const modalTitle = document.getElementById('modal-title-doctor');
+                const modalImage = document.getElementById('modal-image-doctor');
+                const modalDownloadBtn = document.getElementById('modal-download-btn-doctor');
+                let currentFileUrl = '';
+                
+                // START: Event listeners for logout button and message patient button
+                document.getElementById('logout-doctor').addEventListener('click', handleLogout);
+                messagePatientBtn.addEventListener('click', () => {
+                    if (activePatient) {
+                        alert(`Simulating a message to ${activePatient.name}.`);
+                    }
+                });
+                // END: Event listeners for logout button and message patient button
+
+                const renderPatientCard = (patient) => {
+                    const consentColors = { 'All Records': 'bg-green-100 text-green-800', 'Lab Only': 'bg-amber-100 text-amber-800', 'Prescription Only': 'bg-blue-100 text-blue-800' };
+                    return `<div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md hover:border-blue-400 transition-all cursor-pointer" data-patient-id="${patient.id}"><div class="flex items-center gap-4"><img src="${patient.avatar}" alt="${patient.name}" class="w-16 h-16 rounded-full"><div class="flex-1"><p class="font-bold text-lg text-slate-800">${patient.name}</p><p class="text-sm text-slate-500">ID: ${patient.id}</p></div></div><div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center"><p class="text-sm text-slate-600">Consent Level:</p><span class="px-2 py-1 text-xs font-semibold rounded-full ${consentColors[patient.consent] || 'bg-slate-100 text-slate-800'}">${patient.consent}</span></div></div>`;
+                };
+                const displayPatients = (patients) => {
+                    if (patients.length === 0) {
+                        patientList.innerHTML = ''; noResults.classList.remove('hidden'); noResults.querySelector('p').textContent = 'No patients found matching your search.';
+                    } else {
+                        patientList.innerHTML = patients.map(renderPatientCard).join(''); noResults.classList.add('hidden');
+                    }
+                };
+
+                const populatePatientProfile = (patient) => {
+                    activePatient = patient; // Set the active patient
+                    document.querySelector('#doctor-dashboard-view #patient-avatar').src = patient.avatar;
+                    document.querySelector('#doctor-dashboard-view #patient-name').textContent = patient.name;
+                    const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
+                    document.querySelector('#doctor-dashboard-view #patient-meta').textContent = `ID: ${patient.id} • ${patient.gender}, ${age} years old`;
+                    document.querySelector('#doctor-dashboard-view #patient-contact-info').innerHTML = `<p><i data-lucide="phone" class="w-4 h-4 inline-block mr-2 text-slate-400"></i> ${patient.contact.phone}</p><p><i data-lucide="mail" class="w-4 h-4 inline-block mr-2 text-slate-400"></i> ${patient.contact.email}</p><p><i data-lucide="contact" class="w-4 h-4 inline-block mr-2 text-slate-400"></i> ${patient.contact.emergency}</p>`;
+                    document.querySelector('#doctor-dashboard-view #ai-summary').textContent = patient.ai.summary;
+                    document.querySelector('#doctor-dashboard-view #red-flags').textContent = patient.ai.flags;
+                    document.querySelector('#doctor-dashboard-view #personal-info').innerHTML = `<p class="flex justify-between"><span>DOB:</span> <span class="font-medium">${patient.dob}</span></p><p class="flex justify-between"><span>Blood Group:</span> <span class="font-medium">${patient.bloodGroup}</span></p>`;
+                    document.querySelector('#doctor-dashboard-view #medical-history').innerHTML = `<p><strong>Allergies:</strong> ${patient.history.allergies}</p><p><strong>Chronic Conditions:</strong> ${patient.history.chronic}</p><p><strong>Family History:</strong> ${patient.history.family}</p>`;
+                    document.querySelector('#doctor-dashboard-view #lifestyle-info').innerHTML = `<p class="flex justify-between"><span>Smoking:</span> <span class="font-medium">${patient.lifestyle.smoking}</span></p><p class="flex justify-between"><span>Alcohol:</span> <span class="font-medium">${patient.lifestyle.alcohol}</span></p><p class="flex justify-between"><span>Exercise:</span> <span class="font-medium">${patient.lifestyle.exercise}</span></p>`;
+                    const timelineContainer = document.querySelector('#doctor-dashboard-view #records-timeline');
+                    const iconMap = { 'Consultation': '<i data-lucide="clipboard-pen" class="w-5 h-5"></i>', 'Lab Report': '<i data-lucide="beaker" class="w-5 h-5"></i>', 'X-Ray': '<i data-lucide="bone" class="w-5 h-5"></i>', 'Prescription': '<i data-lucide="pilcrow" class="w-5 h-5"></i>' };
+                    timelineContainer.innerHTML = patient.records.map(record => `<div class="relative"><div class="absolute -left-[37px] top-1 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">${iconMap[record.type] || '<i data-lucide="file-text" class="w-5 h-5"></i>'}</div><div class="ml-4"><p class="text-xs text-slate-500">${record.date}</p><h4 class="font-semibold">${record.title}</h4><p class="text-sm text-slate-600">${record.details}</p>${record.doctor ? `<p class="text-xs text-slate-500 mt-1">Provider: ${record.doctor}</p>` : ''}${record.file ? `<button class="preview-btn mt-2 text-sm text-blue-600 font-semibold hover:underline" data-file="${record.file}" data-title="${record.title}">View File</button>` : ''}</div></div>`).join('');
+                    
+                    // START: Populate patient info in the consultation tab
+                    document.getElementById('consult-patient-avatar').src = patient.avatar;
+                    document.getElementById('consult-patient-name').textContent = patient.name;
+                    document.getElementById('consult-patient-id').textContent = `ID: ${patient.id}`;
+                    // END: Populate patient info in the consultation tab
+                    
+                    lucide.createIcons();
+                };
+
+                const showProfileView = (patientId) => {
+                    const patient = mockPatients.find(p => p.id === patientId);
+                    if (patient) { populatePatientProfile(patient); searchView.classList.add('hidden'); profileView.classList.remove('hidden'); switchTab('profile'); }
+                };
+
+                const showSearchView = () => {
+                    profileView.classList.add('hidden'); searchView.classList.remove('hidden'); searchInput.value = ''; displayPatients(mockPatients);
+                };
+
+                const openModal = (fileUrl, title) => {
+                    currentFileUrl = fileUrl; modalTitle.textContent = title; modalImage.src = fileUrl; modal.classList.remove('hidden');
+                    setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10);
+                };
+                const closeModal = () => {
+                    modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100', 'opacity-100');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
+                };
+
+                const tabButtons = document.querySelectorAll('#doctor-dashboard-view .dashboard-tab-button');
+                const tabContents = document.querySelectorAll('#doctor-dashboard-view .dashboard-tab-content');
+                const switchTab = (tabId) => {
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    document.getElementById(`${tabId}-content`).classList.remove('hidden');
+                    tabButtons.forEach(button => {
+                        button.classList.toggle('bg-blue-600', button.dataset.tab === tabId);
+                        button.classList.toggle('text-white', button.dataset.tab === tabId);
+                        button.classList.toggle('bg-white', button.dataset.tab !== tabId);
+                        button.classList.toggle('text-slate-700', button.dataset.tab !== tabId);
+                    });
+                };
+
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filteredPatients = mockPatients.filter(p => p.name.toLowerCase().includes(searchTerm) || p.id.toLowerCase().includes(searchTerm));
+                    displayPatients(filteredPatients);
+                });
+                patientList.addEventListener('click', (e) => {
+                    const card = e.target.closest('[data-patient-id]');
+                    if (card) { showProfileView(card.dataset.patientId); }
+                });
+                profileView.addEventListener('click', (e) => {
+                    const previewButton = e.target.closest('.preview-btn');
+                    if (previewButton) { openModal(previewButton.dataset.file, previewButton.dataset.title); }
+                });
+                backToSearchBtn.addEventListener('click', showSearchView);
+                tabButtons.forEach(button => button.addEventListener('click', () => switchTab(button.dataset.tab)));
+                closeModalButton.addEventListener('click', closeModal);
+                modalCloseFooter.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+                modalDownloadBtn.addEventListener('click', () => window.open(currentFileUrl, '_blank'));
+
+                displayPatients(mockPatients);
+                lucide.createIcons();
+                doctorDashboardInitialized = true;
+            };
+
+            // --- INITIALIZE THE APP ---
+            initLandingPage();
+            lucide.createIcons();
+            showView('landing');
+        });
+    </script>
+</body>
+</html>
