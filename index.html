@@ -1078,11 +1078,18 @@
                         showView('doctorDashboard');
                     }
                 } else {
-                    console.log("New user signing up:", uid);
-                    // This is a new user (anonymous or just signed up), show the role selection in the modal.
-                    openAuthModal(); // Ensure modal is open
-                    showAuthView('roleSelect');
-                    showLoading(false);
+                    // If no user document exists, check if the user is anonymous.
+                    if (currentUser && currentUser.isAnonymous) {
+                        // For a new anonymous session, just show the landing page.
+                        // The user can then choose to sign in or sign up.
+                        showView('landing');
+                    } else {
+                        // This is a new user from Google/Email who hasn't completed registration.
+                        console.log("New user signing up:", uid);
+                        openAuthModal();
+                        showAuthView('roleSelect');
+                        showLoading(false);
+                    }
                 }
             } catch (e) {
                 console.error("Error fetching user data:", e);
@@ -1103,7 +1110,7 @@
             const conditions = new Set();
 
             records.forEach(record => {
-                const text = (record.summary + " " + record.doctorsNote).toLowerCase();
+                const text = (record.summary + " " + (record.doctorsNote || "")).toLowerCase();
                 if (text.includes('hypertension') || text.includes('high blood pressure')) {
                     conditions.add("Hypertension");
                     flags.push("High blood pressure noted. Consistent monitoring recommended.");
@@ -1131,7 +1138,7 @@
             
             return {
                 summary: summary,
-                flags: flags.length > 0 ? flags.join('\n- ') : 'No red flags detected.'
+                flags: flags.length > 0 ? '- ' + flags.join('\n- ') : 'No red flags detected.'
             };
         };
 
@@ -1150,7 +1157,7 @@
             ];
 
             // Add a line specific to the patient's data for a more personalized feel
-            const hasAllergy = records.some(r => (r.summary + " " + r.doctorsNote).toLowerCase().includes('allergy'));
+            const hasAllergy = records.some(r => (r.summary + " " + (r.doctorsNote || "")).toLowerCase().includes('allergy'));
             if(hasAllergy) {
                 reportLines.push("4. Note: Patient has documented allergies. Ensure cross-referencing before prescribing new medications.");
             }
