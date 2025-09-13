@@ -55,6 +55,15 @@
         .chatbot-modal-leave { animation: fadeOut 0.3s ease-in forwards; }
         .message-enter { animation: slideIn 0.3s ease-out forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .typing-indicator span {
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
     </style>
 </head>
 <body class="bg-white text-slate-800 antialiased">
@@ -288,12 +297,12 @@
                         </div>
                         <form id="login-form" class="space-y-4">
                             <div>
-                                <label for="email" class="text-sm font-medium text-slate-700">Email</label>
-                                <input type="email" id="email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" required>
+                                <label for="login-email" class="text-sm font-medium text-slate-700">Email</label>
+                                <input type="email" id="login-email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com" required>
                             </div>
                             <div>
-                                <label for="password" class="text-sm font-medium text-slate-700">Password</label>
-                                <input type="password" id="password" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
+                                <label for="login-password" class="text-sm font-medium text-slate-700">Password</label>
+                                <input type="password" id="login-password" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" required>
                             </div>
                             <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Sign In</button>
                         </form>
@@ -320,45 +329,53 @@
                             <h4 class="text-md font-semibold text-slate-800 border-b pb-2 mb-4">Personal Details</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="text-sm font-medium">Full Name</label>
-                                    <input type="text" id="patient-name-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="patient-name-reg" class="text-sm font-medium">Full Name</label>
+                                    <input type="text" id="patient-name-reg" name="patient-name-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Date of Birth</label>
-                                    <input type="date" id="patient-dob-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="patient-dob-reg" class="text-sm font-medium">Date of Birth</label>
+                                    <input type="date" id="patient-dob-reg" name="patient-dob-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Gender</label>
-                                    <select id="patient-gender-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                    <label for="patient-gender-reg" class="text-sm font-medium">Gender</label>
+                                    <select id="patient-gender-reg" name="patient-gender-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
                                         <option>Select...</option><option>Male</option><option>Female</option><option>Other</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Contact Number</label>
-                                    <input type="tel" id="patient-contact-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="patient-contact-reg" class="text-sm font-medium">Contact Number</label>
+                                    <input type="tel" id="patient-contact-reg" name="patient-contact-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="text-sm font-medium">Emergency Contact</label>
-                                    <input type="tel" id="patient-emergency-reg" placeholder="Name & Phone Number" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="patient-emergency-reg" class="text-sm font-medium">Emergency Contact</label>
+                                    <input type="tel" id="patient-emergency-reg" name="patient-emergency-reg" placeholder="Name & Phone Number" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label for="patient-email-reg" class="text-sm font-medium">Email</label>
+                                    <input type="email" id="patient-email-reg" name="patient-email-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div>
+                                    <label for="patient-password-reg" class="text-sm font-medium">Password</label>
+                                    <input type="password" id="patient-password-reg" name="patient-password-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                             </div>
                             <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Medical Details</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="text-sm font-medium">Blood Group</label>
-                                    <input type="text" id="patient-blood-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                    <label for="patient-blood-reg" class="text-sm font-medium">Blood Group</label>
+                                    <input type="text" id="patient-blood-reg" name="patient-blood-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Allergies</label>
-                                    <input type="text" id="patient-allergies-reg" placeholder="e.g., Peanuts, Penicillin" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
+                                    <label for="patient-allergies-reg" class="text-sm font-medium">Allergies</label>
+                                    <input type="text" id="patient-allergies-reg" name="patient-allergies-reg" placeholder="e.g., Peanuts, Penicillin" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm">
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="text-sm font-medium">Current Medications</label>
-                                    <textarea id="patient-meds-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
+                                    <label for="patient-meds-reg" class="text-sm font-medium">Current Medications</label>
+                                    <textarea id="patient-meds-reg" name="patient-meds-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="text-sm font-medium">Past Medical History</label>
-                                    <textarea id="patient-history-reg" placeholder="e.g., Asthma, Surgery in 2020" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
+                                    <label for="patient-history-reg" class="text-sm font-medium">Past Medical History</label>
+                                    <textarea id="patient-history-reg" name="patient-history-reg" placeholder="e.g., Asthma, Surgery in 2020" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" rows="2"></textarea>
                                 </div>
                             </div>
                             <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Consent Management</h4>
@@ -389,28 +406,32 @@
                             <h4 class="text-md font-semibold text-slate-800 border-b pb-2 mb-4">Professional Details</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="text-sm font-medium">Full Name</label>
-                                    <input type="text" id="doctor-name-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="doctor-name-reg" class="text-sm font-medium">Full Name</label>
+                                    <input type="text" id="doctor-name-reg" name="doctor-name-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Specialization</label>
-                                    <input type="text" id="doctor-spec-reg" placeholder="e.g., Cardiology" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="doctor-spec-reg" class="text-sm font-medium">Specialization</label>
+                                    <input type="text" id="doctor-spec-reg" name="doctor-spec-reg" placeholder="e.g., Cardiology" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Years of Experience</label>
-                                    <input type="number" id="doctor-exp-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="doctor-exp-reg" class="text-sm font-medium">Years of Experience</label>
+                                    <input type="number" id="doctor-exp-reg" name="doctor-exp-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">Medical License Number</label>
-                                    <input type="text" id="doctor-license-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="doctor-license-reg" class="text-sm font-medium">Medical License Number</label>
+                                    <input type="text" id="doctor-license-reg" name="doctor-license-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="text-sm font-medium">Hospital Affiliation</label>
-                                    <input type="text" id="doctor-hospital-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="doctor-hospital-reg" class="text-sm font-medium">Hospital Affiliation</label>
+                                    <input type="text" id="doctor-hospital-reg" name="doctor-hospital-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="text-sm font-medium">Contact Email</label>
-                                    <input type="email" id="doctor-contact-email-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                    <label for="doctor-email-reg" class="text-sm font-medium">Contact Email</label>
+                                    <input type="email" id="doctor-email-reg" name="doctor-email-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="doctor-password-reg" class="text-sm font-medium">Password</label>
+                                    <input type="password" id="doctor-password-reg" name="doctor-password-reg" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm" required>
                                 </div>
                             </div>
                             <h4 class="text-md font-semibold text-slate-800 border-b pb-2 my-6">Verification</h4>
@@ -1177,8 +1198,8 @@
 
             document.getElementById('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
                 try {
                     const userCredential = await signInWithEmailAndPassword(auth, email, password);
                     const uid = userCredential.user.uid;
@@ -1191,8 +1212,8 @@
 
             document.getElementById('patient-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                const email = document.getElementById('patient-email-reg').value;
+                const password = document.getElementById('patient-password-reg').value;
                 const name = document.getElementById('patient-name-reg').value;
                 const dob = document.getElementById('patient-dob-reg').value;
                 const gender = document.getElementById('patient-gender-reg').value;
@@ -1223,8 +1244,8 @@
 
             document.getElementById('doctor-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                const email = document.getElementById('doctor-email-reg').value;
+                const password = document.getElementById('doctor-password-reg').value;
                 const name = document.getElementById('doctor-name-reg').value;
                 const specialization = document.getElementById('doctor-spec-reg').value;
                 const experience = document.getElementById('doctor-exp-reg').value;
@@ -1267,6 +1288,7 @@
                     showView('doctorDashboard');
                 }
             } else {
+                // If a user logs in but has no profile, force them back to landing to register.
                 showMessage('Account Not Found', 'No user profile found. Please register.');
                 await auth.signOut();
                 showView('landing');
@@ -1276,18 +1298,29 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                await checkUserRoleAndRedirect(user.uid);
+                const userDoc = await getDoc(doc(db, `artifacts/${appId}/users/${user.uid}`));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    if (userData.role === 'patient') {
+                        showView('patientDashboard');
+                    } else if (userData.role === 'doctor') {
+                        showView('doctorDashboard');
+                    }
+                } else {
+                    // Don't auto sign-out, let the user register.
+                    console.log("User authenticated but no profile found. Waiting for registration.");
+                }
             } else {
+                // Initial sign-in with custom token for Canvas environment
                 if (initialAuthToken) {
                     try {
                         await signInWithCustomToken(auth, initialAuthToken);
                         console.log("Signed in with custom token.");
                     } catch (error) {
-                        console.log("Custom token sign-in failed, signing in anonymously.");
-                        await signInAnonymously(auth);
+                        console.log("Custom token sign-in failed. Staying on landing page.");
                     }
                 } else {
-                    await signInAnonymously(auth);
+                    console.log("No user authenticated. Staying on landing page.");
                 }
             }
         });
@@ -1296,7 +1329,7 @@
         let patientDashboardInitialized = false;
 
         const initializePatientDashboard = async () => {
-            if (patientDashboardInitialized || !currentUser) return;
+            if (patientDashboardInitialized || !currentUser || !db) return;
             
             const DOMElements = {
                 patientMainSections: document.querySelectorAll('.patient-main-section'),
@@ -1343,8 +1376,6 @@
                 aiReport: null
             };
             
-            const mockDoctors = [{ id: 'DOC002', name: 'Dr. Alex Turner', specialization: 'Cardiology', avatar: 'https://placehold.co/100x100/a7c5fd/333333?text=Dr.A' }];
-
             document.getElementById('logout-patient').addEventListener('click', handleLogout);
 
             const switchSection = (id) => {
@@ -1671,7 +1702,7 @@
         let doctorDashboardInitialized = false;
 
         const initializeDoctorDashboard = async () => {
-            if (doctorDashboardInitialized || !currentUser) return;
+            if (doctorDashboardInitialized || !currentUser || !db) return;
             
             const DOMElements = {
                 search: document.querySelector('#doctor-dashboard-view #patient-search-input'),
@@ -1703,7 +1734,7 @@
 
             document.getElementById('logout-doctor').addEventListener('click', handleLogout);
             document.getElementById('message-patient-btn').addEventListener('click', () => {
-                const activePatient = doctorState.patients.find(p => p.id === doctorState.activePatientId);
+                const activePatient = doctorState.patients.find(p => p.uid === doctorState.activePatientId);
                 if (activePatient) {
                     showMessage('Message Sent', `Simulating a message to ${activePatient.name}.`);
                 }
@@ -1728,7 +1759,7 @@
                 if (!patient) return;
                 
                 doctorState.activePatientId = patient.uid;
-                document.querySelector('#doctor-dashboard-view #patient-avatar').src = patient.avatar || 'https://placehold.co/100x100/fecdd3/444444?text=Patient';
+                document.querySelector('#doctor-dashboard-view #patient-avatar').src = 'https://placehold.co/100x100/fecdd3/444444?text=Patient';
                 document.querySelector('#doctor-dashboard-view #patient-name').textContent = patient.name;
                 const age = new Date().getFullYear() - new Date(patient.dob).getFullYear();
                 document.querySelector('#doctor-dashboard-view #patient-meta').textContent = `ID: ${patient.uid.substring(0, 8)} • ${patient.gender}, ${age} years old`;
@@ -1746,7 +1777,7 @@
                 const iconMap = { 'Consultation': '<i data-lucide="clipboard-pen" class="w-5 h-5"></i>', 'Lab Report': '<i data-lucide="beaker" class="w-5 h-5"></i>', 'X-Ray': '<i data-lucide="bone" class="w-5 h-5"></i>', 'Prescription': '<i data-lucide="pill" class="w-5 h-5"></i>' };
                 timelineContainer.innerHTML = records.map(record => `<div class="relative"><div class="absolute -left-[37px] top-1 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">${iconMap[record.type] || '<i data-lucide="file-text" class="w-5 h-5"></i>'}</div><div class="ml-4"><p class="text-xs text-slate-500">${record.date}</p><h4 class="font-semibold">${record.title || record.type}</h4><p class="text-sm text-slate-600">${record.summary}</p>${record.file ? `<button class="preview-btn mt-2 text-sm text-blue-600 font-semibold hover:underline" data-file="${record.file}" data-title="${record.title || record.type}">View File</button>` : ''}</div></div>`).join('');
                 
-                document.getElementById('consult-patient-avatar').src = patient.avatar || 'https://placehold.co/100x100/fecdd3/444444?text=Patient';
+                document.getElementById('consult-patient-avatar').src = 'https://placehold.co/100x100/fecdd3/444444?text=Patient';
                 document.getElementById('consult-patient-name').textContent = patient.name;
                 document.getElementById('consult-patient-id').textContent = `ID: ${patient.uid.substring(0, 8)}`;
                 
@@ -1880,7 +1911,7 @@
             });
             DOMElements.patientList.addEventListener('click', (e) => {
                 const card = e.target.closest('[data-patient-id]');
-                if (card) { populatePatientProfile(card.dataset.patientId); showDoctorSection('patient-profile-view'); }
+                if (card) { populatePatientProfile(card.dataset.patientId); switchDoctorSection('patient-profile-view'); }
             });
             document.getElementById('patient-profile-view').addEventListener('click', (e) => {
                 const previewButton = e.target.closest('.preview-btn');
@@ -2018,13 +2049,38 @@
             if (userInput) {
                 addMessage(userInput, 'user');
                 chatInput.value = '';
+                addTypingIndicator();
 
                 setTimeout(() => {
+                    removeTypingIndicator();
                     const botResponse = getBotResponse(userInput);
                     addMessage(botResponse, 'bot');
-                }, 1000);
+                }, 1500); // Simulate a delay for the AI response
             }
         });
+
+        const addTypingIndicator = () => {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.classList.add('flex', 'justify-start', 'message-enter', 'items-center', 'gap-2');
+            typingDiv.innerHTML = `
+                <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm shadow-sm flex items-center gap-1">
+                    <span class="typing-indicator w-2 h-2 bg-slate-400 rounded-full"></span>
+                    <span class="typing-indicator w-2 h-2 bg-slate-400 rounded-full"></span>
+                    <span class="typing-indicator w-2 h-2 bg-slate-400 rounded-full"></span>
+                </div>
+            `;
+            chatMessagesContainer.appendChild(typingDiv);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        };
+
+        const removeTypingIndicator = () => {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        };
+
 
         initLandingPage();
         lucide.createIcons();
