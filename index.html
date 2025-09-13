@@ -1041,23 +1041,40 @@
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
+                    // This listener will now primarily handle redirects AFTER a user is known to exist or has just been created.
                     await fetchAndSetUserData(user.uid);
                 } else {
                     currentUser = null;
-                    showLoading(false);
+                    // This handles logout
                     showView('landing');
                 }
             });
 
+            // Handle the VERY FIRST load explicitly
             try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
+                // Determine if there's already a signed-in user from a previous session
+                if (auth.currentUser) {
+                    currentUser = auth.currentUser;
+                    await fetchAndSetUserData(currentUser.uid);
                 } else {
-                    await signInAnonymously(auth);
+                     const credential = initialAuthToken 
+                        ? await signInWithCustomToken(auth, initialAuthToken) 
+                        : await signInAnonymously(auth);
+                    
+                    // After initial sign-in, check if the user is new or returning.
+                    const userRef = doc(db, `artifacts/${appId}/users/${credential.user.uid}`);
+                    const userSnap = await getDoc(userRef);
+
+                    if (!userSnap.exists()) {
+                        // This is a new, anonymous user. Just show the landing page.
+                        showView('landing'); 
+                    }
+                    // If the user *does* exist, the onAuthStateChanged listener will fire and
+                    // fetchAndSetUserData will correctly route them to their dashboard.
                 }
             } catch (error) {
                 console.error("Initial sign-in failed:", error);
-                showLoading(false); // Hide loading if initial sign-in fails
+                showView('landing'); 
             }
 
             appInitialized = true;
@@ -1078,14 +1095,10 @@
                         showView('doctorDashboard');
                     }
                 } else {
-                    // If no user document exists, check if the user is anonymous.
-                    if (currentUser && currentUser.isAnonymous) {
-                        // For a new anonymous session, just show the landing page.
-                        // The user can then choose to sign in or sign up.
+                     if (currentUser && currentUser.isAnonymous) {
                         showView('landing');
                     } else {
-                        // This is a new user from Google/Email who hasn't completed registration.
-                        console.log("New user signing up:", uid);
+                        console.log("New user needs to select a role:", uid);
                         openAuthModal();
                         showAuthView('roleSelect');
                         showLoading(false);
