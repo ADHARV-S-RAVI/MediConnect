@@ -22,7 +22,7 @@
             left: -10px;
             right: -10px;
             bottom: -10px;
-            background: url('https://placehold.co/1200x800/e0f2fe/60a5fa?text=Secure+Health') no-repeat center center;
+            background: url('https://i.ibb.co/YFBv8wWz/gettyimages-1365582872-612x612.jpg') no-repeat center center;
             background-size: cover;
             filter: blur(10px);
             z-index: -1;
@@ -49,7 +49,13 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
     </style>
+    <!-- Firebase App (Core SDK) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+<!-- Firebase Analytics -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js"></script>
+
 </head>
 <body class="bg-white text-slate-800 antialiased">
 
@@ -243,9 +249,9 @@
                         </a>
                     </div>
                     <div class="mt-8 md:mt-0 md:order-2 flex justify-center space-x-6">
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">Twitter</span><i data-lucide="twitter"></i></a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">LinkedIn</span><i data-lucide="linkedin"></i></a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">GitHub</span><i data-lucide="github"></i></a>
+                        <a href="https://x.com/Medi__connect" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">Twitter</span><i data-lucide="twitter"></i></a>
+                        <a href="http://www.linkedin.com/in/medi-connect-239067384" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">LinkedIn</span><i data-lucide="linkedin"></i></a>
+                        <a href="https://github.com/ADHARV-S-RAVI" target="_blank" rel="noopener noreferrer" class="hover:text-white"><span class="sr-only">GitHub</span><i data-lucide="github"></i></a>
                     </div>
                     <div class="mt-8 md:mt-0 md:order-1">
                         <p class="text-center text-base">
@@ -588,7 +594,7 @@
                 <button id="logout-patient" class="ml-4 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-red-600 border border-red-600 hover:bg-red-50 transition-colors">
                     <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
                 </button>
-            </nav>
+                </nav>
             <button class="md:hidden rounded-lg bg-blue-600 px-4 py-2 text-white">Menu</button>
         </header>
 
@@ -735,7 +741,7 @@
                         <button id="logout-doctor" class="ml-auto text-slate-500 hover:text-red-500 transition-colors">
                             <i data-lucide="log-out" class="w-5 h-5"></i>
                         </button>
-                    </div>
+                        </div>
                 </div>
             </aside>
 
@@ -982,22 +988,20 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp, runTransaction, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // --- Firebase Setup ---
         // Global variables provided by the canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : {
-                apiKey: "YOUR_API_KEY", // Fallback if not provided
-                authDomain: "YOUR_AUTH_DOMAIN",
-                projectId: "YOUR_PROJECT_ID",
-                storageBucket: "YOUR_STORAGE_BUCKET",
-                messagingSenderId: "YOUR_SENDER_ID",
-                appId: "YOUR_APP_ID"
-              };
+        const firebaseConfig = {
+          apiKey: "AIzaSyCuPAopZ-hTlKXsObB8h-F_x18C-QDPcAo",
+          authDomain: "mediconnect-app-48c6b.firebaseapp.com",
+          projectId: "mediconnect-app-48c6b",
+          storageBucket: "mediconnect-app-48c6b.firebasestorage.app",
+          messagingSenderId: "195674005603",
+          appId: "1:195674005603:web:7e7e06eefb3c4a5f3e1856",
+          measurementId: "G-9E81B8HZXT"
+        };
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let db, auth;
@@ -1048,18 +1052,6 @@
                     showView('landing');
                 }
             });
-
-            try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Initial sign-in failed:", error);
-                showLoading(false); // Hide loading if initial sign-in fails
-            }
-
             appInitialized = true;
         };
 
@@ -1079,8 +1071,6 @@
                     }
                 } else {
                     console.log("New user signing up:", uid);
-                    // This is a new user (anonymous or just signed up), show the role selection in the modal.
-                    openAuthModal(); // Ensure modal is open
                     showAuthView('roleSelect');
                     showLoading(false);
                 }
@@ -1122,38 +1112,6 @@
             patientDashboard: document.getElementById('patient-dashboard-view'),
             doctorDashboard: document.getElementById('doctor-dashboard-view'),
         };
-        
-        const authModal = document.getElementById('auth-modal');
-        const modalContent = document.getElementById('modal-content');
-        const openAuthModal = () => {
-            authModal.classList.remove('hidden');
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        };
-        const authViews = {
-            initial: document.getElementById('initial-view'),
-            roleSelect: document.getElementById('role-select-view'),
-            patientForm: document.getElementById('patient-form-view'),
-            doctorForm: document.getElementById('doctor-form-view'),
-            success: document.getElementById('success-view'),
-        };
-        const modalTitle = document.getElementById('modal-title');
-        const showAuthView = (viewName) => {
-            Object.values(authViews).forEach(view => view.classList.add('hidden'));
-            if (authViews[viewName]) {
-                authViews[viewName].classList.remove('hidden');
-            }
-            const titles = {
-                initial: 'Welcome to MediConnect',
-                roleSelect: 'Create Your Account',
-                patientForm: 'Patient Registration',
-                doctorForm: 'Doctor Registration',
-                success: 'Success!'
-            };
-            modalTitle.textContent = titles[viewName] || 'Welcome';
-        };
 
         const showView = (viewName) => {
             Object.values(views).forEach(view => view.classList.add('hidden'));
@@ -1168,7 +1126,6 @@
                 }
             }
             lucide.createIcons();
-            showLoading(false);
         };
 
         const confirmationModal = document.getElementById('confirmation-modal');
@@ -1206,9 +1163,7 @@
                     userRole = null;
                     patientDashboardInitialized = false;
                     doctorDashboardInitialized = false;
-                    // onAuthStateChanged will handle showing the landing page
-                    // and we can sign in anonymously again for a fresh start.
-                    await setupFirebase(); 
+                    showView('landing');
                 },
                 'Log Out'
             );
@@ -1219,9 +1174,28 @@
             const mobileMenu = document.getElementById('mobile-menu');
             menuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
+            const authModal = document.getElementById('auth-modal');
+            const modalContent = document.getElementById('modal-content');
             const closeModalButton = document.getElementById('close-modal-button');
             const authTriggers = document.querySelectorAll('.auth-trigger, #open-auth-modal-header');
-            
+
+            const authViews = {
+                initial: document.getElementById('initial-view'),
+                roleSelect: document.getElementById('role-select-view'),
+                patientForm: document.getElementById('patient-form-view'),
+                doctorForm: document.getElementById('doctor-form-view'),
+                success: document.getElementById('success-view'),
+            };
+            const modalTitle = document.getElementById('modal-title');
+
+            const openAuthModal = () => {
+                authModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            };
+
             const closeAuthModal = () => {
                 modalContent.classList.add('scale-95', 'opacity-0');
                 modalContent.classList.remove('scale-100', 'opacity-100');
@@ -1229,6 +1203,21 @@
                     authModal.classList.add('hidden');
                     showAuthView('initial');
                 }, 300);
+            };
+
+            const showAuthView = (viewName) => {
+                Object.values(authViews).forEach(view => view.classList.add('hidden'));
+                if (authViews[viewName]) {
+                    authViews[viewName].classList.remove('hidden');
+                }
+                const titles = {
+                    initial: 'Welcome to MediConnect',
+                    roleSelect: 'Create Your Account',
+                    patientForm: 'Patient Registration',
+                    doctorForm: 'Doctor Registration',
+                    success: 'Success!'
+                };
+                modalTitle.textContent = titles[viewName] || 'Welcome';
             };
 
             authTriggers.forEach(trigger => trigger.addEventListener('click', openAuthModal));
@@ -1247,14 +1236,26 @@
                 showLoading(true);
                 const provider = new GoogleAuthProvider();
                 try {
-                    await signInWithPopup(auth, provider);
-                    // onAuthStateChanged will handle the rest
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    const userRef = doc(db, `artifacts/${appId}/users/${user.uid}`);
+                    const userSnap = await getDoc(userRef);
+
+                    if (userSnap.exists()) {
+                        // User already exists, proceed to dashboard
+                        // onAuthStateChanged will handle this
+                    } else {
+                        // New user, redirect to role selection
+                        showAuthView('roleSelect');
+                        showLoading(false);
+                    }
                 } catch (error) {
                     showLoading(false);
                     console.error("Google Sign-In failed:", error);
                     showMessage("Sign-in Failed", `Google Sign-in failed: ${error.message}`);
                 }
             });
+
 
             document.getElementById('select-patient-role').addEventListener('click', () => {
                 userRole = 'patient';
@@ -1272,7 +1273,7 @@
                 showLoading(true);
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
-                    // onAuthStateChanged will handle success
+                    showLoading(false);
                 } catch (e) {
                     showLoading(false);
                     console.error("Login failed:", e);
@@ -1282,30 +1283,19 @@
 
             document.getElementById('patient-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const email = document.getElementById('patient-signup-email').value;
+                const password = document.getElementById('patient-signup-password').value;
+                const name = document.getElementById('patient-name-input').value;
                 showLoading(true);
-                
-                // If user is anonymous, use their email/pass to create a proper account
-                // Otherwise, this form is just for adding details to a new Google/etc account
-                let uid = currentUser.uid;
-                if(currentUser.isAnonymous) {
-                    try {
-                        const email = document.getElementById('patient-signup-email').value;
-                        const password = document.getElementById('patient-signup-password').value;
-                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                        uid = userCredential.user.uid;
-                    } catch (e) {
-                        showLoading(false);
-                        showMessage("Signup Failed", `Could not create account: ${e.message}`);
-                        return;
-                    }
-                }
 
                 try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const uid = userCredential.user.uid;
                     const userData = {
                         role: 'patient',
                         details: {
-                            name: document.getElementById('patient-name-input').value,
-                            email: currentUser.email || document.getElementById('patient-signup-email').value,
+                            name,
+                            email,
                             dob: document.getElementById('patient-dob-input').value,
                             gender: document.getElementById('patient-gender-select').value,
                             contact: document.getElementById('patient-contact-input').value,
@@ -1324,36 +1314,27 @@
                     showLoading(false);
                     showAuthView('success');
                 } catch (e) {
-                    console.error("Patient details save failed:", e);
+                    console.error("Patient signup failed:", e);
                     showLoading(false);
-                    showMessage("Signup Failed", `Could not save details: ${e.message}`);
+                    showMessage("Signup Failed", `Signup failed: ${e.message}`);
                 }
             });
 
             document.getElementById('doctor-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const email = document.getElementById('doctor-signup-email').value;
+                const password = document.getElementById('doctor-signup-password').value;
+                const name = document.getElementById('doctor-name-input').value;
                 showLoading(true);
-                let uid = currentUser.uid;
-
-                if(currentUser.isAnonymous) {
-                     try {
-                        const email = document.getElementById('doctor-signup-email').value;
-                        const password = document.getElementById('doctor-signup-password').value;
-                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                        uid = userCredential.user.uid;
-                    } catch (e) {
-                        showLoading(false);
-                        showMessage("Signup Failed", `Could not create account: ${e.message}`);
-                        return;
-                    }
-                }
 
                 try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const uid = userCredential.user.uid;
                     const userData = {
                         role: 'doctor',
                         details: {
-                            name: document.getElementById('doctor-name-input').value,
-                            email: currentUser.email || document.getElementById('doctor-signup-email').value,
+                            name,
+                            email,
                             specialization: document.getElementById('doctor-specialization-input').value,
                             experience: document.getElementById('doctor-experience-input').value,
                             license: document.getElementById('doctor-license-input').value,
@@ -1374,10 +1355,12 @@
             });
             
             document.getElementById('go-to-dashboard-btn').addEventListener('click', () => {
-                // onAuthStateChanged will handle redirecting to correct dashboard
-                // so we just need to close the modal.
-                const authModal = document.getElementById('auth-modal');
-                authModal.classList.add('hidden');
+                closeAuthModal();
+                if (userRole === 'patient') {
+                    showView('patientDashboard');
+                } else if (userRole === 'doctor') {
+                    showView('doctorDashboard');
+                }
             });
 
             showAuthView('initial');
@@ -1394,23 +1377,20 @@
             }
 
             const recordsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/records`);
-            onSnapshot(query(recordsRef, orderBy('timestamp', 'desc')), (snapshot) => {
+            onSnapshot(recordsRef, (snapshot) => {
                 patientState.records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderHealthSnapshot();
             });
 
             const appointmentsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/appointments`);
-            onSnapshot(query(appointmentsRef, orderBy('createdAt', 'desc')), (snapshot) => {
+            onSnapshot(appointmentsRef, (snapshot) => {
                 patientState.appointments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderMyAppointments();
             });
         };
 
         const initializePatientDashboard = async () => {
-            if (patientDashboardInitialized) {
-                 renderHeader();
-                 return;
-            };
+            if (patientDashboardInitialized) return;
             
             await initPatientState();
             
@@ -1430,10 +1410,33 @@
                 aiReportContent: document.getElementById('ai-report-content'),
                 permissionsContainer: document.getElementById('permissions-container'),
                 accessLogContainer: document.getElementById('access-log-container'),
+                profileButton: document.getElementById('profile-button'),
+                closeProfileModalBtn: document.getElementById('close-profile-modal'),
+                cancelProfileSaveBtn: document.getElementById('cancel-profile-save'),
+                saveProfileBtn: document.getElementById('save-profile'),
+                openUploadModalBtn: document.getElementById('open-upload-modal-btn'),
+                closeUploadModalBtn: document.getElementById('close-upload-modal'),
+                cancelUploadBtn: document.getElementById('cancel-upload'),
+                uploadReportBtn: document.getElementById('upload-report-btn'),
+                exploreAiBtn: document.getElementById('explore-ai-btn'),
+                copyHashBtn: document.getElementById('copy-hash-btn'),
+                runAiBtn: document.getElementById('run-ai-btn'),
+                profileNameInput: document.getElementById('profile-name'),
+                profileDobInput: document.getElementById('profile-dob'),
+                profileGenderInput: document.getElementById('profile-gender'),
+                profileContactInput: document.getElementById('profile-contact'),
+                profileEmergencyInput: document.getElementById('profile-emergency'),
                 doctorListContainer: document.getElementById('doctor-list'),
                 myAppointmentsList: document.getElementById('my-appointments-list'),
+                composeMessageBtn: document.getElementById('compose-message-btn'),
             };
-            
+
+            const mockDoctors = [
+                { id: 'DOC001', name: 'Dr. Jane Smith', specialization: 'Pediatrics', avatar: 'https://placehold.co/100x100/fecdd3/444444?text=JS' },
+                { id: 'DOC002', name: 'Dr. Alex Turner', specialization: 'Cardiology', avatar: 'https://placehold.co/100x100/a7c5fd/333333?text=Dr.A' },
+                { id: 'DOC003', name: 'Dr. Susan Jones', specialization: 'Dermatology', avatar: 'https://placehold.co/100x100/d1d5db/444444?text=SJ' }
+            ];
+
             document.getElementById('logout-patient').addEventListener('click', handleLogout);
 
             const switchSection = (id) => {
@@ -1473,10 +1476,7 @@
             const renderBlockchainAnchor = () => DOMElements.blockchainAnchor.innerHTML = `Blockchain anchor: <span class="font-mono">${fakeBlockchainHash()}</span>`;
 
             const renderHealthSnapshot = () => {
-                if(patientState.records.length === 0){
-                    DOMElements.healthSnapshotList.innerHTML = `<li class="text-center text-slate-500 p-4">No records found. Upload a report to get started!</li>`
-                } else {
-                    DOMElements.healthSnapshotList.innerHTML = patientState.records.map(r => 
+                DOMElements.healthSnapshotList.innerHTML = patientState.records.map(r => 
                     `<li class="flex justify-between items-start bg-white p-3 rounded-lg shadow-sm">
                         <div class="flex-grow">
                             <div class="font-medium text-slate-800">${r.type} <span class="text-xs text-slate-400">(${r.source})</span></div>
@@ -1484,13 +1484,11 @@
                             ${r.doctorsNote ? `<div class="mt-2 text-xs text-indigo-700 bg-indigo-50 p-2 rounded-lg"><span class="font-semibold">Doctor's Note:</span> ${r.doctorsNote}</div>` : ''}
                         </div>
                         <div class="text-right flex-shrink-0 ml-2">
-                            <div class="text-xs text-slate-400 mb-2">${r.timestamp ? new Date(r.timestamp.toDate()).toLocaleDateString() : 'N/A'}</div>
+                            <div class="text-xs text-slate-400 mb-2">${new Date(r.timestamp.toDate()).toLocaleDateString()}</div>
                             <button data-record-id="${r.id}" class="delete-record-btn text-red-500 hover:text-red-700 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </li>`
                 ).join('');
-                }
-                
                 renderBlockchainAnchor();
                 lucide.createIcons();
             };
@@ -1563,7 +1561,7 @@
 
             const renderDoctorList = () => {
                 const doctorsRef = collection(db, `artifacts/${appId}/users`);
-                const q = query(doctorsRef, where('role', '==', 'doctor'));
+                const q = query(doctorsRef, where('details.role', '==', 'doctor'));
                 onSnapshot(q, (snapshot) => {
                     if (snapshot.empty) {
                         DOMElements.doctorListContainer.innerHTML = `<p class="text-sm text-slate-500 text-center">No doctors found.</p>`;
@@ -1592,7 +1590,7 @@
                     return;
                 }
                 DOMElements.myAppointmentsList.innerHTML = patientState.appointments.map(app => {
-                    const statusColor = app.status === 'accepted' ? 'bg-green-100 text-green-700' : app.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700';
+                    const statusColor = app.status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
                     return `
                         <div class="bg-slate-50 p-4 rounded-lg border flex items-center justify-between gap-4">
                             <div>
@@ -1643,6 +1641,7 @@
                 const recordsRef = collection(db, `artifacts/${appId}/users/${currentUser.uid}/records`);
                 await addDoc(recordsRef, {
                     source: "Manual Upload",
+                    date: new Date().toISOString().split('T')[0],
                     type: title,
                     summary: description,
                     doctorsNote: doctorsNote,
@@ -1721,7 +1720,7 @@
                 renderAiReport();
             });
             document.getElementById('copy-hash-btn').addEventListener('click', () => navigator.clipboard.writeText(fakeBlockchainHash()).then(() => showMessage("Copied", "Blockchain hash copied to clipboard!")).catch(err => console.error('Failed to copy hash: ', err)));
-            document.getElementById('explore-ai-btn').addEventListener('click', () => document.querySelector('.patient-nav-link[data-section="ai"]').click());
+            document.getElementById('explore-ai-btn').addEventListener('click', () => document.getElementById('ai')?.scroll-into-view({ behavior: 'smooth' }));
             
             document.getElementById('compose-message-btn').addEventListener('click', () => {
                 openMessageModal();
@@ -1768,6 +1767,13 @@
             const patientList = document.querySelector('#doctor-dashboard-view #patient-list');
             const noResults = document.querySelector('#doctor-dashboard-view #no-results');
             const navTabs = document.querySelectorAll('.nav-tab');
+            const dashboardSections = {
+                'patient-search-view': document.getElementById('patient-search-view'),
+                'appointments-doctor-section': document.getElementById('appointments-doctor-section'),
+                'messages-doctor-section': document.getElementById('messages-doctor-section'),
+                'settings-doctor-section': document.getElementById('settings-doctor-section'),
+                'patient-profile-view': document.getElementById('patient-profile-view'),
+            };
             const tabButtons = document.querySelectorAll('#doctor-dashboard-view .dashboard-tab-button');
             const tabContents = document.querySelectorAll('#doctor-dashboard-view .dashboard-tab-content');
             const backToSearchBtn = document.getElementById('back-to-search');
@@ -1793,9 +1799,8 @@
             const acceptedApptsList = document.getElementById('accepted-appointments-list');
             
             const renderPatientCard = (patient) => {
-                const consent = patient.consent_doctors ? "All Records" : "None";
-                const consentColors = { 'All Records': 'bg-green-100 text-green-800', 'None': 'bg-slate-100 text-slate-800' };
-                return `<div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md hover:border-blue-400 transition-all cursor-pointer" data-patient-uid="${patient.id}"><div class="flex items-center gap-4"><img src="${patient.avatar}" alt="${patient.name}" class="w-16 h-16 rounded-full"><div class="flex-1"><p class="font-bold text-lg text-slate-800">${patient.name}</p><p class="text-sm text-slate-500">ID: ${patient.patientId}</p></div></div><div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center"><p class="text-sm text-slate-600">Consent Level:</p><span class="px-2 py-1 text-xs font-semibold rounded-full ${consentColors[consent]}">${consent}</span></div></div>`;
+                const consentColors = { 'All Records': 'bg-green-100 text-green-800', 'Lab Only': 'bg-amber-100 text-amber-800', 'Prescription Only': 'bg-blue-100 text-blue-800', 'None': 'bg-slate-100 text-slate-800' };
+                return `<div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md hover:border-blue-400 transition-all cursor-pointer" data-patient-uid="${patient.id}"><div class="flex items-center gap-4"><img src="${patient.avatar}" alt="${patient.name}" class="w-16 h-16 rounded-full"><div class="flex-1"><p class="font-bold text-lg text-slate-800">${patient.name}</p><p class="text-sm text-slate-500">ID: ${patient.patientId}</p></div></div><div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center"><p class="text-sm text-slate-600">Consent Level:</p><span class="px-2 py-1 text-xs font-semibold rounded-full ${consentColors[patient.consent] || 'bg-slate-100 text-slate-800'}">${patient.consent}</span></div></div>`;
             };
             const displayPatients = (patients) => {
                 if (patients.length === 0) {
@@ -1822,17 +1827,15 @@
                 document.querySelector('#doctor-dashboard-view #red-flags').textContent = patient.ai?.flags || 'No red flags detected.';
                 document.querySelector('#doctor-dashboard-view #personal-info').innerHTML = `<p class="flex justify-between"><span>DOB:</span> <span class="font-medium">${patient.dob}</span></p><p class="flex justify-between"><span>Blood Group:</span> <span class="font-medium">${patient.bloodGroup}</span></p>`;
                 document.querySelector('#doctor-dashboard-view #medical-history').innerHTML = `<p><strong>Allergies:</strong> ${patient.allergies}</p><p><strong>Chronic Conditions:</strong> N/A</p><p><strong>Past History:</strong> ${patient.history}</p>`;
-                document.querySelector('#doctor-dashboard-view #lifestyle-info').innerHTML = `<p><strong>Medications:</strong> ${patient.medications}</p>`;
+                document.querySelector('#doctor-dashboard-view #lifestyle-info').innerHTML = `<p class="flex justify-between"><span>Medications:</span> <span class="font-medium">${patient.medications}</span></p><p class="flex justify-between"><span>Past History:</span> <span class="font-medium">${patient.history}</span></p>`;
                 
                 const timelineContainer = document.querySelector('#doctor-dashboard-view #records-timeline');
                 const recordsRef = collection(db, `artifacts/${appId}/users/${patientUid}/records`);
-                const recordsQuery = query(recordsRef, orderBy('timestamp', 'desc'));
-                onSnapshot(recordsQuery, (snapshot) => {
-                     const records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                     const iconMap = { 'Consultation': '<i data-lucide="clipboard-pen" class="w-5 h-5"></i>', 'Lab Report': '<i data-lucide="beaker" class="w-5 h-5"></i>', 'X-Ray': '<i data-lucide="bone" class="w-5 h-5"></i>', 'Prescription': '<i data-lucide="pilcrow" class="w-5 h-5"></i>' };
-                     timelineContainer.innerHTML = records.map(record => `<div class="relative"><div class="absolute -left-[37px] top-1 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">${iconMap[record.type] || '<i data-lucide="file-text" class="w-5 h-5"></i>'}</div><div class="ml-4"><p class="text-xs text-slate-500">${record.timestamp ? new Date(record.timestamp.toDate()).toLocaleDateString() : 'N/A'}</p><h4 class="font-semibold">${record.type}</h4><p class="text-sm text-slate-600">${record.summary}</p>${record.doctorsNote ? `<p class="text-sm text-slate-600 mt-1"><strong>Doctor's Note:</strong> ${record.doctorsNote}</p>` : ''}</div></div>`).join('');
-                     lucide.createIcons();
-                });
+                const recordsSnap = await getDocs(recordsRef);
+                const records = recordsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                const iconMap = { 'Consultation': '<i data-lucide="clipboard-pen" class="w-5 h-5"></i>', 'Lab Report': '<i data-lucide="beaker" class="w-5 h-5"></i>', 'X-Ray': '<i data-lucide="bone" class="w-5 h-5"></i>', 'Prescription': '<i data-lucide="pilcrow" class="w-5 h-5"></i>' };
+                timelineContainer.innerHTML = records.map(record => `<div class="relative"><div class="absolute -left-[37px] top-1 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">${iconMap[record.type] || '<i data-lucide="file-text" class="w-5 h-5"></i>'}</div><div class="ml-4"><p class="text-xs text-slate-500">${new Date(record.timestamp.toDate()).toLocaleDateString()}</p><h4 class="font-semibold">${record.title}</h4><p class="text-sm text-slate-600">${record.summary}</p>${record.doctorsNote ? `<p class="text-sm text-slate-600 mt-1"><strong>Doctor's Note:</strong> ${record.doctorsNote}</p>` : ''}</div></div>`).join('');
                 
                 document.getElementById('consult-patient-avatar').src = `https://placehold.co/100x100/cce7f1/444444?text=${patient.name.split(' ').map(n=>n[0]).join('')}`;
                 document.getElementById('consult-patient-name').textContent = patient.name;
@@ -1852,7 +1855,7 @@
                     const isCurrent = tab.dataset.target === sectionId;
                     tab.classList.toggle('bg-blue-50', isCurrent);
                     tab.classList.toggle('text-blue-700', isCurrent);
-                    tab.classList.toggle('hover:bg-slate-100', !isCurrent);
+                    tab.classList.toggle('bg-white', !isCurrent);
                     tab.classList.toggle('text-slate-600', !isCurrent);
                 });
 
@@ -1861,7 +1864,7 @@
                 } else if (sectionId === 'appointments-doctor-section') {
                     renderDoctorAppointments();
                 } else if (sectionId === 'messages-doctor-section') {
-                     openMessageModal();
+                    openMessageModal();
                 }
             };
 
@@ -1946,18 +1949,16 @@
                         const apptRef = doc(db, `artifacts/${appId}/users/${patientUid}/appointments`, apptId);
                         await updateDoc(apptRef, { status: 'accepted' });
                         showMessage("Success", `Appointment accepted.`);
-                        renderDoctorAppointments();
                     } catch (e) {
                         console.error("Error accepting appointment:", e);
                     }
                 } else if (declineBtn) {
                     const apptId = declineBtn.dataset.apptId;
-                    const patientUid = declineBtn.dataset.patientUid;
+                    const patientUid = declineBtn.dataset.patient-uid;
                     try {
                         const apptRef = doc(db, `artifacts/${appId}/users/${patientUid}/appointments`, apptId);
                         await deleteDoc(apptRef);
                         showMessage("Declined", `Appointment declined.`);
-                        renderDoctorAppointments();
                     } catch (e) {
                         console.error("Error declining appointment:", e);
                     }
@@ -1996,7 +1997,7 @@
             lucide.createIcons();
             doctorDashboardInitialized = true;
         };
-        // --- MESSAGING LOGIC ---
+
         const messagesModal = document.getElementById('messages-modal');
         const messagesModalTitle = document.getElementById('messages-modal-title');
         const closeMessagesModalBtn = document.getElementById('close-messages-modal');
@@ -2007,6 +2008,7 @@
         const messageContainer = document.getElementById('message-container');
         const messageForm = document.getElementById('message-form');
         const messageInput = document.getElementById('message-input');
+        const composeMessageBtn = document.getElementById('compose-message-btn');
 
         let activeConversationId = null;
         let unsubscribeMessages = null;
@@ -2043,7 +2045,8 @@
                     if (!otherParticipant) return '';
 
                     const avatarText = otherParticipant.name.split(' ').map(n => n[0]).join('');
-                    const name = (userRole === 'patient' && c.doctor.userId === otherParticipantId) ? 'Dr. ' + otherParticipant.name : otherParticipant.name;
+                    const isDoctor = userRole === 'patient';
+                    const name = isDoctor ? 'Dr. ' + otherParticipant.name : otherParticipant.name;
 
                     return `<button data-conversation-id="${c.id}" class="conversation-item w-full flex items-center gap-4 p-3 rounded-lg border hover:bg-slate-50 transition-colors">
                         <div class="w-10 h-10 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold">${avatarText}</div>
@@ -2051,7 +2054,7 @@
                             <div class="font-semibold text-slate-800">${name}</div>
                             <div class="text-sm text-slate-500 truncate">${c.lastMessageText || 'Start a conversation...'}</div>
                         </div>
-                        <div class="text-xs text-slate-400">${c.lastMessageTime ? new Date(c.lastMessageTime.toDate()).toLocaleTimeString() : ''}</div>
+                        <div class="text-xs text-slate-400">${c.lastMessageTime ? new Date(c.lastMessageTime.toDate()).toLocaleString() : ''}</div>
                     </button>`;
                 }).join('');
             } else {
@@ -2076,8 +2079,7 @@
             
             const otherParticipantId = convoData.participants.find(p => p !== currentUser.uid);
             const otherParticipant = convoData.patient?.userId === otherParticipantId ? convoData.patient : convoData.doctor;
-            const name = (userRole === 'patient' && convoData.doctor.userId === otherParticipantId) ? 'Dr. ' + otherParticipant.name : otherParticipant.name;
-            messagesModalTitle.textContent = name;
+            messagesModalTitle.textContent = otherParticipant.name;
 
             const messagesQuery = query(collection(db, `artifacts/${appId}/public/data/conversations/${conversationId}/messages`), orderBy('timestamp'));
             
@@ -2089,7 +2091,7 @@
                     const messageClass = isSender ? 'self-end bg-blue-500 text-white rounded-tr-none' : 'self-start bg-slate-200 text-slate-800 rounded-tl-none';
                     const messageHtml = `<div class="flex flex-col max-w-[80%] p-3 rounded-xl shadow-sm ${messageClass}">
                         <p class="text-sm">${msg.text}</p>
-                        <span class="text-xs opacity-75 mt-1">${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now'}</span>
+                        <span class="text-xs opacity-75 mt-1">${msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString() : 'Just now'}</span>
                     </div>`;
                     messageContainer.innerHTML += messageHtml;
                 });
@@ -2190,7 +2192,6 @@
             lucide.createIcons();
         });
 
-        // Make modal toggle globally available if needed, for simplicity
         window.toggleModal = (modal, content, show) => {
             if (show) {
                 modal.classList.remove('hidden'); modal.classList.add('flex'); modal.classList.remove('modal-leave'); if (content) content.classList.remove('modal-content-leave'); modal.classList.add('modal-enter'); if (content) content.classList.add('modal-content-enter');
@@ -2199,10 +2200,27 @@
             }
         };
 
-        // Override default alert
         window.alert = function(message) {
             showMessage("Notification", message);
         };
     </script>
+    <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCuPAopZ-hTlKXsObB8h-F_x18C-QDPcAo",
+    authDomain: "mediconnect-app-48c6b.firebaseapp.com",
+    projectId: "mediconnect-app-48c6b",
+    storageBucket: "mediconnect-app-48c6b.firebasestorage.app",
+    messagingSenderId: "195674005603",
+    appId: "1:195674005603:web:7e7e06eefb3c4a5f3e1856",
+    measurementId: "G-9E81B8HZXT"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const analytics = firebase.analytics(app);
+</script>
+</body>
+</html>
+
 </body>
 </html>
