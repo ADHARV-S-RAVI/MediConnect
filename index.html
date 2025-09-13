@@ -1003,6 +1003,8 @@
         let db, auth;
         let currentUser;
         let appInitialized = false;
+        let isNewUserRegistration = false;
+
 
         const showLoading = (show) => {
             const loadingModal = document.getElementById('loading-modal');
@@ -1031,9 +1033,11 @@
             confirmBtn.addEventListener('click', handleClose);
         };
 
-        const setupFirebase = async () => {
+        const setupFirebase = () => {
             if (appInitialized) return;
+            appInitialized = true;
             showLoading(true);
+            
             const app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
@@ -1041,43 +1045,18 @@
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
-                    // This listener will now primarily handle redirects AFTER a user is known to exist or has just been created.
                     await fetchAndSetUserData(user.uid);
                 } else {
                     currentUser = null;
-                    // This handles logout
-                    showView('landing');
+                    try {
+                        if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken);
+                        else await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error("Anonymous sign-in failed:", error);
+                        showView('landing');
+                    }
                 }
             });
-
-            // Handle the VERY FIRST load explicitly
-            try {
-                // Determine if there's already a signed-in user from a previous session
-                if (auth.currentUser) {
-                    currentUser = auth.currentUser;
-                    await fetchAndSetUserData(currentUser.uid);
-                } else {
-                     const credential = initialAuthToken 
-                        ? await signInWithCustomToken(auth, initialAuthToken) 
-                        : await signInAnonymously(auth);
-                    
-                    // After initial sign-in, check if the user is new or returning.
-                    const userRef = doc(db, `artifacts/${appId}/users/${credential.user.uid}`);
-                    const userSnap = await getDoc(userRef);
-
-                    if (!userSnap.exists()) {
-                        // This is a new, anonymous user. Just show the landing page.
-                        showView('landing'); 
-                    }
-                    // If the user *does* exist, the onAuthStateChanged listener will fire and
-                    // fetchAndSetUserData will correctly route them to their dashboard.
-                }
-            } catch (error) {
-                console.error("Initial sign-in failed:", error);
-                showView('landing'); 
-            }
-
-            appInitialized = true;
         };
 
         const fetchAndSetUserData = async (uid) => {
@@ -1085,6 +1064,7 @@
                 const userRef = doc(db, `artifacts/${appId}/users/${uid}`);
                 const userSnap = await getDoc(userRef);
                 if (userSnap.exists()) {
+                    isNewUserRegistration = false; // It's a returning user
                     const userData = userSnap.data();
                     userRole = userData.role;
                     if (userRole === 'patient') {
@@ -1093,30 +1073,27 @@
                     } else if (userRole === 'doctor') {
                         doctorState.doctorDetails = userData.details;
                         showView('doctorDashboard');
+                    } else {
+                         showView('landing');
                     }
                 } else {
-                     if (currentUser && currentUser.isAnonymous) {
-                        showView('landing');
-                    } else {
-                        console.log("New user needs to select a role:", uid);
-                        openAuthModal();
-                        showAuthView('roleSelect');
+                    if (isNewUserRegistration) {
+                        // This is a new user in the middle of sign-up.
+                        // Let the form submission handler control the UI.
                         showLoading(false);
+                    } else {
+                        // This is a new anonymous visitor.
+                        showView('landing');
                     }
                 }
             } catch (e) {
                 console.error("Error fetching user data:", e);
-                await signOut(auth);
                 showLoading(false);
+                await signOut(auth); // Log out on error
             }
         };
         
         // --- SIMULATED AI BACKEND LOGIC ---
-        /**
-         * Simulates the AI analysis from the Python backend for a single patient's records.
-         * @param {Array<Object>} records - The patient's medical records.
-         * @returns {Object} An object with a summary and a list of red flags.
-         */
         const runSimulatedSingleRecordAI = (records) => {
             let summary = "Patient has a history of ";
             const flags = [];
@@ -1154,27 +1131,16 @@
                 flags: flags.length > 0 ? '- ' + flags.join('\n- ') : 'No red flags detected.'
             };
         };
-
-        /**
-         * Simulates a population-level AI analysis.
-         * @param {Array<Object>} records - The patient's medical records to provide context.
-         * @returns {string} A formatted string representing the AI report.
-         */
         const runSimulatedPopulationAI = (records) => {
-            // In a real scenario, this would query a large, anonymized dataset.
-            // Here, we'll just generate a plausible-looking report.
             const reportLines = [
                 "1. Based on demographic data, patient is in a cohort with a 15% higher risk for cardiovascular events over the next decade.",
                 "2. Analysis of anonymized records from this region shows a high prevalence of Vitamin D deficiency. Recommend screening.",
                 "3. Predictive models indicate that proactive lifestyle changes for patients with similar profiles have a 70% success rate in preventing pre-diabetes."
             ];
-
-            // Add a line specific to the patient's data for a more personalized feel
             const hasAllergy = records.some(r => (r.summary + " " + (r.doctorsNote || "")).toLowerCase().includes('allergy'));
             if(hasAllergy) {
                 reportLines.push("4. Note: Patient has documented allergies. Ensure cross-referencing before prescribing new medications.");
             }
-
             return reportLines.join("\n");
         };
 
@@ -1293,9 +1259,6 @@
                     userRole = null;
                     patientDashboardInitialized = false;
                     doctorDashboardInitialized = false;
-                    // onAuthStateChanged will handle showing the landing page
-                    // and we can sign in anonymously again for a fresh start.
-                    await setupFirebase(); 
                 },
                 'Log Out'
             );
@@ -1328,14 +1291,12 @@
             document.querySelectorAll('.back-to-login').forEach(btn => btn.addEventListener('click', () => showAuthView('initial')));
             document.querySelectorAll('.back-to-roles').forEach(btn => btn.addEventListener('click', () => showAuthView('roleSelect')));
 
-            // Google Sign-In button logic
             const googleSignInBtn = document.getElementById('google-sign-in-btn');
             googleSignInBtn.addEventListener('click', async () => {
                 showLoading(true);
                 const provider = new GoogleAuthProvider();
                 try {
                     await signInWithPopup(auth, provider);
-                    // onAuthStateChanged will handle the rest
                 } catch (error) {
                     showLoading(false);
                     console.error("Google Sign-In failed:", error);
@@ -1344,10 +1305,12 @@
             });
 
             document.getElementById('select-patient-role').addEventListener('click', () => {
+                isNewUserRegistration = true;
                 userRole = 'patient';
                 showAuthView('patientForm');
             });
             document.getElementById('select-doctor-role').addEventListener('click', () => {
+                isNewUserRegistration = true;
                 userRole = 'doctor';
                 showAuthView('doctorForm');
             });
@@ -1359,7 +1322,6 @@
                 showLoading(true);
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
-                    // onAuthStateChanged will handle success
                 } catch (e) {
                     showLoading(false);
                     console.error("Login failed:", e);
@@ -1371,8 +1333,6 @@
                 e.preventDefault();
                 showLoading(true);
                 
-                // If user is anonymous, use their email/pass to create a proper account
-                // Otherwise, this form is just for adding details to a new Google/etc account
                 let uid = currentUser.uid;
                 if(currentUser.isAnonymous) {
                     try {
@@ -1408,12 +1368,13 @@
                     };
                     await setDoc(doc(db, `artifacts/${appId}/users/${uid}`), userData);
                     patientState.patientDetails = userData.details;
-                    showLoading(false);
+                    isNewUserRegistration = false;
                     showAuthView('success');
                 } catch (e) {
                     console.error("Patient details save failed:", e);
-                    showLoading(false);
                     showMessage("Signup Failed", `Could not save details: ${e.message}`);
+                } finally {
+                    showLoading(false);
                 }
             });
 
@@ -1451,20 +1412,21 @@
                     };
                     await setDoc(doc(db, `artifacts/${appId}/users/${uid}`), userData);
                     doctorState.doctorDetails = userData.details;
-                    showLoading(false);
+                    isNewUserRegistration = false;
                     showAuthView('success');
                 } catch (e) {
                     console.error("Doctor signup failed:", e);
-                    showLoading(false);
                     showMessage("Signup Failed", `Signup failed: ${e.message}`);
+                } finally {
+                    showLoading(false);
                 }
             });
             
             document.getElementById('go-to-dashboard-btn').addEventListener('click', () => {
-                // onAuthStateChanged will handle redirecting to correct dashboard
-                // so we just need to close the modal.
                 const authModal = document.getElementById('auth-modal');
                 authModal.classList.add('hidden');
+                // The onAuthStateChanged listener will automatically show the correct dashboard
+                // because a new document now exists for the user.
             });
 
             showAuthView('initial');
@@ -1494,7 +1456,7 @@
         };
 
         const initializePatientDashboard = async () => {
-            if (patientDashboardInitialized) {
+            if (patientDashboardInitialized && currentUser.uid === patientState.patientDetails.uid) {
                  renderHeader();
                  return;
             };
