@@ -1884,6 +1884,24 @@
   const app = firebase.initializeApp(firebaseConfig);
   const analytics = firebase.analytics(app);
 </script>
+    <script>
+async function runAI() {
+  const patientData = "Blood pressure 140/90, Diabetes type 2, prescribed metformin";
+
+  const response = await fetch("http://localhost:5000/analyze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ patientData })
+  });
+
+  const result = await response.json();
+  document.getElementById("ai-report-content").innerText = result.aiResult;
+  document.getElementById("blockchain-anchor").innerText = "Block Hash: " + result.block.hash;
+}
+document.getElementById("run-ai-btn").addEventListener("click", runAI);
+</script>
+
 
 </body>
 </html>
+
